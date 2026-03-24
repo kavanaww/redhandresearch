@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About — Red Hand Research</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --white:#ffffff; --off-white:#f8f7f5; --light-gray:#f0eeeb; --mid-gray:#c8c4be; --text-dark:#1a1814; --text-mid:#4a4540; --text-light:#8a857e; --red:#c0392b; --red-dark:#96281b; --red-light:#f9ecea; --border:#e8e4df; }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--text-dark); font-size:16px; line-height:1.6; }
+    a { text-decoration:none; color:inherit; }
+
+    /* AGE GATE */
+    #age-overlay { position:fixed; inset:0; z-index:9999; background:rgba(26,24,20,0.94); display:flex; align-items:center; justify-content:center; backdrop-filter:blur(8px); }
+    #age-overlay.hidden { display:none; }
+    .age-box { background:var(--white); border-radius:12px; padding:52px 48px; max-width:480px; width:90%; text-align:center; box-shadow:0 32px 80px rgba(0,0,0,0.5); }
+    .age-logo-mark { width:72px; height:72px; display:flex; align-items:center; justify-content:center; margin:0 auto 24px; }
+    .age-box h2 { font-family:'DM Serif Display',serif; font-size:30px; margin-bottom:14px; }
+    .age-box p { font-size:14px; color:var(--text-light); line-height:1.75; margin-bottom:32px; }
+    .age-box p a { color:var(--red); text-decoration:underline; }
+    .age-buttons { display:flex; gap:12px; }
+    .age-btn-no { flex:1; padding:15px; border:1px solid var(--border); border-radius:4px; background:white; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; color:var(--text-mid); cursor:pointer; }
+    .age-btn-yes { flex:1; padding:15px; border:none; border-radius:4px; background:var(--red); font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; color:white; cursor:pointer; }
+    .age-btn-yes:hover { background:var(--red-dark); }
+
+    /* BANNER */
+    .top-banner { background:var(--text-dark); color:var(--white); text-align:center; font-size:13px; font-weight:500; padding:10px 20px; letter-spacing:0.02em; }
+    .top-banner a { color:var(--mid-gray); text-decoration:underline; margin-left:4px; }
+
+    /* NAV */
+    nav { position:sticky; top:0; z-index:100; background:var(--white); border-bottom:1px solid var(--border); padding:0 48px; display:flex; align-items:center; justify-content:space-between; height:68px; }
+    .nav-logo { display:flex; align-items:center; gap:10px; }
+    .logo-mark { width:40px; height:40px; display:flex; align-items:center; justify-content:center; }
+    .logo-mark img { width:40px; height:40px; object-fit:contain; }
+    .logo-text { font-family:'DM Serif Display',serif; font-size:20px; letter-spacing:-0.02em; color:var(--text-dark); }
+    .logo-text span { color:var(--red); }
+    .nav-links { display:flex; gap:36px; list-style:none; font-size:14px; font-weight:500; color:var(--text-mid); }
+    .nav-links a:hover, .nav-links a.active { color:var(--red); }
+    .nav-cart { background:var(--red); color:white; font-size:13px; font-weight:600; padding:9px 20px; border-radius:4px; transition:background 0.2s; }
+    .nav-cart:hover { background:var(--red-dark); }
+    .nav-hamburger { display:none; flex-direction:column; justify-content:center; gap:5px; width:36px; height:36px; cursor:pointer; background:none; border:none; padding:4px; }
+    .nav-hamburger span { display:block; height:2px; background:var(--text-dark); border-radius:2px; transition:all 0.25s; }
+    .nav-hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity:0; }
+    .nav-hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+    .mobile-menu { display:none; position:fixed; top:68px; left:0; right:0; background:var(--white); border-bottom:1px solid var(--border); z-index:99; padding:24px 24px 32px; flex-direction:column; }
+    .mobile-menu.open { display:flex; }
+    .mobile-menu li { list-style:none; border-bottom:1px solid var(--border); }
+    .mobile-menu li a { display:block; padding:16px 0; font-size:16px; font-weight:500; color:var(--text-dark); }
+    .mobile-menu .mobile-cart { display:block; margin-top:20px; background:var(--red); color:white; text-align:center; padding:14px; border-radius:4px; font-weight:600; font-size:15px; }
+
+    /* PAGE HERO */
+    .page-hero { background:var(--text-dark); padding:80px 72px 72px; position:relative; overflow:hidden; }
+    .page-hero-inner { position:relative; z-index:1; max-width:640px; }
+    .section-label { font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--red); margin-bottom:16px; }
+    .page-hero h1 { font-family:'DM Serif Display',serif; font-size:52px; line-height:1.1; letter-spacing:-0.02em; color:white; margin-bottom:20px; }
+    .page-hero h1 em { font-style:italic; color:var(--red); }
+    .page-hero p { font-size:17px; color:rgba(255,255,255,0.6); max-width:520px; line-height:1.75; }
+    .hero-molecule { position:absolute; right:72px; top:50%; transform:translateY(-50%); opacity:0.05; width:340px; height:340px; }
+
+    /* STORY SECTION */
+    .story { padding:88px 72px; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+    .story-content .section-label { margin-bottom:12px; }
+    .story-content h2 { font-family:'DM Serif Display',serif; font-size:40px; line-height:1.15; letter-spacing:-0.02em; margin-bottom:28px; }
+    .story-content h2 strong { color:var(--red); font-style:italic; font-weight:400; }
+    .story-content p { font-size:16px; color:var(--text-mid); line-height:1.85; margin-bottom:20px; }
+    .story-visual { background:var(--off-white); border:1px solid var(--border); border-radius:12px; padding:48px 40px; display:flex; flex-direction:column; gap:28px; }
+    .principle { display:flex; gap:18px; align-items:flex-start; }
+    .principle-icon { width:44px; height:44px; background:var(--red-light); border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .principle-icon svg { width:22px; height:22px; fill:var(--red); }
+    .principle h4 { font-family:'DM Serif Display',serif; font-size:18px; margin-bottom:4px; }
+    .principle p { font-size:14px; color:var(--text-light); line-height:1.6; margin:0; }
+
+    /* MISSION STRIP */
+    .mission-strip { background:var(--red); padding:64px 72px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:48px; }
+    .mission-item { text-align:center; }
+    .mission-num { font-family:'DM Serif Display',serif; font-size:44px; color:white; line-height:1; margin-bottom:8px; }
+    .mission-label { font-size:14px; color:rgba(255,255,255,0.75); line-height:1.5; }
+
+    /* STANDARDS */
+    .standards { background:var(--off-white); padding:88px 72px; }
+    .standards-header { margin-bottom:56px; }
+    .standards-header h2 { font-family:'DM Serif Display',serif; font-size:40px; letter-spacing:-0.02em; margin-bottom:12px; }
+    .standards-header h2 strong { color:var(--red); font-style:italic; font-weight:400; }
+    .standards-header p { font-size:16px; color:var(--text-mid); max-width:560px; line-height:1.7; }
+    .standards-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+    .standard-card { background:var(--white); border:1px solid var(--border); border-radius:8px; padding:32px 28px; }
+    .standard-card-num { font-family:'DM Serif Display',serif; font-size:36px; color:var(--red); line-height:1; margin-bottom:12px; }
+    .standard-card h4 { font-size:15px; font-weight:600; margin-bottom:8px; }
+    .standard-card p { font-size:14px; color:var(--text-light); line-height:1.6; }
+
+    /* FOUNDER */
+    .founder { padding:88px 72px; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; background:var(--white); }
+    .founder-badge { background:var(--text-dark); border-radius:12px; padding:48px 40px; text-align:center; }
+    .founder-lion { width:120px; height:120px; margin:0 auto 24px; }
+    .founder-lion img { width:100%; height:100%; object-fit:contain; }
+    .founder-name { font-family:'DM Serif Display',serif; font-size:26px; color:white; margin-bottom:6px; }
+    .founder-title { font-size:13px; color:rgba(255,255,255,0.45); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:24px; }
+    .founder-quote { font-size:15px; color:rgba(255,255,255,0.65); line-height:1.75; font-style:italic; border-top:1px solid rgba(255,255,255,0.1); padding-top:24px; }
+    .founder-content .section-label { margin-bottom:12px; }
+    .founder-content h2 { font-family:'DM Serif Display',serif; font-size:40px; line-height:1.15; letter-spacing:-0.02em; margin-bottom:28px; }
+    .founder-content h2 strong { color:var(--red); font-style:italic; font-weight:400; }
+    .founder-content p { font-size:16px; color:var(--text-mid); line-height:1.85; margin-bottom:20px; }
+
+    /* AFFILIATE */
+    .affiliate { background:var(--off-white); padding:88px 72px; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+    .affiliate-content .section-label { margin-bottom:12px; }
+    .affiliate-content h2 { font-family:'DM Serif Display',serif; font-size:40px; line-height:1.15; letter-spacing:-0.02em; margin-bottom:28px; }
+    .affiliate-content h2 strong { color:var(--red); font-style:italic; font-weight:400; }
+    .affiliate-content p { font-size:16px; color:var(--text-mid); line-height:1.85; margin-bottom:20px; }
+    .affiliate-perks { display:flex; flex-direction:column; gap:16px; margin-bottom:32px; }
+    .affiliate-perk { display:flex; gap:14px; align-items:flex-start; }
+    .perk-icon { width:36px; height:36px; background:var(--red-light); border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+    .perk-icon svg { width:18px; height:18px; fill:var(--red); }
+    .affiliate-perk h4 { font-size:15px; font-weight:600; margin-bottom:3px; }
+    .affiliate-perk p { font-size:14px; color:var(--text-light); line-height:1.6; margin:0; }
+    .affiliate-cta { display:inline-flex; align-items:center; gap:10px; background:var(--red); color:white; padding:15px 30px; border-radius:4px; font-weight:600; font-size:15px; transition:background 0.2s; }
+    .affiliate-cta:hover { background:var(--red-dark); }
+    .affiliate-visual { background:var(--text-dark); border-radius:12px; padding:48px 40px; }
+    .affiliate-visual h3 { font-family:'DM Serif Display',serif; font-size:24px; color:white; margin-bottom:20px; }
+    .affiliate-step { display:flex; gap:16px; align-items:flex-start; margin-bottom:24px; }
+    .affiliate-step:last-child { margin-bottom:0; }
+    .step-num { width:32px; height:32px; background:var(--red); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; color:white; flex-shrink:0; }
+    .step-text h4 { font-size:14px; font-weight:600; color:white; margin-bottom:4px; }
+    .step-text p { font-size:13px; color:rgba(255,255,255,0.5); line-height:1.6; margin:0; }
+
+    /* CONTACT */
+    .contact { background:var(--text-dark); padding:88px 72px; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+    .contact-content .section-label { margin-bottom:12px; }
+    .contact-content h2 { font-family:'DM Serif Display',serif; font-size:40px; line-height:1.15; letter-spacing:-0.02em; color:white; margin-bottom:16px; }
+    .contact-content h2 em { font-style:italic; color:var(--red); }
+    .contact-content p { font-size:16px; color:rgba(255,255,255,0.55); line-height:1.8; margin-bottom:12px; }
+    .contact-card { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:40px; }
+    .contact-item { display:flex; gap:16px; align-items:flex-start; margin-bottom:28px; }
+    .contact-item:last-child { margin-bottom:0; }
+    .contact-icon { width:44px; height:44px; background:var(--red); border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .contact-icon svg { width:22px; height:22px; fill:white; }
+    .contact-item h4 { font-size:13px; font-weight:600; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px; }
+    .contact-item a, .contact-item p { font-size:16px; color:white; line-height:1.5; margin:0; }
+    .contact-item a { color:var(--red); text-decoration:underline; }
+    .contact-item a:hover { color:white; }
+    .response-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(192,57,43,0.15); border:1px solid rgba(192,57,43,0.3); border-radius:20px; padding:6px 14px; margin-top:8px; }
+    .response-dot { width:8px; height:8px; background:var(--red); border-radius:50%; animation:pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+    .response-badge span { font-size:12px; color:rgba(255,255,255,0.6); }
+
+    /* FOOTER */
+    footer { background:var(--text-dark); color:white; padding:72px 72px 40px; border-top:1px solid rgba(255,255,255,0.08); }
+    .footer-top { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:60px; padding-bottom:48px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:40px; }
+    .footer-tagline { font-size:14px; color:rgba(255,255,255,0.5); line-height:1.7; margin:16px 0 24px; }
+    .footer-newsletter { display:flex; gap:8px; }
+    .footer-newsletter input { flex:1; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:10px 14px; font-size:13px; color:white; outline:none; }
+    .footer-newsletter input::placeholder { color:rgba(255,255,255,0.3); }
+    .footer-newsletter button { background:var(--red); color:white; border:none; border-radius:4px; padding:10px 18px; font-size:13px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; }
+    .footer-col h4 { font-size:13px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:20px; }
+    .footer-col ul { list-style:none; display:flex; flex-direction:column; gap:12px; }
+    .footer-col ul li a { font-size:14px; color:rgba(255,255,255,0.65); transition:color 0.2s; }
+    .footer-col ul li a:hover { color:white; }
+    .footer-disclaimer { font-size:12px; color:rgba(255,255,255,0.25); line-height:1.6; margin-bottom:32px; padding:20px; border:1px solid rgba(255,255,255,0.08); border-radius:6px; }
+    .footer-bottom { display:flex; justify-content:space-between; font-size:13px; color:rgba(255,255,255,0.3); }
+
+    /* RESPONSIVE */
+    @media (max-width:900px) {
+      nav { padding:0 24px; } .nav-links, .nav-cart { display:none; } .nav-hamburger { display:flex; }
+      .page-hero { padding:56px 24px 48px; } .page-hero h1 { font-size:38px; } .hero-molecule { display:none; }
+      .story, .founder, .affiliate, .contact { grid-template-columns:1fr; gap:48px; padding:64px 24px; }
+      .mission-strip { grid-template-columns:1fr; gap:32px; padding:56px 24px; }
+      .standards { padding:64px 24px; } .standards-grid { grid-template-columns:1fr 1fr; gap:16px; }
+      footer { padding:56px 24px 32px; } .footer-top { grid-template-columns:1fr 1fr; gap:40px; }
+      .footer-bottom { flex-direction:column; gap:8px; text-align:center; }
+    }
+    @media (max-width:540px) {
+      nav { padding:0 16px; } .page-hero { padding:40px 16px 36px; } .page-hero h1 { font-size:30px; }
+      .story, .founder, .affiliate, .contact { padding:48px 16px; }
+      .mission-strip { padding:40px 16px; }
+      .standards { padding:48px 16px; } .standards-grid { grid-template-columns:1fr; }
+      .age-box { padding:36px 24px; }
+      footer { padding:48px 16px 32px; } .footer-top { grid-template-columns:1fr; gap:32px; }
+      .footer-newsletter { flex-direction:column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- AGE GATE -->
+  <div id="age-overlay">
+    <div class="age-box">
+      <div class="age-logo-mark"><img src="logo.png" alt="Red Hand Research" style="width:72px;height:72px;object-fit:contain;"/></div>
+      <h2>Are you over 21?</h2>
+      <p>I confirm that I am 21 years of age or older and understand that certain products on this site are intended for <strong>research use only</strong>, as defined by the FDA. I agree to the <a href="terms-of-service.html">terms and conditions</a> of this site.</p>
+      <div class="age-buttons">
+        <button class="age-btn-no" onclick="denyAge()">No</button>
+        <button class="age-btn-yes" onclick="confirmAge()">Yes, Enter</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BANNER -->
+  <div class="top-banner">Bulk Pricing Available on 2+ Units &nbsp;|&nbsp;<a href="products.html">View all products and pricing</a></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <div class="logo-mark"><img src="logo.png" alt="Red Hand Research Logo"/></div>
+      <span class="logo-text">Red <span>Hand</span> Research</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="products.html">Products</a></li>
+      <li><a href="research.html">Research</a></li>
+      <li><a href="faqs.html">FAQs</a></li>
+      <li><a href="certificates.html">Certificates</a></li>
+    </ul>
+    <a href="#" class="nav-cart">Cart (0)</a>
+    <button class="nav-hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <ul class="mobile-menu" id="mobile-menu">
+    <li><a href="products.html" onclick="toggleMenu()">Products</a></li>
+    <li><a href="research.html" onclick="toggleMenu()">Research</a></li>
+    <li><a href="faqs.html" onclick="toggleMenu()">FAQs</a></li>
+    <li><a href="certificates.html" onclick="toggleMenu()">Certificates</a></li>
+    <a href="#" class="mobile-cart">Cart (0)</a>
+  </ul>
+
+  <!-- HERO -->
+  <div class="page-hero">
+    <svg class="hero-molecule" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" fill="white">
+      <circle cx="100" cy="100" r="12"/><circle cx="60" cy="60" r="8"/><circle cx="140" cy="60" r="8"/>
+      <circle cx="160" cy="120" r="8"/><circle cx="40" cy="120" r="8"/><circle cx="100" cy="155" r="8"/>
+      <line x1="100" y1="100" x2="60" y2="60" stroke="white" stroke-width="3"/>
+      <line x1="100" y1="100" x2="140" y2="60" stroke="white" stroke-width="3"/>
+      <line x1="100" y1="100" x2="160" y2="120" stroke="white" stroke-width="3"/>
+      <line x1="100" y1="100" x2="40" y2="120" stroke="white" stroke-width="3"/>
+      <line x1="100" y1="100" x2="100" y2="155" stroke="white" stroke-width="3"/>
+      <circle cx="35" cy="42" r="5"/><line x1="60" y1="60" x2="35" y2="42" stroke="white" stroke-width="2"/>
+      <circle cx="165" cy="42" r="5"/><line x1="140" y1="60" x2="165" y2="42" stroke="white" stroke-width="2"/>
+      <circle cx="185" cy="130" r="5"/><line x1="160" y1="120" x2="185" y2="130" stroke="white" stroke-width="2"/>
+    </svg>
+    <div class="page-hero-inner">
+      <div class="section-label">Our Story</div>
+      <h1>Built on Integrity.<br/>Driven by <em>Purpose.</em></h1>
+      <p>Red Hand Research was founded with a simple belief: researchers deserve analytical standards they can trust completely — not almost completely. Everything we do flows from that conviction.</p>
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <div class="story">
+    <div class="story-content">
+      <div class="section-label">Why We Exist</div>
+      <h2>The Research Supply Space Deserved <strong>Better</strong></h2>
+      <p>The research peptide market has long been plagued by inconsistency — self-reported purity numbers, missing lot documentation, and compounds that may or may not contain what the label says. For researchers who depend on their materials being exactly what they're described as, that's not good enough.</p>
+      <p>Red Hand Research was founded to be a different kind of supplier. Not just one that talks about quality, but one that proves it — lot by lot, compound by compound, with documentation from accredited third-party laboratories that researchers can download, verify, and cite.</p>
+      <p>We exist because reproducible science requires reliable materials. Full stop.</p>
+    </div>
+    <div class="story-visual">
+      <div class="principle">
+        <div class="principle-icon"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></div>
+        <div>
+          <h4>Integrity First</h4>
+          <p>Every decision we make — from supplier selection to documentation standards — is guided by the question: would we stake our name on it?</p>
+        </div>
+      </div>
+      <div class="principle">
+        <div class="principle-icon"><svg viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></div>
+        <div>
+          <h4>Full Transparency</h4>
+          <p>No black-box sourcing. No self-certified results. Every lot is independently verified and every document is available to the researcher.</p>
+        </div>
+      </div>
+      <div class="principle">
+        <div class="principle-icon"><svg viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+        <div>
+          <h4>Real Value</h4>
+          <p>Research-grade quality shouldn't require an institutional budget. We're committed to pricing that makes rigorous science accessible.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MISSION STRIP -->
+  <div class="mission-strip">
+    <div class="mission-item">
+      <div class="mission-num">≥99%</div>
+      <div class="mission-label">Purity reported per lot<br/>by accredited third-party labs</div>
+    </div>
+    <div class="mission-item">
+      <div class="mission-num">2×</div>
+      <div class="mission-label">Independent sterility labs<br/>verify every batch</div>
+    </div>
+    <div class="mission-item">
+      <div class="mission-num">ISO</div>
+      <div class="mission-label">17025:2017 accredited testing<br/>on every compound we carry</div>
+    </div>
+  </div>
+
+  <!-- STANDARDS -->
+  <div class="standards">
+    <div class="standards-header">
+      <div class="section-label">Our Process</div>
+      <h2>What <strong>Gold Standard</strong> Actually Means</h2>
+      <p>We use the phrase deliberately — because we hold ourselves to what it actually requires, not what it sounds like marketing-wise.</p>
+    </div>
+    <div class="standards-grid">
+      <div class="standard-card">
+        <div class="standard-card-num">01</div>
+        <h4>Identity Verification</h4>
+        <p>Every compound is confirmed by mass spectrometry before it leaves the lab. We verify what it is, not just what we think it is.</p>
+      </div>
+      <div class="standard-card">
+        <div class="standard-card-num">02</div>
+        <h4>HPLC Purity Analysis</h4>
+        <p>Purity is quantified by high-performance liquid chromatography — the analytical standard for peptide characterization — per lot.</p>
+      </div>
+      <div class="standard-card">
+        <div class="standard-card-num">03</div>
+        <h4>Endotoxin Testing</h4>
+        <p>Bacterial endotoxin levels are reported per lot using LAL methodology to protect the integrity of cell-based research assays.</p>
+      </div>
+      <div class="standard-card">
+        <div class="standard-card-num">04</div>
+        <h4>Dual Sterility Labs</h4>
+        <p>Microbial contamination testing is performed by two independent accredited laboratories per lot — not one.</p>
+      </div>
+      <div class="standard-card">
+        <div class="standard-card-num">05</div>
+        <h4>Elemental Screening</h4>
+        <p>Heavy metal and elemental impurity screening is included per lot to eliminate trace contaminants that can confound analytical outcomes.</p>
+      </div>
+      <div class="standard-card">
+        <div class="standard-card-num">06</div>
+        <h4>Lot-Specific CoA</h4>
+        <p>Every product ships with a downloadable Certificate of Analysis tied to its exact lot — not a generic certificate from a different batch.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOUNDER -->
+  <div class="founder">
+    <div class="founder-badge">
+      <div class="founder-lion"><img src="logo.png" alt="Red Hand Research"/></div>
+      <div class="founder-name">Founder &amp; Director</div>
+      <div class="founder-title">Red Hand Research</div>
+      <div class="founder-quote">"I built this company the way I try to live — with honesty, with integrity, and with a genuine desire to serve people well. If I wouldn't stand behind it, it doesn't ship."</div>
+    </div>
+    <div class="founder-content">
+      <div class="section-label">Our Founder</div>
+      <h2>Guided by <strong>Faith &amp; Principle</strong></h2>
+      <p>Red Hand Research was founded and is guided by a pastor whose life and work are shaped by a deep commitment to integrity, honesty, and ethical values. Those aren't words on a wall — they're the actual filter through which every business decision gets made.</p>
+      <p>The mission from day one has been straightforward: provide researchers with the highest quality compounds at prices that don't require them to compromise. Real documentation. Real purity. Real value. No shortcuts, no gray areas, no fine print that contradicts the front page.</p>
+      <p>That foundation shows up in how we source, how we test, how we price, and how we communicate. When you reach out, you hear back fast — from people who care about getting it right.</p>
+    </div>
+  </div>
+
+  <!-- AFFILIATE -->
+  <div class="affiliate">
+    <div class="affiliate-content">
+      <div class="section-label">Partner With Us</div>
+      <h2>Become a Red Hand <strong>Affiliate</strong></h2>
+      <p>If you run a research-focused platform, educational channel, or professional network and believe in what we're building, we'd love to work together. Our affiliate program is built on the same principles as our products — straightforward, honest, and genuinely valuable for both sides.</p>
+      <div class="affiliate-perks">
+        <div class="affiliate-perk">
+          <div class="perk-icon"><svg viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+          <div>
+            <h4>Competitive Commission</h4>
+            <p>Earn a competitive commission on every sale referred through your unique affiliate link.</p>
+          </div>
+        </div>
+        <div class="affiliate-perk">
+          <div class="perk-icon"><svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>
+          <div>
+            <h4>Marketing Materials</h4>
+            <p>We provide product documentation, research summaries, and assets to support your content.</p>
+          </div>
+        </div>
+        <div class="affiliate-perk">
+          <div class="perk-icon"><svg viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
+          <div>
+            <h4>Dedicated Support</h4>
+            <p>Direct access to our team — fast replies, clear answers, and a partnership built on mutual respect.</p>
+          </div>
+        </div>
+      </div>
+      <a href="mailto:team@redhandresearch.com?subject=Affiliate Program Inquiry" class="affiliate-cta">Apply to Partner →</a>
+    </div>
+    <div class="affiliate-visual">
+      <h3>How It Works</h3>
+      <div class="affiliate-step">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <h4>Reach Out</h4>
+          <p>Email us at team@redhandresearch.com with a brief description of your platform and audience.</p>
+        </div>
+      </div>
+      <div class="affiliate-step">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <h4>Get Approved</h4>
+          <p>We review applications quickly and get back to you fast. If it's a fit, we'll set you up with your affiliate link and materials.</p>
+        </div>
+      </div>
+      <div class="affiliate-step">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <h4>Start Earning</h4>
+          <p>Share your link, track your referrals, and earn commission on every completed order you send our way.</p>
+        </div>
+      </div>
+      <div class="affiliate-step">
+        <div class="step-num">4</div>
+        <div class="step-text">
+          <h4>Grow Together</h4>
+          <p>We treat our affiliates as partners. As we grow, so does the opportunity for everyone in the network.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="contact">
+    <div class="contact-content">
+      <div class="section-label">Get In Touch</div>
+      <h2>We Reply <em>Fast.</em></h2>
+      <p>Whether you have a question about a product, need help finding a Certificate of Analysis, want to discuss institutional pricing, or are interested in our affiliate program — we're here and we respond quickly.</p>
+      <p>Email is the best way to reach us. You won't get an auto-reply and wait three days. You'll hear from a real person, fast.</p>
+    </div>
+    <div class="contact-card">
+      <div class="contact-item">
+        <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div>
+        <div>
+          <h4>Email</h4>
+          <a href="mailto:team@redhandresearch.com">team@redhandresearch.com</a>
+          <div class="response-badge">
+            <div class="response-dot"></div>
+            <span>Typically reply within a few hours</span>
+          </div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+        <div>
+          <h4>Support Hours</h4>
+          <p>Monday – Friday, 9:00 AM – 5:00 PM CT</p>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"/></svg></div>
+        <div>
+          <h4>Website</h4>
+          <a href="index.html">redhandresearch.com</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-top">
+      <div>
+        <a href="index.html" style="font-family:'DM Serif Display',serif;font-size:20px;color:white;">Red <span style="color:var(--red)">Hand</span> Research</a>
+        <p class="footer-tagline">Empowering researchers with high-purity, rigorously tested analytical standards built for reproducibility and scientific integrity.</p>
+        <div class="footer-newsletter"><input type="email" placeholder="Your email address"/><button>Subscribe</button></div>
+      </div>
+      <div class="footer-col"><h4>Quick Menu</h4><ul><li><a href="index.html">Home</a></li><li><a href="research.html">Research</a></li><li><a href="products.html">Products</a></li><li><a href="about.html">About</a></li></ul></div>
+      <div class="footer-col"><h4>Information</h4><ul><li><a href="certificates.html">Testing &amp; Help Center</a></li><li><a href="about.html">Our Company</a></li><li><a href="faqs.html">Industry Discounts</a></li><li><a href="mailto:team@redhandresearch.com">Contact</a></li></ul></div>
+      <div class="footer-col"><h4>Legal</h4><ul><li><a href="privacy-policy.html">Privacy Policy</a></li><li><a href="shipping-policy.html">Shipping Policy</a></li><li><a href="terms-of-service.html">Terms of Service</a></li><li><a href="return-policy.html">Return Policy</a></li></ul></div>
+    </div>
+    <div class="footer-disclaimer"><strong style="color:rgba(255,255,255,0.4);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;">Disclaimer</strong><br/>All polypeptide sequences, amino acid derivatives, and analogs available on this site are strictly designated for Research Use Only. These compounds are synthesized and supplied exclusively for laboratory-based analytical, proteomic, and scientific inquiry by qualified professionals. They are not intended for human or veterinary administration, and no diagnostic, therapeutic, or clinical application is implied, warranted, or permitted.</div>
+    <div class="footer-bottom"><span>© 2026 Red Hand Research. All Rights Reserved.</span><span>For In-Vitro Research Use Only</span></div>
+  </footer>
+
+  <script>
+    if (!sessionStorage.getItem('ageVerified')) { document.body.style.overflow='hidden'; }
+    else { document.getElementById('age-overlay').classList.add('hidden'); }
+    function confirmAge() { sessionStorage.setItem('ageVerified','true'); document.getElementById('age-overlay').classList.add('hidden'); document.body.style.overflow=''; }
+    function denyAge() { window.location.href='https://www.google.com'; }
+    function toggleMenu() { document.getElementById('hamburger').classList.toggle('open'); document.getElementById('mobile-menu').classList.toggle('open'); }
+  </script>
+</body>
+</html>
