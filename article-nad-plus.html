@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NAD+ and Cellular Energy Metabolism: A Research Perspective — Red Hand Research</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --white:#ffffff; --off-white:#f8f7f5; --light-gray:#f0eeeb; --mid-gray:#c8c4be; --text-dark:#1a1814; --text-mid:#4a4540; --text-light:#8a857e; --red:#c0392b; --red-dark:#96281b; --red-light:#f9ecea; --border:#e8e4df; }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--text-dark); font-size:16px; line-height:1.6; }
+    a { text-decoration:none; color:inherit; }
+    #age-overlay { position:fixed; inset:0; z-index:9999; background:rgba(26,24,20,0.94); display:flex; align-items:center; justify-content:center; backdrop-filter:blur(8px); }
+    #age-overlay.hidden { display:none; }
+    .age-box { background:var(--white); border-radius:12px; padding:52px 48px; max-width:480px; width:90%; text-align:center; box-shadow:0 32px 80px rgba(0,0,0,0.5); }
+    .age-logo-mark { width:72px; height:72px; display:flex; align-items:center; justify-content:center; margin:0 auto 24px; }
+    .age-box h2 { font-family:'DM Serif Display',serif; font-size:30px; margin-bottom:14px; }
+    .age-box p { font-size:14px; color:var(--text-light); line-height:1.75; margin-bottom:32px; }
+    .age-box p a { color:var(--red); text-decoration:underline; }
+    .age-buttons { display:flex; gap:12px; }
+    .age-btn-no { flex:1; padding:15px; border:1px solid var(--border); border-radius:4px; background:white; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; color:var(--text-mid); cursor:pointer; }
+    .age-btn-yes { flex:1; padding:15px; border:none; border-radius:4px; background:var(--red); font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; color:white; cursor:pointer; }
+    .age-btn-yes:hover { background:var(--red-dark); }
+    .top-banner { background:var(--text-dark); color:var(--white); text-align:center; font-size:13px; font-weight:500; padding:10px 20px; }
+    .top-banner a { color:var(--mid-gray); text-decoration:underline; margin-left:4px; }
+    nav { position:sticky; top:0; z-index:100; background:var(--white); border-bottom:1px solid var(--border); padding:0 48px; display:flex; align-items:center; justify-content:space-between; height:68px; }
+    .nav-logo { display:flex; align-items:center; gap:10px; }
+    .logo-mark { width:40px; height:40px; display:flex; align-items:center; justify-content:center; }
+    .logo-mark img { width:40px; height:40px; object-fit:contain; }
+    .logo-text { font-family:'DM Serif Display',serif; font-size:20px; letter-spacing:-0.02em; color:var(--text-dark); }
+    .logo-text span { color:var(--red); }
+    .nav-links { display:flex; gap:36px; list-style:none; font-size:14px; font-weight:500; color:var(--text-mid); }
+    .nav-links a:hover, .nav-links a.active { color:var(--red); }
+    .nav-cart { background:var(--red); color:white; font-size:13px; font-weight:600; padding:9px 20px; border-radius:4px; }
+    .nav-hamburger { display:none; flex-direction:column; justify-content:center; gap:5px; width:36px; height:36px; cursor:pointer; background:none; border:none; padding:4px; }
+    .nav-hamburger span { display:block; height:2px; background:var(--text-dark); border-radius:2px; transition:all 0.25s; }
+    .nav-hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity:0; }
+    .nav-hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+    .mobile-menu { display:none; position:fixed; top:68px; left:0; right:0; background:var(--white); border-bottom:1px solid var(--border); z-index:99; padding:24px 24px 32px; flex-direction:column; }
+    .mobile-menu.open { display:flex; }
+    .mobile-menu li { list-style:none; border-bottom:1px solid var(--border); }
+    .mobile-menu li a { display:block; padding:16px 0; font-size:16px; font-weight:500; color:var(--text-dark); }
+    .mobile-menu .mobile-cart { display:block; margin-top:20px; background:var(--red); color:white; text-align:center; padding:14px; border-radius:4px; font-weight:600; font-size:15px; }
+    .article-hero { background:var(--text-dark); padding:64px 72px; }
+    .back-link { display:inline-flex; align-items:center; gap:8px; font-size:13px; color:rgba(255,255,255,0.5); margin-bottom:32px; transition:color 0.2s; }
+    .back-link:hover { color:var(--red); }
+    .article-tag { display:inline-block; background:var(--red); color:white; font-size:10px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; padding:4px 10px; border-radius:3px; margin-bottom:20px; }
+    .article-hero h1 { font-family:'DM Serif Display',serif; font-size:44px; line-height:1.15; letter-spacing:-0.02em; color:white; margin-bottom:20px; max-width:800px; }
+    .article-meta { display:flex; align-items:center; gap:24px; font-size:13px; color:rgba(255,255,255,0.45); }
+    .article-meta span { display:flex; align-items:center; gap:6px; }
+    .article-body { max-width:780px; margin:0 auto; padding:72px 72px; }
+    .article-body .ruo-notice { background:var(--red-light); border:1px solid #f0c0bb; border-radius:6px; padding:16px 20px; margin-bottom:40px; font-size:13px; color:var(--red-dark); line-height:1.6; }
+    .article-body .ruo-notice strong { font-weight:600; }
+    .article-body h2 { font-family:'DM Serif Display',serif; font-size:28px; color:var(--text-dark); margin:48px 0 16px; }
+    .article-body h3 { font-family:'DM Serif Display',serif; font-size:22px; color:var(--text-dark); margin:36px 0 12px; }
+    .article-body p { font-size:16px; color:var(--text-mid); line-height:1.8; margin-bottom:20px; }
+    .article-body ul { margin:0 0 20px 24px; }
+    .article-body ul li { font-size:16px; color:var(--text-mid); line-height:1.8; margin-bottom:8px; }
+    .article-divider { border:none; border-top:1px solid var(--border); margin:48px 0; }
+    .related-products { background:var(--off-white); padding:64px 72px; border-top:1px solid var(--border); }
+    .related-products h2 { font-family:'DM Serif Display',serif; font-size:28px; margin-bottom:8px; }
+    .related-products p { font-size:14px; color:var(--text-light); margin-bottom:32px; }
+    .related-btn { display:inline-flex; align-items:center; gap:10px; background:var(--red); color:white; padding:14px 28px; border-radius:4px; font-weight:600; font-size:14px; transition:background 0.2s; }
+    .related-btn:hover { background:var(--red-dark); }
+    footer { background:var(--text-dark); color:white; padding:72px 72px 40px; }
+    .footer-top { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:60px; padding-bottom:48px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:40px; }
+    .footer-tagline { font-size:14px; color:rgba(255,255,255,0.5); line-height:1.7; margin:16px 0 24px; }
+    .footer-newsletter { display:flex; gap:8px; }
+    .footer-newsletter input { flex:1; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:10px 14px; font-size:13px; color:white; outline:none; }
+    .footer-newsletter input::placeholder { color:rgba(255,255,255,0.3); }
+    .footer-newsletter button { background:var(--red); color:white; border:none; border-radius:4px; padding:10px 18px; font-size:13px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; }
+    .footer-col h4 { font-size:13px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:20px; }
+    .footer-col ul { list-style:none; display:flex; flex-direction:column; gap:12px; }
+    .footer-col ul li a { font-size:14px; color:rgba(255,255,255,0.65); transition:color 0.2s; }
+    .footer-col ul li a:hover { color:white; }
+    .footer-disclaimer { font-size:12px; color:rgba(255,255,255,0.25); line-height:1.6; margin-bottom:32px; padding:20px; border:1px solid rgba(255,255,255,0.08); border-radius:6px; }
+    .footer-bottom { display:flex; justify-content:space-between; font-size:13px; color:rgba(255,255,255,0.3); }
+    @media (max-width:900px) {
+      nav { padding:0 24px; } .nav-links, .nav-cart { display:none; } .nav-hamburger { display:flex; }
+      .article-hero { padding:48px 24px; } .article-hero h1 { font-size:32px; }
+      .article-body { padding:48px 24px; } .related-products { padding:48px 24px; }
+      footer { padding:56px 24px 32px; } .footer-top { grid-template-columns:1fr 1fr; gap:40px; }
+      .footer-bottom { flex-direction:column; gap:8px; text-align:center; }
+    }
+    @media (max-width:540px) {
+      nav { padding:0 16px; } .article-hero { padding:36px 16px; } .article-hero h1 { font-size:26px; }
+      .article-body { padding:36px 16px; } .age-box { padding:36px 24px; }
+      footer { padding:48px 16px 32px; } .footer-top { grid-template-columns:1fr; gap:32px; }
+      .footer-newsletter { flex-direction:column; }
+    }
+  </style>
+</head>
+<body>
+  <div id="age-overlay">
+    <div class="age-box">
+      <div class="age-logo-mark"><img src="logo.png" alt="Red Hand Research" style="width:72px;height:72px;object-fit:contain;"/></div>
+      <h2>Are you over 21?</h2>
+      <p>I confirm that I am 21 years of age or older and understand that certain products on this site are intended for <strong>research use only</strong>, as defined by the FDA. I agree to the <a href="terms-of-service.html">terms and conditions</a> of this site.</p>
+      <div class="age-buttons"><button class="age-btn-no" onclick="denyAge()">No</button><button class="age-btn-yes" onclick="confirmAge()">Yes, Enter</button></div>
+    </div>
+  </div>
+  <div class="top-banner">Bulk Pricing Available on 2+ Units &nbsp;|&nbsp;<a href="products.html">View all products and pricing</a></div>
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <div class="logo-mark"><img src="logo.png" alt="Red Hand Research Logo"/></div>
+      <span class="logo-text">Red <span>Hand</span> Research</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="products.html">Products</a></li>
+      <li><a href="research.html" class="active">Research</a></li>
+      <li><a href="faqs.html">FAQs</a></li>
+      <li><a href="certificates.html">Certificates</a></li>
+    </ul>
+    <a href="#" class="nav-cart">Cart (0)</a>
+    <button class="nav-hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+  <ul class="mobile-menu" id="mobile-menu">
+    <li><a href="products.html" onclick="toggleMenu()">Products</a></li>
+    <li><a href="research.html" onclick="toggleMenu()">Research</a></li>
+    <li><a href="faqs.html" onclick="toggleMenu()">FAQs</a></li>
+    <li><a href="certificates.html" onclick="toggleMenu()">Certificates</a></li>
+    <a href="#" class="mobile-cart">Cart (0)</a>
+  </ul>
+  <div class="article-hero">
+    <a href="research.html" class="back-link">← Back to Research</a>
+    <div class="article-tag">Wellness</div>
+    <h1>NAD+ and Cellular Energy Metabolism: A Research Perspective</h1>
+    <div class="article-meta">
+      <span>January 2026</span>
+      <span>Red Hand Research</span>
+      <span>For In-Vitro Research Use Only</span>
+    </div>
+  </div>
+  <div class="article-body">
+    <div class="ruo-notice"><strong>Research Use Only.</strong> All content on this page is intended for qualified researchers engaged in lawful scientific inquiry. The compounds described are not approved for human or veterinary use. No therapeutic, diagnostic, or clinical application is implied or permitted.</div>
+<h2>NAD+ as a Biochemical Research Tool</h2>
+<p>Nicotinamide adenine dinucleotide (NAD+) is a dinucleotide coenzyme present in all living cells and central to cellular energy metabolism. It consists of two nucleotides — one containing adenine and one containing nicotinamide — joined by a phosphate linkage. In research contexts, NAD+ and its reduced form NADH function as hydride carriers in oxidation-reduction reactions, making them foundational tools for studying mitochondrial function, metabolic flux, and cellular redox biology.</p>
+<p>NAD+ supplied by Red Hand Research is a high-purity analytical standard intended for use in laboratory assays and in-vitro research systems. It is not intended for human administration.</p>
+
+<h2>Role in Oxidative Phosphorylation Research</h2>
+<p>The mitochondrial electron transport chain (ETC) is a primary focus of NAD+ research. In this system, NADH donates electrons to Complex I of the ETC, initiating a cascade that drives ATP synthesis via oxidative phosphorylation. Researchers use NAD+/NADH ratios as a readout of mitochondrial function in isolated mitochondria preparations and intact cell systems.</p>
+<p>In-vitro assays employing exogenous NAD+ allow investigators to examine how perturbations to the NAD+ pool affect mitochondrial membrane potential, oxygen consumption rates, and ATP production capacity under controlled conditions. These experiments are conducted in cell-free systems or cultured cell models.</p>
+
+<h2>Sirtuin Biology and NAD+ Dependence</h2>
+<p>Sirtuins (SIRT1-7) are a family of NAD+-dependent deacylases that have attracted substantial research interest for their roles in regulating gene expression, DNA repair, and metabolic homeostasis. Because sirtuins consume NAD+ as a substrate — rather than as a cofactor — their activity is directly coupled to intracellular NAD+ availability.</p>
+<p>Research in cell culture and rodent models has used NAD+ supplementation and depletion strategies to probe sirtuin activity and its downstream effects on target proteins including PGC-1α, FOXO transcription factors, and p53. These are controlled experimental observations and do not establish clinical efficacy for any intervention.</p>
+
+<h2>PARP Pathway Research</h2>
+<p>Poly(ADP-ribose) polymerases (PARPs) are a family of NAD+-consuming enzymes that play central roles in DNA damage response research. PARP-1, the most studied family member, uses NAD+ to synthesize poly(ADP-ribose) chains on target proteins in response to DNA strand breaks. This activity consumes large quantities of cellular NAD+ under conditions of DNA damage in experimental systems.</p>
+<p>The intersection of PARP activity and NAD+ availability has made NAD+ a key variable in DNA repair research, genotoxicity assays, and studies of cellular responses to oxidative stress in controlled laboratory settings.</p>
+
+<h2>CD38 and NAD+ Metabolism Research</h2>
+<p>CD38 is a multifunctional enzyme that catalyzes both the synthesis and hydrolysis of cyclic ADP-ribose (cADPR) from NAD+, making it a significant consumer of the cellular NAD+ pool. Research examining CD38 expression and activity has emerged as an important area of NAD+ biology, particularly in the context of aging biology research in rodent models.</p>
+<p>Studies have shown that CD38 expression increases with age in mouse tissues and correlates with declining NAD+ levels in those models. These observations have driven research interest in the NAD+/CD38 axis as a readout of metabolic aging in controlled experimental systems.</p>
+
+<h2>Analytical Standards for NAD+ Research</h2>
+<p>For NAD+ to be useful as a research tool, its purity is critical — particularly in enzymatic assays where contaminating NADH or other nucleotides can introduce significant measurement error. Red Hand Research supplies NAD+ as a high-purity analytical standard with lot-specific documentation verifying identity by spectrophotometry and mass spectrometry, and purity by HPLC. Researchers should verify the specific form (free acid vs. sodium salt) required for their assay system before ordering.</p>
+    <hr class="article-divider"/>
+    <p style="font-size:13px;color:var(--text-light);font-style:italic;">This article is an overview of publicly available research literature and is provided for informational purposes for qualified researchers. It does not constitute medical advice, endorsement of any compound for human use, or a claim of efficacy for any indication. All compounds referenced are supplied for Research Use Only.</p>
+  </div>
+  <div class="related-products">
+    <h2>View Related Compounds</h2>
+    <p>All compounds are supplied as research-grade analytical standards with lot-specific Certificates of Analysis.</p>
+    <a href="products.html" class="related-btn">View NAD+ →</a>
+  </div>
+  <footer>
+    <div class="footer-top">
+      <div>
+        <a href="index.html" style="font-family:'DM Serif Display',serif;font-size:20px;color:white;">Red <span style="color:var(--red)">Hand</span> Research</a>
+        <p class="footer-tagline">Empowering researchers with high-purity, rigorously tested analytical standards built for reproducibility and scientific integrity.</p>
+        <div class="footer-newsletter"><input type="email" placeholder="Your email address"/><button>Subscribe</button></div>
+      </div>
+      <div class="footer-col"><h4>Quick Menu</h4><ul><li><a href="index.html">Home</a></li><li><a href="research.html">Research</a></li><li><a href="products.html">Products</a></li><li><a href="about.html">About</a></li></ul></div>
+      <div class="footer-col"><h4>Information</h4><ul><li><a href="certificates.html">Testing &amp; Help Center</a></li><li><a href="about.html">Our Company</a></li><li><a href="faqs.html">Industry Discounts</a></li><li><a href="mailto:support@redhandresearch.com">Contact</a></li></ul></div>
+      <div class="footer-col"><h4>Legal</h4><ul><li><a href="privacy-policy.html">Privacy Policy</a></li><li><a href="shipping-policy.html">Shipping Policy</a></li><li><a href="terms-of-service.html">Terms of Service</a></li><li><a href="return-policy.html">Return Policy</a></li></ul></div>
+    </div>
+    <div class="footer-disclaimer"><strong style="color:rgba(255,255,255,0.4);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;">Disclaimer</strong><br/>All polypeptide sequences, amino acid derivatives, and analogs available on this site are strictly designated for Research Use Only. These compounds are synthesized and supplied exclusively for laboratory-based analytical, proteomic, and scientific inquiry by qualified professionals. They are not intended for human or veterinary administration, and no diagnostic, therapeutic, or clinical application is implied, warranted, or permitted.</div>
+    <div class="footer-bottom"><span>© 2026 Red Hand Research. All Rights Reserved.</span><span>For In-Vitro Research Use Only</span></div>
+  </footer>
+  <script>
+    if (!sessionStorage.getItem('ageVerified')) { document.body.style.overflow='hidden'; }
+    else { document.getElementById('age-overlay').classList.add('hidden'); }
+    function confirmAge() { sessionStorage.setItem('ageVerified','true'); document.getElementById('age-overlay').classList.add('hidden'); document.body.style.overflow=''; }
+    function denyAge() { window.location.href='https://www.google.com'; }
+    function toggleMenu() { document.getElementById('hamburger').classList.toggle('open'); document.getElementById('mobile-menu').classList.toggle('open'); }
+  </script>
+</body>
+</html>
