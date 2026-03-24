@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shipping Policy — Red Hand Research</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --white:#ffffff; --off-white:#f8f7f5; --mid-gray:#c8c4be; --text-dark:#1a1814; --text-mid:#4a4540; --text-light:#8a857e; --red:#c0392b; --red-dark:#96281b; --red-light:#f9ecea; --border:#e8e4df; }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--text-dark); font-size:16px; line-height:1.6; }
+    a { text-decoration:none; color:inherit; }
+    #age-overlay { position:fixed; inset:0; z-index:9999; background:rgba(26,24,20,0.94); display:flex; align-items:center; justify-content:center; backdrop-filter:blur(8px); }
+    #age-overlay.hidden { display:none; }
+    .age-box { background:var(--white); border-radius:12px; padding:52px 48px; max-width:480px; width:90%; text-align:center; box-shadow:0 32px 80px rgba(0,0,0,0.5); }
+    .age-logo-mark { width:72px; height:72px; display:flex; align-items:center; justify-content:center; margin:0 auto 24px; }
+    .age-box h2 { font-family:'DM Serif Display',serif; font-size:30px; margin-bottom:14px; }
+    .age-box p { font-size:14px; color:var(--text-light); line-height:1.75; margin-bottom:32px; }
+    .age-box p a { color:var(--red); text-decoration:underline; }
+    .age-buttons { display:flex; gap:12px; }
+    .age-btn-no { flex:1; padding:15px; border:1px solid var(--border); border-radius:4px; background:white; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; color:var(--text-mid); cursor:pointer; }
+    .age-btn-yes { flex:1; padding:15px; border:none; border-radius:4px; background:var(--red); font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; color:white; cursor:pointer; }
+    .age-btn-yes:hover { background:var(--red-dark); }
+    .top-banner { background:var(--text-dark); color:var(--white); text-align:center; font-size:13px; font-weight:500; padding:10px 20px; }
+    .top-banner a { color:var(--mid-gray); text-decoration:underline; margin-left:4px; }
+    nav { position:sticky; top:0; z-index:100; background:var(--white); border-bottom:1px solid var(--border); padding:0 48px; display:flex; align-items:center; justify-content:space-between; height:68px; }
+    .nav-logo { display:flex; align-items:center; gap:10px; }
+    .logo-mark { width:40px; height:40px; display:flex; align-items:center; justify-content:center; }
+    .logo-mark img { width:40px; height:40px; object-fit:contain; }
+    .logo-text { font-family:'DM Serif Display',serif; font-size:20px; letter-spacing:-0.02em; color:var(--text-dark); }
+    .logo-text span { color:var(--red); }
+    .nav-links { display:flex; gap:36px; list-style:none; font-size:14px; font-weight:500; color:var(--text-mid); }
+    .nav-links a:hover { color:var(--red); }
+    .nav-cart { background:var(--red); color:white; font-size:13px; font-weight:600; padding:9px 20px; border-radius:4px; }
+    .nav-hamburger { display:none; flex-direction:column; justify-content:center; gap:5px; width:36px; height:36px; cursor:pointer; background:none; border:none; padding:4px; }
+    .nav-hamburger span { display:block; height:2px; background:var(--text-dark); border-radius:2px; transition:all 0.25s; }
+    .nav-hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity:0; }
+    .nav-hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+    .mobile-menu { display:none; position:fixed; top:68px; left:0; right:0; background:var(--white); border-bottom:1px solid var(--border); z-index:99; padding:24px 24px 32px; flex-direction:column; }
+    .mobile-menu.open { display:flex; }
+    .mobile-menu li { list-style:none; border-bottom:1px solid var(--border); }
+    .mobile-menu li a { display:block; padding:16px 0; font-size:16px; font-weight:500; color:var(--text-dark); }
+    .mobile-menu .mobile-cart { display:block; margin-top:20px; background:var(--red); color:white; text-align:center; padding:14px; border-radius:4px; font-weight:600; font-size:15px; }
+    .page-hero { background:var(--off-white); border-bottom:1px solid var(--border); padding:64px 72px 56px; }
+    .section-label { font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--red); margin-bottom:16px; }
+    .page-hero h1 { font-family:'DM Serif Display',serif; font-size:44px; line-height:1.1; letter-spacing:-0.02em; margin-bottom:12px; }
+    .page-hero h1 em { font-style:italic; color:var(--red); }
+    .page-hero .updated { font-size:13px; color:var(--text-light); }
+    .legal-body { max-width:860px; margin:0 auto; padding:72px 72px; }
+    .legal-body h2 { font-family:'DM Serif Display',serif; font-size:26px; color:var(--text-dark); margin:48px 0 14px; padding-bottom:12px; border-bottom:1px solid var(--border); }
+    .legal-body h2:first-child { margin-top:0; }
+    .legal-body p { font-size:15px; color:var(--text-mid); line-height:1.8; margin-bottom:16px; }
+    .legal-body ul { margin:0 0 16px 24px; }
+    .legal-body ul li { font-size:15px; color:var(--text-mid); line-height:1.8; margin-bottom:6px; }
+    .legal-body a { color:var(--red); text-decoration:underline; }
+    .legal-contact { background:var(--off-white); border:1px solid var(--border); border-radius:8px; padding:28px 32px; margin-top:48px; }
+    .legal-contact h3 { font-family:'DM Serif Display',serif; font-size:20px; margin-bottom:10px; }
+    .legal-contact p { font-size:14px; color:var(--text-mid); margin-bottom:4px; }
+    .legal-contact a { color:var(--red); }
+    footer { background:var(--text-dark); color:white; padding:72px 72px 40px; }
+    .footer-top { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:60px; padding-bottom:48px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:40px; }
+    .footer-tagline { font-size:14px; color:rgba(255,255,255,0.5); line-height:1.7; margin:16px 0 24px; }
+    .footer-newsletter { display:flex; gap:8px; }
+    .footer-newsletter input { flex:1; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:10px 14px; font-size:13px; color:white; outline:none; }
+    .footer-newsletter input::placeholder { color:rgba(255,255,255,0.3); }
+    .footer-newsletter button { background:var(--red); color:white; border:none; border-radius:4px; padding:10px 18px; font-size:13px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; }
+    .footer-col h4 { font-size:13px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:20px; }
+    .footer-col ul { list-style:none; display:flex; flex-direction:column; gap:12px; }
+    .footer-col ul li a { font-size:14px; color:rgba(255,255,255,0.65); transition:color 0.2s; }
+    .footer-col ul li a:hover { color:white; }
+    .footer-disclaimer { font-size:12px; color:rgba(255,255,255,0.25); line-height:1.6; margin-bottom:32px; padding:20px; border:1px solid rgba(255,255,255,0.08); border-radius:6px; }
+    .footer-bottom { display:flex; justify-content:space-between; font-size:13px; color:rgba(255,255,255,0.3); }
+    @media (max-width:900px) {
+      nav { padding:0 24px; } .nav-links, .nav-cart { display:none; } .nav-hamburger { display:flex; }
+      .page-hero { padding:48px 24px 40px; } .page-hero h1 { font-size:34px; }
+      .legal-body { padding:48px 24px; }
+      footer { padding:56px 24px 32px; } .footer-top { grid-template-columns:1fr 1fr; gap:40px; }
+      .footer-bottom { flex-direction:column; gap:8px; text-align:center; }
+    }
+    @media (max-width:540px) {
+      nav { padding:0 16px; } .page-hero { padding:36px 16px 32px; } .page-hero h1 { font-size:28px; }
+      .legal-body { padding:36px 16px; } .age-box { padding:36px 24px; }
+      footer { padding:48px 16px 32px; } .footer-top { grid-template-columns:1fr; gap:32px; }
+      .footer-newsletter { flex-direction:column; }
+    }
+  </style>
+</head>
+<body>
+  <div id="age-overlay">
+    <div class="age-box">
+      <div class="age-logo-mark"><img src="logo.png" alt="Red Hand Research" style="width:72px;height:72px;object-fit:contain;"/></div>
+      <h2>Are you over 21?</h2>
+      <p>I confirm that I am 21 years of age or older and understand that certain products on this site are intended for <strong>research use only</strong>, as defined by the FDA. I agree to the <a href="terms-of-service.html">terms and conditions</a> of this site.</p>
+      <div class="age-buttons"><button class="age-btn-no" onclick="denyAge()">No</button><button class="age-btn-yes" onclick="confirmAge()">Yes, Enter</button></div>
+    </div>
+  </div>
+  <div class="top-banner">Bulk Pricing Available on 2+ Units &nbsp;|&nbsp;<a href="products.html">View all products and pricing</a></div>
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <div class="logo-mark"><img src="logo.png" alt="Red Hand Research Logo"/></div>
+      <span class="logo-text">Red <span>Hand</span> Research</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="products.html">Products</a></li>
+      <li><a href="research.html">Research</a></li>
+      <li><a href="faqs.html">FAQs</a></li>
+      <li><a href="certificates.html">Certificates</a></li>
+    </ul>
+    <a href="#" class="nav-cart">Cart (0)</a>
+    <button class="nav-hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+  <ul class="mobile-menu" id="mobile-menu">
+    <li><a href="products.html" onclick="toggleMenu()">Products</a></li>
+    <li><a href="research.html" onclick="toggleMenu()">Research</a></li>
+    <li><a href="faqs.html" onclick="toggleMenu()">FAQs</a></li>
+    <li><a href="certificates.html" onclick="toggleMenu()">Certificates</a></li>
+    <a href="#" class="mobile-cart">Cart (0)</a>
+  </ul>
+  <div class="page-hero">
+    <div class="section-label">Legal</div>
+    <h1>Shipping Policy</h1>
+    <p class="updated">Last updated: March 23, 2026</p>
+  </div>
+  <div class="legal-body">
+    
+<h2>Order Processing</h2>
+<p>Orders placed before 3:00 PM Central Time on business days (Monday through Friday, excluding federal holidays) are processed and shipped same day. Orders placed after 3:00 PM CT or on weekends and holidays will be processed on the next business day.</p>
+<p>You will receive a shipping confirmation email with tracking information once your order has been dispatched.</p>
+
+<h2>Domestic Shipping</h2>
+<p>Red Hand Research currently ships within the United States only. We do not ship to P.O. boxes. All orders are shipped to the address provided at checkout — please verify your shipping address carefully before completing your order, as we cannot redirect shipments once dispatched.</p>
+<p>We ship via USPS, UPS, and FedEx depending on order size, destination, and product requirements. The carrier is selected at our discretion unless a specific carrier is requested at checkout (subject to availability).</p>
+
+<h2>Shipping Methods and Timeframes</h2>
+<p>Estimated delivery timeframes following shipment are:</p>
+<ul>
+  <li><strong>Standard Shipping:</strong> 3–7 business days</li>
+  <li><strong>Expedited Shipping:</strong> 2–3 business days</li>
+  <li><strong>Overnight Shipping:</strong> Next business day (order must be placed before 1:00 PM CT)</li>
+</ul>
+<p>Delivery timeframes are estimates and are not guaranteed. Delays caused by carrier issues, weather events, or other circumstances outside our control are not the responsibility of Red Hand Research.</p>
+
+<h2>Packaging and Cold Chain</h2>
+<p>All products are packaged to maintain compound integrity during transit. Temperature-sensitive compounds are shipped with appropriate cold-chain packaging including insulated containers and gel packs where required. If you have specific packaging requirements for your research application, please contact us before placing your order.</p>
+
+<h2>Tracking Your Order</h2>
+<p>A tracking number will be provided via email upon shipment. You can track your order directly on the carrier's website. If you experience difficulty tracking your order, please contact us at <a href="mailto:support@redhandresearch.com">support@redhandresearch.com</a>.</p>
+
+<h2>Damaged or Lost Shipments</h2>
+<p>If your order arrives damaged, please contact us within 48 hours of delivery with photographs of the outer packaging and the product. We will work with you promptly to arrange a replacement or refund as appropriate.</p>
+<p>If your tracking information shows delivery but you have not received your package, please first check with neighbors and building management. If the package cannot be located, contact us within 5 business days of the delivery date. We will initiate a carrier investigation on your behalf.</p>
+
+<h2>International Shipping</h2>
+<p>We do not currently offer international shipping. We are actively working to expand our shipping footprint. Please subscribe to our newsletter for updates on international availability.</p>
+
+<h2>Bulk Orders</h2>
+<p>Bulk orders of 2 or more units of the same product qualify for bulk pricing. For large institutional orders or orders requiring special shipping arrangements, please contact us directly at <a href="mailto:support@redhandresearch.com">support@redhandresearch.com</a> before placing your order.</p>
+
+<div class="legal-contact">
+  <h3>Shipping Questions?</h3>
+  <p>Our support team is available Monday–Friday, 9:00 AM–5:00 PM CT.</p>
+  <p><a href="mailto:support@redhandresearch.com">support@redhandresearch.com</a></p>
+</div>
+  </div>
+  <footer>
+    <div class="footer-top">
+      <div>
+        <a href="index.html" style="font-family:'DM Serif Display',serif;font-size:20px;color:white;">Red <span style="color:var(--red)">Hand</span> Research</a>
+        <p class="footer-tagline">Empowering researchers with high-purity, rigorously tested analytical standards built for reproducibility and scientific integrity.</p>
+        <div class="footer-newsletter"><input type="email" placeholder="Your email address"/><button>Subscribe</button></div>
+      </div>
+      <div class="footer-col"><h4>Quick Menu</h4><ul><li><a href="index.html">Home</a></li><li><a href="research.html">Research</a></li><li><a href="products.html">Products</a></li><li><a href="about.html">About</a></li></ul></div>
+      <div class="footer-col"><h4>Information</h4><ul><li><a href="certificates.html">Testing &amp; Help Center</a></li><li><a href="about.html">Our Company</a></li><li><a href="faqs.html">Industry Discounts</a></li><li><a href="mailto:support@redhandresearch.com">Contact</a></li></ul></div>
+      <div class="footer-col"><h4>Legal</h4><ul><li><a href="privacy-policy.html">Privacy Policy</a></li><li><a href="shipping-policy.html">Shipping Policy</a></li><li><a href="terms-of-service.html">Terms of Service</a></li><li><a href="return-policy.html">Return Policy</a></li></ul></div>
+    </div>
+    <div class="footer-disclaimer"><strong style="color:rgba(255,255,255,0.4);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;">Disclaimer</strong><br/>All polypeptide sequences, amino acid derivatives, and analogs available on this site are strictly designated for Research Use Only. These compounds are synthesized and supplied exclusively for laboratory-based analytical, proteomic, and scientific inquiry by qualified professionals. They are not intended for human or veterinary administration, and no diagnostic, therapeutic, or clinical application is implied, warranted, or permitted.</div>
+    <div class="footer-bottom"><span>© 2026 Red Hand Research. All Rights Reserved.</span><span>For In-Vitro Research Use Only</span></div>
+  </footer>
+  <script>
+    if (!sessionStorage.getItem('ageVerified')) { document.body.style.overflow='hidden'; }
+    else { document.getElementById('age-overlay').classList.add('hidden'); }
+    function confirmAge() { sessionStorage.setItem('ageVerified','true'); document.getElementById('age-overlay').classList.add('hidden'); document.body.style.overflow=''; }
+    function denyAge() { window.location.href='https://www.google.com'; }
+    function toggleMenu() { document.getElementById('hamburger').classList.toggle('open'); document.getElementById('mobile-menu').classList.toggle('open'); }
+  </script>
+</body>
+</html>
