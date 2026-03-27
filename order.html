@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Place Order — Red Hand Research</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--white:#ffffff;--off-white:#f8f7f5;--light-gray:#f0eeeb;--mid-gray:#c8c4be;--text-dark:#1a1814;--text-mid:#4a4540;--text-light:#8a857e;--red:#c0392b;--red-dark:#96281b;--red-light:#f9ecea;--border:#e8e4df;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'DM Sans',sans-serif;background:var(--white);color:var(--text-dark);font-size:16px;line-height:1.6;}
+    a{text-decoration:none;color:inherit;}
+    #age-overlay{position:fixed;inset:0;z-index:9999;background:rgba(26,24,20,0.94);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);}
+    #age-overlay.hidden{display:none;}
+    .age-box{background:var(--white);border-radius:12px;padding:52px 48px;max-width:480px;width:90%;text-align:center;box-shadow:0 32px 80px rgba(0,0,0,0.5);}
+    .age-logo-mark{width:72px;height:72px;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;}
+    .age-box h2{font-family:'DM Serif Display',serif;font-size:30px;margin-bottom:14px;}
+    .age-box p{font-size:14px;color:var(--text-light);line-height:1.75;margin-bottom:32px;}
+    .age-box p a{color:var(--red);text-decoration:underline;}
+    .age-buttons{display:flex;gap:12px;}
+    .age-btn-no{flex:1;padding:15px;border:1px solid var(--border);border-radius:4px;background:white;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;color:var(--text-mid);cursor:pointer;}
+    .age-btn-yes{flex:1;padding:15px;border:none;border-radius:4px;background:var(--red);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;color:white;cursor:pointer;}
+    .age-btn-yes:hover{background:var(--red-dark);}
+    .top-banner{background:var(--text-dark);color:var(--white);text-align:center;font-size:13px;font-weight:500;padding:10px 20px;}
+    .top-banner a{color:var(--mid-gray);text-decoration:underline;margin-left:4px;}
+    nav{position:sticky;top:0;z-index:100;background:var(--white);border-bottom:1px solid var(--border);padding:0 48px;display:flex;align-items:center;justify-content:space-between;height:68px;}
+    .nav-logo{display:flex;align-items:center;gap:10px;}
+    .logo-mark{width:40px;height:40px;display:flex;align-items:center;justify-content:center;}
+    .logo-mark img{width:40px;height:40px;object-fit:contain;}
+    .logo-text{font-family:'DM Serif Display',serif;font-size:20px;letter-spacing:-0.02em;color:var(--text-dark);}
+    .logo-text span{color:var(--red);}
+    .nav-links{display:flex;gap:36px;list-style:none;font-size:14px;font-weight:500;color:var(--text-mid);}
+    .nav-links a:hover{color:var(--red);}
+    .nav-cart{background:var(--red);color:white;font-size:13px;font-weight:600;padding:9px 20px;border-radius:4px;}
+    .nav-hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:36px;height:36px;cursor:pointer;background:none;border:none;padding:4px;}
+    .nav-hamburger span{display:block;height:2px;background:var(--text-dark);border-radius:2px;transition:all 0.25s;}
+    .nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .nav-hamburger.open span:nth-child(2){opacity:0;}
+    .nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+    .mobile-menu{display:none;position:fixed;top:68px;left:0;right:0;background:var(--white);border-bottom:1px solid var(--border);z-index:99;padding:24px 24px 32px;flex-direction:column;}
+    .mobile-menu.open{display:flex;}
+    .mobile-menu li{list-style:none;border-bottom:1px solid var(--border);}
+    .mobile-menu li a{display:block;padding:16px 0;font-size:16px;font-weight:500;}
+    .mobile-menu .mobile-cart{display:block;margin-top:20px;background:var(--red);color:white;text-align:center;padding:14px;border-radius:4px;font-weight:600;}
+    .how-it-works{background:var(--text-dark);padding:36px 72px;display:flex;gap:0;}
+    .how-step{flex:1;display:flex;gap:14px;align-items:flex-start;padding-right:32px;border-right:1px solid rgba(255,255,255,0.1);margin-right:32px;}
+    .how-step:last-child{border-right:none;margin-right:0;padding-right:0;}
+    .step-num{width:30px;height:30px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:white;flex-shrink:0;}
+    .step-text h4{font-size:13px;font-weight:600;color:white;margin-bottom:2px;}
+    .step-text p{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.4;}
+    .form-layout{display:grid;grid-template-columns:1fr 380px;gap:48px;padding:56px 72px;align-items:start;}
+    .order-form h2{font-family:'DM Serif Display',serif;font-size:32px;margin-bottom:6px;}
+    .form-sub{font-size:15px;color:var(--text-light);margin-bottom:36px;}
+    .form-section{margin-bottom:32px;}
+    .form-section-title{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--red);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+    .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+    .form-group label{font-size:13px;font-weight:600;}
+    .form-group input,.form-group select,.form-group textarea{padding:11px 14px;border:1px solid var(--border);border-radius:4px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text-dark);outline:none;background:var(--white);transition:border-color 0.2s;width:100%;}
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--red);}
+    .form-group textarea{resize:vertical;min-height:90px;}
+    .form-group select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a857e' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
+    .form-group .hint{font-size:12px;color:var(--text-light);}
+    .payment-notice{background:var(--red-light);border:1px solid #f0c0bb;border-radius:8px;padding:18px 22px;margin-bottom:20px;}
+    .payment-notice h4{font-size:14px;font-weight:600;color:var(--red-dark);margin-bottom:4px;}
+    .payment-notice p{font-size:13px;color:var(--red-dark);line-height:1.6;margin:0;}
+    .ruo-check{display:flex;gap:12px;align-items:flex-start;padding:16px;background:var(--off-white);border:1px solid var(--border);border-radius:6px;margin-bottom:20px;}
+    .ruo-check input[type="checkbox"]{width:18px;height:18px;flex-shrink:0;margin-top:2px;accent-color:var(--red);cursor:pointer;}
+    .ruo-check label{font-size:13px;color:var(--text-mid);line-height:1.6;cursor:pointer;}
+    .ruo-check label a{color:var(--red);text-decoration:underline;}
+    .submit-btn{width:100%;padding:16px;background:var(--red);color:white;border:none;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer;transition:background 0.2s;}
+    .submit-btn:hover{background:var(--red-dark);}
+    .submit-btn:disabled{background:var(--mid-gray);cursor:not-allowed;}
+    .submit-note{font-size:12px;color:var(--text-light);text-align:center;margin-top:10px;}
+    #success-message{display:none;text-align:center;padding:64px 32px;}
+    #success-message .success-icon{width:64px;height:64px;background:var(--red-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;}
+    #success-message .success-icon svg{width:32px;height:32px;fill:var(--red);}
+    #success-message h2{font-family:'DM Serif Display',serif;font-size:32px;margin-bottom:12px;}
+    #success-message p{font-size:16px;color:var(--text-mid);max-width:480px;margin:0 auto 24px;line-height:1.7;}
+    #success-message a{display:inline-flex;align-items:center;gap:8px;background:var(--red);color:white;padding:14px 28px;border-radius:4px;font-weight:600;font-size:14px;}
+    .order-sidebar{position:sticky;top:88px;}
+    .cart-review{background:var(--off-white);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:20px;}
+    .cart-review h3{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:16px;}
+    .cr-item{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+    .cr-item:last-child{border-bottom:none;}
+    .cr-name{font-size:14px;font-weight:500;}
+    .cr-dose{font-size:12px;color:var(--text-light);}
+    .cr-price{font-size:14px;font-weight:600;white-space:nowrap;}
+    .cart-edit{display:block;text-align:center;font-size:13px;color:var(--red);text-decoration:underline;margin-top:12px;}
+    .totals-card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:24px;}
+    .totals-card h3{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:16px;}
+    .t-row{display:flex;justify-content:space-between;font-size:14px;color:var(--text-mid);margin-bottom:10px;}
+    .t-row.disc{color:#27ae60;}
+    .t-divider{border:none;border-top:1px solid var(--border);margin:14px 0;}
+    .t-total{display:flex;justify-content:space-between;font-size:18px;font-weight:600;}
+    .t-note{font-size:11px;color:var(--text-light);margin-top:8px;}
+    .pm-card{background:var(--text-dark);border-radius:8px;padding:24px;margin-top:20px;}
+    .pm-card h3{font-family:'DM Serif Display',serif;font-size:18px;color:white;margin-bottom:14px;}
+    .pm-item{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08);}
+    .pm-item:last-child{border-bottom:none;}
+    .pm-dot{width:7px;height:7px;background:var(--red);border-radius:50%;flex-shrink:0;}
+    .pm-item span{font-size:13px;color:rgba(255,255,255,0.6);}
+    footer{background:var(--text-dark);color:white;padding:72px 72px 40px;}
+    .footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:60px;padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,0.1);margin-bottom:40px;}
+    .footer-tagline{font-size:14px;color:rgba(255,255,255,0.5);line-height:1.7;margin:16px 0 24px;}
+    .footer-newsletter{display:flex;gap:8px;}
+    .footer-newsletter input{flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:4px;padding:10px 14px;font-size:13px;color:white;outline:none;}
+    .footer-newsletter input::placeholder{color:rgba(255,255,255,0.3);}
+    .footer-newsletter button{background:var(--red);color:white;border:none;border-radius:4px;padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
+    .footer-col h4{font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:20px;}
+    .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:12px;}
+    .footer-col ul li a{font-size:14px;color:rgba(255,255,255,0.65);transition:color 0.2s;}
+    .footer-col ul li a:hover{color:white;}
+    .footer-disclaimer{font-size:12px;color:rgba(255,255,255,0.25);line-height:1.6;margin-bottom:32px;padding:20px;border:1px solid rgba(255,255,255,0.08);border-radius:6px;}
+    .footer-bottom{display:flex;justify-content:space-between;font-size:13px;color:rgba(255,255,255,0.3);}
+    @media(max-width:1024px){.form-layout{grid-template-columns:1fr;}.order-sidebar{position:static;}}
+    @media(max-width:900px){
+      nav{padding:0 24px;}.nav-links,.nav-cart{display:none;}.nav-hamburger{display:flex;}
+      .how-it-works{flex-direction:column;padding:28px 24px;gap:16px;}
+      .how-step{border-right:none;border-bottom:1px solid rgba(255,255,255,0.1);padding-right:0;padding-bottom:16px;margin-right:0;}
+      .how-step:last-child{border-bottom:none;padding-bottom:0;}
+      .form-layout{padding:36px 24px;gap:28px;}
+      footer{padding:56px 24px 32px;}.footer-top{grid-template-columns:1fr 1fr;gap:40px;}
+      .footer-bottom{flex-direction:column;gap:8px;text-align:center;}
+    }
+    @media(max-width:540px){
+      nav{padding:0 16px;}.form-layout{padding:28px 16px;}.form-row{grid-template-columns:1fr;}
+      .age-box{padding:36px 24px;}footer{padding:48px 16px 32px;}
+      .footer-top{grid-template-columns:1fr;gap:32px;}.footer-newsletter{flex-direction:column;}
+    }
+  </style>
+</head>
+<body>
+  <div id="age-overlay">
+    <div class="age-box">
+      <div class="age-logo-mark"><img src="logo.png" alt="Red Hand Research" style="width:72px;height:72px;object-fit:contain;"/></div>
+      <h2>Are you over 21?</h2>
+      <p>I confirm that I am 21 years of age or older and understand that certain products on this site are intended for <strong>research use only</strong>, as defined by the FDA. I agree to the <a href="terms-of-service.html">terms and conditions</a> of this site.</p>
+      <div class="age-buttons"><button class="age-btn-no" onclick="denyAge()">No</button><button class="age-btn-yes" onclick="confirmAge()">Yes, Enter</button></div>
+    </div>
+  </div>
+  <div class="top-banner">Bulk Pricing Available on 2+ Units &nbsp;|&nbsp;<a href="products.html">View all products and pricing</a></div>
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <div class="logo-mark"><img src="logo.png" alt="Red Hand Research Logo"/></div>
+      <span class="logo-text">Red <span>Hand</span> Research</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="products.html">Products</a></li>
+      <li><a href="research.html">Research</a></li>
+      <li><a href="faqs.html">FAQs</a></li>
+      <li><a href="certificates.html">Certificates</a></li>
+    </ul>
+    <a href="cart.html" class="nav-cart cart-count">Cart (0)</a>
+    <button class="nav-hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+  <ul class="mobile-menu" id="mobile-menu">
+    <li><a href="products.html" onclick="toggleMenu()">Products</a></li>
+    <li><a href="research.html" onclick="toggleMenu()">Research</a></li>
+    <li><a href="faqs.html" onclick="toggleMenu()">FAQs</a></li>
+    <li><a href="certificates.html" onclick="toggleMenu()">Certificates</a></li>
+    <a href="cart.html" class="mobile-cart cart-count">Cart (0)</a>
+  </ul>
+  <div class="how-it-works">
+    <div class="how-step"><div class="step-num">1</div><div class="step-text"><h4>Submit Order</h4><p>Fill out your details below.</p></div></div>
+    <div class="how-step"><div class="step-num">2</div><div class="step-text"><h4>We Reply Fast</h4><p>Email with total &amp; payment info within hours.</p></div></div>
+    <div class="how-step"><div class="step-num">3</div><div class="step-text"><h4>Send Payment</h4><p></p></div></div>
+    <div class="how-step"><div class="step-num">4</div><div class="step-text"><h4>Ships Same Day</h4><p>Confirmed before 3 PM CT ships today.</p></div></div>
+  </div>
+  <div class="form-layout">
+    <div class="order-form">
+      <h2>Complete Your Order</h2>
+      <p class="form-sub">Your cart is shown on the right. Fill in your details and submit — we'll email payment instructions within a few hours.</p>
+      <div id="form-wrapper">
+        <form id="order-form" action="https://formspree.io/f/mgonglbq" method="POST">
+          <input type="hidden" name="cart_contents" id="h-cart"/>
+          <input type="hidden" name="promo_code" id="h-promo"/>
+          <input type="hidden" name="order_total" id="h-total"/>
+          <div class="form-section">
+            <div class="form-section-title">Contact Information</div>
+            <div class="form-row">
+              <div class="form-group"><label>First Name *</label><input type="text" name="first_name" required placeholder="First name"/></div>
+              <div class="form-group"><label>Last Name *</label><input type="text" name="last_name" required placeholder="Last name"/></div>
+            </div>
+            <div class="form-group"><label>Email Address *</label><input type="email" name="email" required placeholder="your@email.com"/><span class="hint">Order confirmation and payment instructions sent here.</span></div>
+            <div class="form-group" style="margin-bottom:4px;">
+              <label style="display:flex;align-items:flex-start;gap:10px;font-weight:400;cursor:pointer;">
+                <input type="checkbox" name="newsletter_signup" value="yes" style="width:16px;height:16px;flex-shrink:0;margin-top:2px;accent-color:var(--red);cursor:pointer;"/>
+                <span style="font-size:13px;color:var(--text-mid);line-height:1.5;">Subscribe me to the Red Hand Research newsletter — product updates, new compounds, and research articles. No spam, unsubscribe anytime.</span>
+              </label>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">Shipping Address</div>
+            <div class="form-group"><label>Street Address *</label><input type="text" name="address" required placeholder="123 Main St"/></div>
+            <div class="form-group"><label>Apartment / Suite</label><input type="text" name="address2" placeholder="Optional"/></div>
+            <div class="form-row">
+              <div class="form-group"><label>City *</label><input type="text" name="city" required placeholder="City"/></div>
+              <div class="form-group"><label>State *</label>
+                <select name="state" required><option value="">Select state</option><option>AL</option><option>AK</option><option>AZ</option><option>AR</option><option>CA</option><option>CO</option><option>CT</option><option>DE</option><option>FL</option><option>GA</option><option>HI</option><option>ID</option><option>IL</option><option>IN</option><option>IA</option><option>KS</option><option>KY</option><option>LA</option><option>ME</option><option>MD</option><option>MA</option><option>MI</option><option>MN</option><option>MS</option><option>MO</option><option>MT</option><option>NE</option><option>NV</option><option>NH</option><option>NJ</option><option>NM</option><option>NY</option><option>NC</option><option>ND</option><option>OH</option><option>OK</option><option>OR</option><option>PA</option><option>RI</option><option>SC</option><option>SD</option><option>TN</option><option>TX</option><option>UT</option><option>VT</option><option>VA</option><option>WA</option><option>WV</option><option>WI</option><option>WY</option></select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>ZIP Code *</label><input type="text" name="zip" required placeholder="ZIP" maxlength="10"/></div>
+<div></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">Promo Code</div>
+            <div class="form-group">
+              <div style="display:flex;gap:8px;">
+                <input type="text" name="promo_code_entry" id="promo-entry" placeholder="Enter promo code (optional)" style="flex:1;" oninput="this.value=this.value.toUpperCase()"/>
+                <button type="button" onclick="applyOrderPromo()" style="padding:11px 18px;background:var(--text-dark);color:white;border:none;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;">Apply</button>
+              </div>
+              <span class="hint" id="promo-order-msg"></span>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">Shipping Method</div>
+            <div class="form-group">
+              <div id="shipping-display" style="padding:12px 14px;background:var(--off-white);border:1px solid var(--border);border-radius:4px;font-size:14px;color:var(--text-dark);"></div>
+              <span class="hint">Selected in cart. <a href="cart.html" style="color:var(--red);">Change →</a></span>
+              <input type="hidden" name="shipping_method" id="h-shipping"/>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">Preferred Payment Method</div>
+            <div class="form-group">
+              <select name="payment_method" required><option value="">Select payment method</option><option>Zelle</option>
+                <option>Cash App</option>
+                <option>Venmo</option><option>Other — I'll discuss with you</option></select>
+              <span class="hint">Payment details sent after order confirmation. Nothing charged now.</span>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-title">Notes</div>
+            <div class="form-group"><textarea name="notes" placeholder="Special requests, questions, or anything else..."></textarea></div>
+          </div>
+          <div class="payment-notice"><h4>No Payment Required Now — We Move Fast</h4><p>Submit your order and we'll personally reach out within a few hours with your exact total and payment details. Once payment is confirmed, we get your order out the door same day — no delays, no runaround. We take pride in getting your compounds to you quickly and we treat every order like it matters, because it does.</p></div>
+          <div class="ruo-check">
+            <input type="checkbox" id="ruo-agree" name="ruo_agreement" value="agreed" required/>
+            <label for="ruo-agree">I confirm I am 21+ and all products will be used strictly for lawful, in-vitro research purposes only. I agree to the <a href="terms-of-service.html" target="_blank">Terms of Service</a> and <a href="privacy-policy.html" target="_blank">Privacy Policy</a>.</label>
+          </div>
+          <button type="submit" class="submit-btn" id="submit-btn">Submit Order Request →</button>
+          <p class="submit-note">We'll reply to your email within a few hours — fast.</p>
+        </form>
+      </div>
+      <div id="success-message">
+        <div class="success-icon"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
+        <h2>Order Request Received</h2>
+        <p>We'll reply to your email within a few hours with your total and payment instructions. Orders confirmed before 3:00 PM CT ship same day.</p>
+        <a href="products.html">← Back to Products</a>
+      </div>
+    </div>
+    <div class="order-sidebar">
+      <div class="cart-review">
+        <h3>Your Order</h3>
+        <div id="cart-review-items"><p style="font-size:14px;color:var(--text-light);">Loading...</p></div>
+        <a href="cart.html" class="cart-edit">← Edit cart</a>
+      </div>
+      <div class="totals-card">
+        <h3>Summary</h3>
+        <div class="t-row"><span>Subtotal</span><span id="o-subtotal">—</span></div>
+        <div class="t-row disc" id="o-bulk-row" style="display:none;"><span id="o-bulk-label">Bulk Discount</span><span id="o-bulk-amt">—</span></div>
+        <div class="t-row disc" id="o-disc-row" style="display:none;"><span id="o-disc-label">Promo</span><span id="o-disc-amt">—</span></div>
+        <div class="t-row"><span>Shipping</span><span>At confirmation</span></div>
+        <hr class="t-divider"/>
+        <div class="t-total"><span>Est. Total</span><span id="o-total">—</span></div>
+        <p class="t-note">Final total confirmed before payment.</p>
+      </div>
+      <div class="pm-card">
+        <h3>We Accept</h3>
+        <div class="pm-item"><div class="pm-dot"></div><span>Zelle</span></div>
+        <div class="pm-item"><div class="pm-dot"></div><span>Cash App</span></div>
+        <div class="pm-item"><div class="pm-dot"></div><span>Venmo</span></div>
+        
+        
+        
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-top">
+      <div>
+        <a href="index.html" style="font-family:'DM Serif Display',serif;font-size:20px;color:white;">Red <span style="color:var(--red)">Hand</span> Research</a>
+        <p class="footer-tagline">Empowering researchers with high-purity, rigorously tested analytical standards built for reproducibility and scientific integrity.</p>
+        <div class="footer-newsletter"><input type="email" placeholder="Your email address"/><button>Subscribe</button></div>
+      </div>
+      <div class="footer-col"><h4>Quick Menu</h4><ul><li><a href="index.html">Home</a></li><li><a href="research.html">Research</a></li><li><a href="products.html">Products</a></li><li><a href="about.html">About</a></li></ul></div>
+      <div class="footer-col"><h4>Information</h4><ul><li><a href="certificates.html">Testing &amp; Help Center</a></li><li><a href="about.html">Our Company</a></li><li><a href="faqs.html">Industry Discounts</a></li><li><a href="mailto:team@redhandresearch.com">Contact</a></li></ul></div>
+      <div class="footer-col"><h4>Legal</h4><ul><li><a href="privacy-policy.html">Privacy Policy</a></li><li><a href="shipping-policy.html">Shipping Policy</a></li><li><a href="terms-of-service.html">Terms of Service</a></li><li><a href="return-policy.html">Return Policy</a></li></ul></div>
+    </div>
+    <div class="footer-disclaimer"><strong style="color:rgba(255,255,255,0.4);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;">Disclaimer</strong><br/>All polypeptide sequences, amino acid derivatives, and analogs available on this site are strictly designated for Research Use Only. These compounds are synthesized and supplied exclusively for laboratory-based analytical, proteomic, and scientific inquiry by qualified professionals. They are not intended for human or veterinary administration, and no diagnostic, therapeutic, or clinical application is implied, warranted, or permitted.</div>
+    <div style="display:flex;justify-content:center;gap:12px;padding:24px 0;border-top:1px solid rgba(255,255,255,0.08);margin-bottom:24px;">
+      <a href="https://x.com/redhandresearch" target="_blank" rel="noopener" style="width:38px;height:38px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;" aria-label="X">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="rgba(255,255,255,0.7)"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.259 5.63L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>
+      </a>
+      <a href="https://facebook.com/redhandresearch" target="_blank" rel="noopener" style="width:38px;height:38px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;" aria-label="Facebook">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="rgba(255,255,255,0.7)"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      </a>
+    </div>
+    <div class="footer-bottom"><span>© 2026 Red Hand Research. All Rights Reserved.</span><span>For In-Vitro Research Use Only</span></div>
+  </footer>
+  <script>
+    if(!sessionStorage.getItem('ageVerified')){document.body.style.overflow='hidden';}
+    else{document.getElementById('age-overlay').classList.add('hidden');}
+    function confirmAge(){sessionStorage.setItem('ageVerified','true');document.getElementById('age-overlay').classList.add('hidden');document.body.style.overflow='';}
+    function denyAge(){window.location.href='https://www.google.com';}
+    function toggleMenu(){document.getElementById('hamburger').classList.toggle('open');document.getElementById('mobile-menu').classList.toggle('open');}
+
+    const PROMO_CODES = {
+      'HUNTER10': 10,
+      'JESKA10':  10,
+      'JOSH10':   10,
+      'BRE10':    10,
+      'MOOSE20':  20,
+      'MOOSE10':  10,
+      'BRAND10':  10,
+      'RACHEL10': 10,
+    };
+
+    function applyOrderPromo() {
+      var input = document.getElementById('promo-entry');
+      var msg = document.getElementById('promo-order-msg');
+      var code = input.value.trim().toUpperCase();
+      if (!code) { msg.textContent = 'Please enter a code.'; msg.style.color = 'var(--red)'; return; }
+      if (PROMO_CODES[code] !== undefined) {
+        var pct = PROMO_CODES[code];
+        localStorage.setItem('rhr_promo', JSON.stringify({ code: code, pct: pct }));
+        msg.textContent = '\u2713 Code applied: ' + pct + '% off!';
+        msg.style.color = '#27ae60';
+        loadCart();
+      } else {
+        localStorage.removeItem('rhr_promo');
+        msg.textContent = 'Invalid or expired code.';
+        msg.style.color = 'var(--red)';
+        loadCart();
+      }
+    }
+
+    function getCart(){ try{ return JSON.parse(localStorage.getItem('rhr_cart')||'[]'); } catch(e){ return []; } }
+    function getPromo(){ try{ return JSON.parse(localStorage.getItem('rhr_promo')||'null'); } catch(e){ return null; } }
+    function updateCartCount(){
+      var c = getCart().reduce(function(s,i){ return s+i.qty; }, 0);
+      document.querySelectorAll('.cart-count').forEach(function(el){ el.textContent='Cart ('+c+')'; });
+    }
+
+    // Bundle-aware line total (mirrors cart.html logic)
+    function itemEffectiveTotal(item) {
+      if (item.bundlePrice && item.qty >= 2) {
+        var extraQty = item.qty - 2;
+        return item.bundlePrice + extraQty * Math.max(0, item.price - 5);
+      }
+      return item.price * item.qty;
+    }
+    function itemBundleSavings(item) {
+      if (item.bundlePrice && item.qty >= 2) {
+        return (item.price * item.qty) - itemEffectiveTotal(item);
+      }
+      return 0;
+    }
+
+    function loadCart(){
+      var cart = getCart();
+      var promo = getPromo();
+      var container = document.getElementById('cart-review-items');
+
+      // Pre-fill promo input if saved from cart
+      if (promo) {
+        var promoEntry = document.getElementById('promo-entry');
+        var promoMsg = document.getElementById('promo-order-msg');
+        if (promoEntry && !promoEntry.value) {
+          promoEntry.value = promo.code;
+          promoMsg.textContent = '\u2713 Code applied: ' + promo.pct + '% off!';
+          promoMsg.style.color = '#27ae60';
+        }
+      }
+
+      if (cart.length === 0) {
+        container.innerHTML = '<p style="font-size:14px;color:var(--text-light);">Your cart is empty. <a href="products.html" style="color:var(--red);">Add products \u2192</a></p>';
+        document.getElementById('submit-btn').disabled = true;
+        document.getElementById('o-subtotal').textContent = '$0.00';
+        document.getElementById('o-total').textContent = '$0.00';
+        return;
+      }
+
+      // Render cart review items with bundle-aware line prices
+      container.innerHTML = cart.map(function(i) {
+        var lineTotal = itemEffectiveTotal(i);
+        var savings = itemBundleSavings(i);
+        var savingsNote = savings > 0 ? ' <span style="color:#27ae60;font-size:11px;">(bundle \u2212$' + savings.toFixed(2) + ')</span>' : '';
+        return '<div class="cr-item"><div><div class="cr-name">' + i.name + savingsNote + '</div><div class="cr-dose">' + i.dose + ' \u00d7 ' + i.qty + '</div></div><div class="cr-price">$' + lineTotal.toFixed(2) + '</div></div>';
+      }).join('');
+
+      // Subtotal using bundle-adjusted prices
+      var sub = cart.reduce(function(s,i){ return s + itemEffectiveTotal(i); }, 0);
+      var bundleSavings = cart.reduce(function(s,i){ return s + itemBundleSavings(i); }, 0);
+
+      // Promo on post-bundle subtotal
+      var promoAmt = promo ? sub * (promo.pct / 100) : 0;
+      var afterAll = sub - promoAmt;
+
+      // Shipping
+      var shipData = (function(){ try{ return JSON.parse(localStorage.getItem('rhr_shipping')||'null'); } catch(e){ return null; } })();
+      var SHIP_RATES = { standard:10, expedited:25, overnight:50, pickup:0 };
+      var shipKey = shipData ? shipData.key : 'standard';
+      var shipLabel = shipData ? shipData.label : 'Standard ($10.00)';
+      var shipCost = (sub >= 150 && shipKey !== 'pickup') ? 0 : (SHIP_RATES[shipKey] || 10);
+      var finalTotal = afterAll + shipCost;
+
+      document.getElementById('o-subtotal').textContent = '$' + sub.toFixed(2);
+      document.getElementById('o-total').textContent = '$' + finalTotal.toFixed(2);
+
+      // Bundle savings row
+      var bulkRow = document.getElementById('o-bulk-row');
+      if (bundleSavings > 0) {
+        bulkRow.style.display = 'flex';
+        document.getElementById('o-bulk-label').textContent = 'Bundle savings';
+        document.getElementById('o-bulk-amt').textContent = '-$' + bundleSavings.toFixed(2);
+      } else {
+        bulkRow.style.display = 'none';
+      }
+
+      // Promo row
+      var discRow = document.getElementById('o-disc-row');
+      var discLabel = document.getElementById('o-disc-label');
+      var discAmt = document.getElementById('o-disc-amt');
+      if (promo) {
+        discRow.style.display = 'flex';
+        discLabel.textContent = 'Promo (' + promo.code + ' \u2212' + promo.pct + '%)';
+        discAmt.textContent = '-$' + promoAmt.toFixed(2);
+      } else {
+        discRow.style.display = 'none';
+      }
+
+      // Shipping display
+      var shipDisplay = document.getElementById('shipping-display');
+      if (shipDisplay) shipDisplay.textContent = shipLabel;
+      var hShip = document.getElementById('h-shipping');
+      if (hShip) hShip.value = shipLabel;
+
+      // Hidden form fields for Formspree email
+      var cartStr = cart.map(function(i){
+        var lt = itemEffectiveTotal(i);
+        var sv = itemBundleSavings(i);
+        return i.name + ' (' + i.dose + ') x' + i.qty + ' = $' + lt.toFixed(2) + (sv > 0 ? ' [bundle -$' + sv.toFixed(2) + ']' : '');
+      }).join('\n');
+      var promoStr = promo ? promo.code + ' (' + promo.pct + '% off, -$' + promoAmt.toFixed(2) + ')' : 'None';
+      var bundleStr = bundleSavings > 0 ? 'Bundle savings: -$' + bundleSavings.toFixed(2) : 'None';
+      document.getElementById('h-cart').value = cartStr;
+      document.getElementById('h-promo').value = 'Promo: ' + promoStr + ' | ' + bundleStr;
+      document.getElementById('h-total').value = '$' + finalTotal.toFixed(2) + ' (incl. ' + shipLabel + ')';
+    }
+
+    document.addEventListener('DOMContentLoaded', function(){ updateCartCount(); loadCart(); });
+
+    document.getElementById('order-form').addEventListener('submit', async function(e){
+      e.preventDefault();
+      var btn = document.getElementById('submit-btn');
+      btn.disabled = true; btn.textContent = 'Submitting...';
+      try {
+        var r = await fetch(this.action, { method: 'POST', body: new FormData(this), headers: { 'Accept': 'application/json' } });
+        if (r.ok) {
+          localStorage.removeItem('rhr_cart');
+          localStorage.removeItem('rhr_promo');
+          localStorage.removeItem('rhr_bulk');
+          localStorage.removeItem('rhr_shipping');
+          document.getElementById('form-wrapper').style.display = 'none';
+          document.getElementById('success-message').style.display = 'block';
+        } else {
+          btn.disabled = false; btn.textContent = 'Submit Order Request \u2192';
+          alert('Problem submitting. Please email team@redhandresearch.com');
+        }
+      } catch(err) {
+        btn.disabled = false; btn.textContent = 'Submit Order Request \u2192';
+        alert('Problem submitting. Please email team@redhandresearch.com');
+      }
+    });
+  </script>
+</body>
+</html>

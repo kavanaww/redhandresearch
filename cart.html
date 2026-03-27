@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cart — Red Hand Research</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --white:#ffffff; --off-white:#f8f7f5; --light-gray:#f0eeeb; --mid-gray:#c8c4be; --text-dark:#1a1814; --text-mid:#4a4540; --text-light:#8a857e; --red:#c0392b; --red-dark:#96281b; --red-light:#f9ecea; --border:#e8e4df; }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--text-dark); font-size:16px; line-height:1.6; }
+    a { text-decoration:none; color:inherit; }
+    #age-overlay { position:fixed; inset:0; z-index:9999; background:rgba(26,24,20,0.94); display:flex; align-items:center; justify-content:center; backdrop-filter:blur(8px); }
+    #age-overlay.hidden { display:none; }
+    .age-box { background:var(--white); border-radius:12px; padding:52px 48px; max-width:480px; width:90%; text-align:center; box-shadow:0 32px 80px rgba(0,0,0,0.5); }
+    .age-logo-mark { width:72px; height:72px; display:flex; align-items:center; justify-content:center; margin:0 auto 24px; }
+    .age-box h2 { font-family:'DM Serif Display',serif; font-size:30px; margin-bottom:14px; }
+    .age-box p { font-size:14px; color:var(--text-light); line-height:1.75; margin-bottom:32px; }
+    .age-box p a { color:var(--red); text-decoration:underline; }
+    .age-buttons { display:flex; gap:12px; }
+    .age-btn-no { flex:1; padding:15px; border:1px solid var(--border); border-radius:4px; background:white; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; color:var(--text-mid); cursor:pointer; }
+    .age-btn-yes { flex:1; padding:15px; border:none; border-radius:4px; background:var(--red); font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; color:white; cursor:pointer; }
+    .age-btn-yes:hover { background:var(--red-dark); }
+    .top-banner { background:var(--text-dark); color:var(--white); text-align:center; font-size:13px; font-weight:500; padding:10px 20px; }
+    .top-banner a { color:var(--mid-gray); text-decoration:underline; margin-left:4px; }
+    nav { position:sticky; top:0; z-index:100; background:var(--white); border-bottom:1px solid var(--border); padding:0 48px; display:flex; align-items:center; justify-content:space-between; height:68px; }
+    .nav-logo { display:flex; align-items:center; gap:10px; }
+    .logo-mark { width:40px; height:40px; display:flex; align-items:center; justify-content:center; }
+    .logo-mark img { width:40px; height:40px; object-fit:contain; }
+    .logo-text { font-family:'DM Serif Display',serif; font-size:20px; letter-spacing:-0.02em; color:var(--text-dark); }
+    .logo-text span { color:var(--red); }
+    .nav-links { display:flex; gap:36px; list-style:none; font-size:14px; font-weight:500; color:var(--text-mid); }
+    .nav-links a:hover { color:var(--red); }
+    .nav-cart { background:var(--red); color:white; font-size:13px; font-weight:600; padding:9px 20px; border-radius:4px; transition:background 0.2s; }
+    .nav-cart:hover { background:var(--red-dark); }
+    .nav-hamburger { display:none; flex-direction:column; justify-content:center; gap:5px; width:36px; height:36px; cursor:pointer; background:none; border:none; padding:4px; }
+    .nav-hamburger span { display:block; height:2px; background:var(--text-dark); border-radius:2px; transition:all 0.25s; }
+    .nav-hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity:0; }
+    .nav-hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+    .mobile-menu { display:none; position:fixed; top:68px; left:0; right:0; background:var(--white); border-bottom:1px solid var(--border); z-index:99; padding:24px 24px 32px; flex-direction:column; }
+    .mobile-menu.open { display:flex; }
+    .mobile-menu li { list-style:none; border-bottom:1px solid var(--border); }
+    .mobile-menu li a { display:block; padding:16px 0; font-size:16px; font-weight:500; }
+    .mobile-menu .mobile-cart { display:block; margin-top:20px; background:var(--red); color:white; text-align:center; padding:14px; border-radius:4px; font-weight:600; }
+
+    /* PAGE */
+    .page-hero { background:var(--off-white); border-bottom:1px solid var(--border); padding:56px 72px 48px; }
+    .section-label { font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--red); margin-bottom:16px; }
+    .page-hero h1 { font-family:'DM Serif Display',serif; font-size:44px; line-height:1.1; letter-spacing:-0.02em; }
+    .page-hero h1 em { font-style:italic; color:var(--red); }
+
+    .cart-layout { display:grid; grid-template-columns:1fr 380px; gap:48px; padding:56px 72px; align-items:start; }
+
+    /* CART ITEMS */
+    .cart-items-section h2 { font-family:'DM Serif Display',serif; font-size:28px; margin-bottom:28px; }
+    .cart-empty { text-align:center; padding:80px 24px; }
+    .cart-empty svg { width:56px; height:56px; fill:var(--mid-gray); margin:0 auto 20px; }
+    .cart-empty h3 { font-family:'DM Serif Display',serif; font-size:26px; margin-bottom:10px; }
+    .cart-empty p { font-size:15px; color:var(--text-light); margin-bottom:28px; }
+    .cart-empty a { display:inline-flex; align-items:center; gap:8px; background:var(--red); color:white; padding:13px 26px; border-radius:4px; font-weight:600; font-size:14px; }
+
+    .cart-item { display:grid; grid-template-columns:1fr auto auto; gap:20px; align-items:center; padding:20px 0; border-bottom:1px solid var(--border); }
+    .cart-item:first-child { border-top:1px solid var(--border); }
+    .cart-item-info h4 { font-size:16px; font-weight:600; margin-bottom:4px; }
+    .cart-item-dose { font-size:13px; color:var(--text-light); }
+    .cart-item-unit { font-size:13px; color:var(--text-light); margin-top:2px; }
+    .qty-control { display:flex; align-items:center; gap:0; border:1px solid var(--border); border-radius:4px; overflow:hidden; }
+    .qty-btn { width:34px; height:34px; border:none; background:var(--off-white); cursor:pointer; font-size:18px; font-weight:300; color:var(--text-mid); transition:background 0.2s; display:flex; align-items:center; justify-content:center; }
+    .qty-btn:hover { background:var(--light-gray); }
+    .qty-num { width:40px; text-align:center; font-size:14px; font-weight:600; border:none; outline:none; background:white; }
+    .cart-item-price { font-size:18px; font-weight:600; text-align:right; white-space:nowrap; }
+    .remove-btn { display:block; font-size:12px; color:var(--text-light); cursor:pointer; text-decoration:underline; margin-top:4px; text-align:right; background:none; border:none; font-family:'DM Sans',sans-serif; }
+    .remove-btn:hover { color:var(--red); }
+
+    /* SIDEBAR */
+    .cart-sidebar { position:sticky; top:88px; }
+    .promo-section { background:var(--off-white); border:1px solid var(--border); border-radius:8px; padding:24px; margin-bottom:20px; }
+    .promo-section h3 { font-size:15px; font-weight:600; margin-bottom:14px; }
+    .promo-row { display:flex; gap:8px; }
+    .promo-input { flex:1; padding:10px 14px; border:1px solid var(--border); border-radius:4px; font-family:'DM Sans',sans-serif; font-size:14px; outline:none; transition:border-color 0.2s; }
+    .promo-input:focus { border-color:var(--red); }
+    .promo-btn { padding:10px 18px; background:var(--text-dark); color:white; border:none; border-radius:4px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; transition:background 0.2s; }
+    .promo-btn:hover { background:var(--red); }
+    .promo-msg { font-size:13px; margin-top:10px; display:none; }
+    .promo-msg.success { color:#27ae60; display:block; }
+    .promo-msg.error { color:var(--red); display:block; }
+
+    .order-summary { background:var(--white); border:1px solid var(--border); border-radius:8px; padding:28px; }
+    .order-summary h3 { font-family:'DM Serif Display',serif; font-size:22px; margin-bottom:20px; }
+    .summary-row { display:flex; justify-content:space-between; font-size:14px; color:var(--text-mid); margin-bottom:12px; }
+    .summary-row.discount { color:#27ae60; }
+    .summary-row.bulk-disc { color:#2980b9; }
+    .summary-row.free-ship { color:#27ae60; }
+    .shipping-options { margin-bottom:16px; }
+    .shipping-label { font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-light); margin-bottom:10px; }
+    .ship-opt { display:flex; align-items:flex-start; gap:10px; background:var(--off-white); border:1px solid var(--border); border-radius:6px; padding:12px 14px; margin-bottom:8px; cursor:pointer; transition:border-color 0.2s; }
+    .ship-opt:hover { border-color:var(--red); }
+    .ship-opt input { margin-top:2px; accent-color:var(--red); flex-shrink:0; }
+    .ship-opt-name { font-size:14px; font-weight:500; }
+    .ship-opt-sub { font-size:12px; color:var(--text-light); margin-top:1px; }
+    .bulk-badge { background:#eaf4fb; border:1px solid #aed6f1; border-radius:6px; padding:10px 14px; margin-bottom:14px; font-size:13px; color:#1a5276; display:none; }
+    .summary-divider { border:none; border-top:1px solid var(--border); margin:16px 0; }
+    .summary-total { display:flex; justify-content:space-between; font-size:18px; font-weight:600; margin-bottom:8px; }
+    .summary-note { font-size:12px; color:var(--text-light); margin-bottom:24px; }
+    .checkout-btn { display:block; width:100%; padding:16px; background:var(--red); color:white; border:none; border-radius:4px; font-family:'DM Sans',sans-serif; font-size:16px; font-weight:600; cursor:pointer; text-align:center; transition:background 0.2s; }
+    .checkout-btn:hover { background:var(--red-dark); }
+    .checkout-btn:disabled { background:var(--mid-gray); cursor:not-allowed; }
+    .continue-link { display:block; text-align:center; margin-top:14px; font-size:13px; color:var(--text-light); }
+    .continue-link a { color:var(--red); text-decoration:underline; }
+
+    /* FOOTER */
+    footer { background:var(--text-dark); color:white; padding:72px 72px 40px; }
+    .footer-top { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:60px; padding-bottom:48px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:40px; }
+    .footer-tagline { font-size:14px; color:rgba(255,255,255,0.5); line-height:1.7; margin:16px 0 24px; }
+    .footer-newsletter { display:flex; gap:8px; }
+    .footer-newsletter input { flex:1; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:10px 14px; font-size:13px; color:white; outline:none; }
+    .footer-newsletter input::placeholder { color:rgba(255,255,255,0.3); }
+    .footer-newsletter button { background:var(--red); color:white; border:none; border-radius:4px; padding:10px 18px; font-size:13px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; }
+    .footer-col h4 { font-size:13px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:20px; }
+    .footer-col ul { list-style:none; display:flex; flex-direction:column; gap:12px; }
+    .footer-col ul li a { font-size:14px; color:rgba(255,255,255,0.65); transition:color 0.2s; }
+    .footer-col ul li a:hover { color:white; }
+    .footer-disclaimer { font-size:12px; color:rgba(255,255,255,0.25); line-height:1.6; margin-bottom:32px; padding:20px; border:1px solid rgba(255,255,255,0.08); border-radius:6px; }
+    .footer-bottom { display:flex; justify-content:space-between; font-size:13px; color:rgba(255,255,255,0.3); }
+
+    @media (max-width:1024px) { .cart-layout { grid-template-columns:1fr; } .cart-sidebar { position:static; } }
+    @media (max-width:900px) {
+      nav { padding:0 24px; } .nav-links, .nav-cart { display:none; } .nav-hamburger { display:flex; }
+      .page-hero { padding:40px 24px 36px; } .page-hero h1 { font-size:34px; }
+      .cart-layout { padding:40px 24px; gap:32px; }
+      footer { padding:56px 24px 32px; } .footer-top { grid-template-columns:1fr 1fr; gap:40px; }
+      .footer-bottom { flex-direction:column; gap:8px; text-align:center; }
+    }
+    @media (max-width:540px) {
+      nav { padding:0 16px; } .page-hero { padding:32px 16px; } .page-hero h1 { font-size:28px; }
+      .cart-layout { padding:32px 16px; }
+      .cart-item { grid-template-columns:1fr auto; }
+      .cart-item-price { grid-column:2; grid-row:1; }
+      .age-box { padding:36px 24px; }
+      footer { padding:48px 16px 32px; } .footer-top { grid-template-columns:1fr; gap:32px; }
+      .footer-newsletter { flex-direction:column; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="age-overlay">
+    <div class="age-box">
+      <div class="age-logo-mark"><img src="logo.png" alt="Red Hand Research" style="width:72px;height:72px;object-fit:contain;"/></div>
+      <h2>Are you over 21?</h2>
+      <p>I confirm that I am 21 years of age or older and understand that certain products on this site are intended for <strong>research use only</strong>, as defined by the FDA. I agree to the <a href="terms-of-service.html">terms and conditions</a> of this site.</p>
+      <div class="age-buttons">
+        <button class="age-btn-no" onclick="denyAge()">No</button>
+        <button class="age-btn-yes" onclick="confirmAge()">Yes, Enter</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="top-banner">Bulk Pricing Available on 2+ Units &nbsp;|&nbsp;<a href="products.html">View all products and pricing</a></div>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <div class="logo-mark"><img src="logo.png" alt="Red Hand Research Logo"/></div>
+      <span class="logo-text">Red <span>Hand</span> Research</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="products.html">Products</a></li>
+      <li><a href="research.html">Research</a></li>
+      <li><a href="faqs.html">FAQs</a></li>
+      <li><a href="certificates.html">Certificates</a></li>
+    </ul>
+    <a href="cart.html" class="nav-cart cart-count">Cart (0)</a>
+    <button class="nav-hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+
+  <ul class="mobile-menu" id="mobile-menu">
+    <li><a href="products.html" onclick="toggleMenu()">Products</a></li>
+    <li><a href="research.html" onclick="toggleMenu()">Research</a></li>
+    <li><a href="faqs.html" onclick="toggleMenu()">FAQs</a></li>
+    <li><a href="certificates.html" onclick="toggleMenu()">Certificates</a></li>
+    <a href="cart.html" class="mobile-cart cart-count">Cart (0)</a>
+  </ul>
+
+  <div class="page-hero">
+    <div class="section-label">Checkout</div>
+    <h1>Your <em>Cart</em></h1>
+  </div>
+
+  <div class="cart-layout">
+
+    <!-- ITEMS -->
+    <div class="cart-items-section">
+      <h2>Items</h2>
+      <div id="cart-items-container"></div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="cart-sidebar">
+      <!-- UPSELL -->
+      <div style="background:var(--off-white);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:20px;">
+        <h3 style="font-size:15px;font-weight:600;margin-bottom:14px;color:var(--text-dark);">You May Also Need</h3>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;background:var(--white);border:1px solid var(--border);border-radius:6px;">
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--text-dark);">Hospira BAC Water</div>
+              <div style="font-size:11px;color:var(--text-light);margin-top:2px;">Required for reconstitution</div>
+            </div>
+            <button onclick="quickAdd('Hospira BAC Water','Standard',25)" style="background:var(--red);color:white;border:none;border-radius:4px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;">+ Add $25</button>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="promo-section">
+        <h3>Promo Code</h3>
+        <div class="promo-row">
+          <input class="promo-input" id="promo-input" type="text" placeholder="Enter code" autocomplete="off"/>
+          <button class="promo-btn" onclick="applyPromo()">Apply</button>
+        </div>
+        <p class="promo-msg" id="promo-msg"></p>
+      </div>
+
+      <div class="order-summary">
+        <h3>Order Summary</h3>
+
+        <div class="bulk-badge" id="bulk-badge"></div>
+
+        <div class="shipping-options">
+          <div class="shipping-label">Shipping Method</div>
+          <label class="ship-opt">
+            <input type="radio" name="ship" value="standard" checked onchange="updateTotals()"/>
+            <div><div class="ship-opt-name">Standard — <span id="std-price">$10.00</span></div><div class="ship-opt-sub">3–7 business days</div></div>
+          </label>
+          <label class="ship-opt">
+            <input type="radio" name="ship" value="expedited" onchange="updateTotals()"/>
+            <div><div class="ship-opt-name">Expedited — $25.00</div><div class="ship-opt-sub">2–3 business days</div></div>
+          </label>
+          <label class="ship-opt">
+            <input type="radio" name="ship" value="overnight" onchange="updateTotals()"/>
+            <div><div class="ship-opt-name">Overnight — $50.00</div><div class="ship-opt-sub">Next business day (order before 1 PM CT)</div></div>
+          </label>
+          <label class="ship-opt">
+            <input type="radio" name="ship" value="pickup" onchange="updateTotals()"/>
+            <div><div class="ship-opt-name">Local Pickup — <strong style="color:#27ae60;">FREE</strong></div><div class="ship-opt-sub">St. Louis, MO — pickup details sent after confirmation</div></div>
+          </label>
+        </div>
+
+        <div class="summary-row"><span>Subtotal</span><span id="subtotal">$0.00</span></div>
+        <div class="summary-row bulk-disc" id="bulk-row" style="display:none;"><span id="bulk-label">Bulk Discount</span><span id="bulk-amount"></span></div>
+        <div class="summary-row discount" id="discount-row" style="display:none;"><span id="discount-label">Promo</span><span id="discount-amount"></span></div>
+        <div class="summary-row" id="ship-row"><span>Shipping</span><span id="ship-cost">$10.00</span></div>
+        <div class="summary-row free-ship" id="freeship-row" style="display:none;"><span>Free Shipping Applied ✓</span><span id="freeship-saved"></span></div>
+        <hr class="summary-divider"/>
+        <div class="summary-total"><span>Estimated Total</span><span id="grand-total">$0.00</span></div>
+        <p class="summary-note">Final total confirmed via email. No payment collected here.</p>
+        <button class="checkout-btn" id="checkout-btn" onclick="proceedToOrder()">Proceed to Order →</button>
+        <p class="continue-link"><a href="products.html">← Continue Shopping</a></p>
+      </div>
+          <div class="payment-card" style="background:var(--text-dark);border-radius:8px;padding:24px;margin-top:20px;">
+        <h3 style="font-family:'DM Serif Display',serif;font-size:18px;color:white;margin-bottom:14px;">We Accept</h3>
+        <div style="display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08);"><div style="width:7px;height:7px;background:#c0392b;border-radius:50%;flex-shrink:0;"></div><span style="font-size:13px;color:rgba(255,255,255,0.6);">Zelle</span></div>
+        <div style="display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08);"><div style="width:7px;height:7px;background:#c0392b;border-radius:50%;flex-shrink:0;"></div><span style="font-size:13px;color:rgba(255,255,255,0.6);">Cash App</span></div>
+        <div style="display:flex;gap:10px;align-items:center;padding:8px 0;"><div style="width:7px;height:7px;background:#c0392b;border-radius:50%;flex-shrink:0;"></div><span style="font-size:13px;color:rgba(255,255,255,0.6);">Venmo</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="footer-top">
+      <div>
+        <a href="index.html" style="font-family:'DM Serif Display',serif;font-size:20px;color:white;">Red <span style="color:var(--red)">Hand</span> Research</a>
+        <p class="footer-tagline">Empowering researchers with high-purity, rigorously tested analytical standards built for reproducibility and scientific integrity.</p>
+        <div class="footer-newsletter"><input type="email" placeholder="Your email address"/><button>Subscribe</button></div>
+      </div>
+      <div class="footer-col"><h4>Quick Menu</h4><ul><li><a href="index.html">Home</a></li><li><a href="research.html">Research</a></li><li><a href="products.html">Products</a></li><li><a href="about.html">About</a></li></ul></div>
+      <div class="footer-col"><h4>Information</h4><ul><li><a href="certificates.html">Testing &amp; Help Center</a></li><li><a href="about.html">Our Company</a></li><li><a href="faqs.html">Industry Discounts</a></li><li><a href="mailto:team@redhandresearch.com">Contact</a></li></ul></div>
+      <div class="footer-col"><h4>Legal</h4><ul><li><a href="privacy-policy.html">Privacy Policy</a></li><li><a href="shipping-policy.html">Shipping Policy</a></li><li><a href="terms-of-service.html">Terms of Service</a></li><li><a href="return-policy.html">Return Policy</a></li></ul></div>
+    </div>
+    <div class="footer-disclaimer"><strong style="color:rgba(255,255,255,0.4);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;">Disclaimer</strong><br/>All polypeptide sequences, amino acid derivatives, and analogs available on this site are strictly designated for Research Use Only.</div>
+    <div style="display:flex;justify-content:center;gap:12px;padding:24px 0;border-top:1px solid rgba(255,255,255,0.08);margin-bottom:24px;">
+      <a href="https://x.com/redhandresearch" target="_blank" rel="noopener" style="width:38px;height:38px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;" aria-label="X">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="rgba(255,255,255,0.7)"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.259 5.63L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>
+      </a>
+      <a href="https://facebook.com/redhandresearch" target="_blank" rel="noopener" style="width:38px;height:38px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;" aria-label="Facebook">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="rgba(255,255,255,0.7)"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      </a>
+    </div>
+    <div class="footer-bottom"><span>© 2026 Red Hand Research. All Rights Reserved.</span><span>For In-Vitro Research Use Only</span></div>
+  </footer>
+
+  <script>
+    function confirmAge() {
+      sessionStorage.setItem('ageVerified', 'true');
+      document.getElementById('age-overlay').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+    function denyAge() { window.location.href = 'https://www.google.com'; }
+    document.addEventListener('DOMContentLoaded', function() {
+      var overlay = document.getElementById('age-overlay');
+      if (overlay) {
+        if (sessionStorage.getItem('ageVerified') === 'true') {
+          overlay.classList.add('hidden');
+          document.body.style.overflow = '';
+        } else {
+          document.body.style.overflow = 'hidden';
+        }
+      }
+    });
+    function toggleMenu() { document.getElementById('hamburger').classList.toggle('open'); document.getElementById('mobile-menu').classList.toggle('open'); }
+
+    // CART UTILITIES
+    function quickAdd(name, dose, price) {
+      var cart = getCart();
+      var key = name + '|' + dose;
+      var existing = null;
+      for (var i = 0; i < cart.length; i++) { if (cart[i].key === key) { existing = cart[i]; break; } }
+      if (existing) { existing.qty += 1; } else { cart.push({ key: key, name: name, dose: dose, price: price, qty: 1, bundlePrice: null }); }
+      saveCart(cart);
+    }
+    function getCart() { try { return JSON.parse(localStorage.getItem('rhr_cart') || '[]'); } catch(e) { return []; } }
+    function saveCart(cart) { localStorage.setItem('rhr_cart', JSON.stringify(cart)); updateCartCount(); renderCart(); }
+    function updateCartCount() {
+      var count = getCart().reduce(function(s, i) { return s + i.qty; }, 0);
+      document.querySelectorAll('.cart-count').forEach(function(el) { el.textContent = 'Cart (' + count + ')'; });
+    }
+
+    // PROMO CODES
+    const PROMO_CODES = {
+      'HUNTER10': 10,
+      'JESKA10':  10,
+      'JOSH10':   10,
+      'BRE10':    10,
+      'MOOSE20':  20,
+      'MOOSE10':  10,
+      'BRAND10':  10,
+      'RACHEL10': 10,
+    };
+    var activePromo = null;
+
+    function applyPromo() {
+      var code = document.getElementById('promo-input').value.trim().toUpperCase();
+      var msg = document.getElementById('promo-msg');
+      if (!code) { msg.textContent = 'Please enter a promo code.'; msg.className = 'promo-msg error'; return; }
+      if (PROMO_CODES[code] !== undefined) {
+        activePromo = { code: code, pct: PROMO_CODES[code] };
+        msg.textContent = 'Code applied: ' + PROMO_CODES[code] + '% off!';
+        msg.className = 'promo-msg success';
+      } else {
+        activePromo = null;
+        msg.textContent = 'Invalid or expired promo code.';
+        msg.className = 'promo-msg error';
+      }
+      updateTotals();
+    }
+
+    // SHIPPING RATES
+    const SHIP_RATES = { standard: 10, expedited: 25, overnight: 50, pickup: 0 };
+
+    // BUNDLE PRICING — calculate effective item total
+    // qty 1:         full price
+    // qty 2:         bundlePrice (2-vial deal)
+    // qty 3+:        bundlePrice + each extra vial at (item.price - 5)
+    function itemEffectiveTotal(item) {
+      if (item.bundlePrice && item.qty >= 2) {
+        var extraQty = item.qty - 2;
+        return item.bundlePrice + extraQty * Math.max(0, item.price - 5);
+      }
+      return item.price * item.qty;
+    }
+
+    // Bundle savings vs paying full price for everything
+    function itemBundleSavings(item) {
+      if (item.bundlePrice && item.qty >= 2) {
+        return (item.price * item.qty) - itemEffectiveTotal(item);
+      }
+      return 0;
+    }
+
+    function updateTotals() {
+      var cart = getCart();
+
+      // Empty cart
+      if (cart.length === 0) {
+        document.getElementById('subtotal').textContent = '$0.00';
+        document.getElementById('bulk-row').style.display = 'none';
+        document.getElementById('discount-row').style.display = 'none';
+        document.getElementById('ship-row').style.display = 'none';
+        document.getElementById('freeship-row').style.display = 'none';
+        document.getElementById('grand-total').textContent = '$0.00';
+        document.getElementById('bulk-badge').style.display = 'none';
+        document.getElementById('checkout-btn').disabled = true;
+        return;
+      }
+
+      // Subtotal using effective (bundle-adjusted) prices
+      var subtotal = cart.reduce(function(s, i) { return s + itemEffectiveTotal(i); }, 0);
+
+      // Bundle savings total
+      var bundleSavings = cart.reduce(function(s, i) { return s + itemBundleSavings(i); }, 0);
+
+      // Shipping
+      var shipMethod = document.querySelector('input[name="ship"]:checked');
+      var shipKey = shipMethod ? shipMethod.value : 'standard';
+      var shipCost = SHIP_RATES[shipKey];
+      var freeShip = subtotal >= 150 && shipKey !== 'pickup';
+
+      // Promo on post-bundle subtotal
+      var promoAmt = activePromo ? subtotal * (activePromo.pct / 100) : 0;
+      var afterPromo = subtotal - promoAmt;
+      var finalShip = freeShip ? 0 : shipCost;
+      var grandTotal = afterPromo + finalShip;
+
+      document.getElementById('subtotal').textContent = '$' + subtotal.toFixed(2);
+
+      // Bundle row
+      if (bundleSavings > 0) {
+        document.getElementById('bulk-row').style.display = 'flex';
+        document.getElementById('bulk-label').textContent = 'Bundle savings';
+        document.getElementById('bulk-amount').textContent = '-$' + bundleSavings.toFixed(2);
+      } else {
+        document.getElementById('bulk-row').style.display = 'none';
+      }
+
+      // Promo row
+      if (activePromo) {
+        document.getElementById('discount-row').style.display = 'flex';
+        document.getElementById('discount-label').textContent = 'Promo (' + activePromo.code + ' \u2212' + activePromo.pct + '%)';
+        document.getElementById('discount-amount').textContent = '-$' + promoAmt.toFixed(2);
+      } else {
+        document.getElementById('discount-row').style.display = 'none';
+      }
+
+      // Shipping row
+      var stdLabel = document.getElementById('std-price');
+      if (shipKey === 'pickup') {
+        document.getElementById('ship-row').style.display = 'flex';
+        document.getElementById('ship-cost').textContent = 'FREE (Local Pickup)';
+        document.getElementById('freeship-row').style.display = 'none';
+      } else if (freeShip) {
+        document.getElementById('ship-row').style.display = 'none';
+        document.getElementById('freeship-row').style.display = 'flex';
+        document.getElementById('freeship-saved').textContent = 'FREE (saved $' + shipCost.toFixed(2) + ')';
+      } else {
+        document.getElementById('ship-row').style.display = 'flex';
+        document.getElementById('ship-cost').textContent = '$' + shipCost.toFixed(2);
+        document.getElementById('freeship-row').style.display = 'none';
+      }
+      if (stdLabel) stdLabel.textContent = subtotal >= 150 ? 'FREE' : '$10.00';
+
+      document.getElementById('grand-total').textContent = '$' + grandTotal.toFixed(2);
+
+      var badge = document.getElementById('bulk-badge');
+      var nudgeItems = cart.filter(function(i) { return i.bundlePrice && i.qty === 1; });
+      var remaining = Math.max(0, 150 - subtotal);
+      if (bundleSavings > 0) {
+        var msg3plus = cart.some(function(i){ return i.bundlePrice && i.qty >= 3; }) ? ' \u2014 $5 off every extra vial!' : '';
+        badge.textContent = '\uD83C\uDF89 Bundle savings applied \u2014 saving $' + bundleSavings.toFixed(2) + '!' + msg3plus;
+        badge.style.display = 'block';
+        badge.style.background = '#eafaf1';
+        badge.style.borderColor = '#a9dfbf';
+        badge.style.color = '#1e8449';
+      } else if (nudgeItems.length > 0) {
+        badge.textContent = '\uD83D\uDCA1 Add a 2nd vial of ' + nudgeItems[0].name + ' to unlock bundle pricing';
+        badge.style.display = 'block';
+        badge.style.background = '#fef9ec';
+        badge.style.borderColor = '#f9e4a0';
+        badge.style.color = '#7d5a00';
+      } else if (!freeShip && shipKey !== 'pickup' && remaining > 0) {
+        badge.textContent = '\uD83D\uDE9A Add $' + remaining.toFixed(2) + ' more for free shipping';
+        badge.style.display = 'block';
+        badge.style.background = '#fef9ec';
+        badge.style.borderColor = '#f9e4a0';
+        badge.style.color = '#7d5a00';
+      } else {
+        badge.style.display = 'none';
+      }
+
+      document.getElementById('checkout-btn').disabled = false;
+    }
+
+    function renderCart() {
+      var cart = getCart();
+      var container = document.getElementById('cart-items-container');
+
+      if (cart.length === 0) {
+        container.innerHTML = '<div class="cart-empty">' +
+          '<svg viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>' +
+          '<h3>Your cart is empty</h3><p>Add some products to get started.</p>' +
+          '<a href="products.html">Browse Products \u2192</a></div>';
+        updateTotals();
+        return;
+      }
+
+      container.innerHTML = cart.map(function(item, idx) {
+        var lineTotal = itemEffectiveTotal(item);
+        var savings = itemBundleSavings(item);
+        var bundleNote = '';
+        if (item.bundlePrice && item.qty >= 2) {
+          bundleNote = '<div style="font-size:12px;color:#27ae60;font-weight:600;margin-top:2px;">\u2713 Bundle price applied (save $' + savings.toFixed(2) + ')</div>';
+        } else if (item.bundlePrice && item.qty === 1) {
+          bundleNote = '<div style="font-size:12px;color:#8a857e;margin-top:2px;">Add 1 more to unlock bundle pricing</div>';
+        }
+        return '<div class="cart-item">' +
+          '<div class="cart-item-info">' +
+          '<h4>' + item.name + '</h4>' +
+          '<div class="cart-item-dose">' + item.dose + '</div>' +
+          '<div class="cart-item-unit">$' + item.price.toFixed(2) + ' each</div>' +
+          bundleNote +
+          '</div>' +
+          '<div class="qty-control">' +
+          '<button class="qty-btn" onclick="changeQty(' + idx + ', -1)">\u2212</button>' +
+          '<span class="qty-num">' + item.qty + '</span>' +
+          '<button class="qty-btn" onclick="changeQty(' + idx + ', 1)">+</button>' +
+          '</div>' +
+          '<div>' +
+          '<div class="cart-item-price">$' + lineTotal.toFixed(2) + '</div>' +
+          '<button class="remove-btn" onclick="removeItem(' + idx + ')">Remove</button>' +
+          '</div>' +
+          '</div>';
+      }).join('');
+
+      updateTotals();
+    }
+
+    function changeQty(idx, delta) {
+      var cart = getCart();
+      cart[idx].qty = Math.max(1, cart[idx].qty + delta);
+      saveCart(cart);
+    }
+
+    function removeItem(idx) {
+      var cart = getCart();
+      cart.splice(idx, 1);
+      saveCart(cart);
+    }
+
+    function proceedToOrder() {
+      if (activePromo) {
+        localStorage.setItem('rhr_promo', JSON.stringify(activePromo));
+      } else {
+        localStorage.removeItem('rhr_promo');
+      }
+      var shipMethod = document.querySelector('input[name="ship"]:checked');
+      var shipKey = shipMethod ? shipMethod.value : 'standard';
+      var SHIP_LABELS = { standard: 'Standard ($10.00)', expedited: 'Expedited ($25.00)', overnight: 'Overnight ($50.00)', pickup: 'Local Pickup (FREE)' };
+      localStorage.setItem('rhr_shipping', JSON.stringify({ key: shipKey, label: SHIP_LABELS[shipKey] }));
+      window.location.href = 'order.html';
+    }
+
+    // Init
+    document.addEventListener('DOMContentLoaded', function() { renderCart(); updateCartCount(); });
+  </script>
+</body>
+</html>
