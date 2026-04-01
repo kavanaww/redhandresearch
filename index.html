@@ -22,7 +22,6 @@
       --border: #e8e4df;
     }
 
-```
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -36,79 +35,7 @@ body {
 a { text-decoration: none; color: inherit; }
 img { max-width: 100%; display: block; }
 
-/* ── AGE GATE ── */
-#age-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  isolation: isolate;
-  background: rgba(26,24,20,0.94);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
 
-#age-overlay.hidden { display: none !important; }
-
-.age-box {
-  background: var(--white);
-  border-radius: 12px;
-  padding: 52px 48px;
-  max-width: 480px;
-  width: 90%;
-  text-align: center;
-  box-shadow: 0 32px 80px rgba(0,0,0,0.5);
-}
-
-.age-logo-mark {
-  width: 72px; height: 72px;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 24px;
-}
-
-.age-box h2 {
-  font-family: 'DM Serif Display', serif;
-  font-size: 30px;
-  margin-bottom: 14px;
-  color: var(--text-dark);
-}
-
-.age-box p {
-  font-size: 14px;
-  color: var(--text-light);
-  line-height: 1.75;
-  margin-bottom: 32px;
-}
-
-.age-box p a { color: var(--red); text-decoration: underline; }
-
-.age-buttons { display: flex; gap: 12px; }
-
-.age-btn-no {
-  flex: 1; padding: 15px;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  background: white;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 15px; font-weight: 600;
-  color: var(--text-mid);
-  cursor: pointer;
-}
-
-.age-btn-yes {
-  flex: 1; padding: 15px;
-  border: none;
-  border-radius: 4px;
-  background: var(--red);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 15px; font-weight: 600;
-  color: white;
-  cursor: pointer;
-}
-
-.age-btn-yes:hover { background: var(--red-dark); }
 
 /* ── TOP BANNER ── */
 .top-banner {
@@ -633,9 +560,6 @@ footer { background: var(--text-dark); color: white; padding: 72px 72px 40px; }
 
   .hero-cta { padding: 14px 24px; font-size: 14px; }
 
-  .age-box { padding: 32px 20px; }
-  .age-box h2 { font-size: 22px; }
-  .age-box p { font-size: 13px; }
 
   .section-title { font-size: 24px; }
   .section-label { font-size: 10px; }
@@ -664,27 +588,11 @@ footer { background: var(--text-dark); color: white; padding: 72px 72px 40px; }
   .top-banner { font-size: 11px; padding: 8px 14px; }
   .top-banner a { display: block; margin: 4px 0 0; }
 }
-```
 
   </style>
 </head>
 <body>
-
-  <!-- AGE VERIFICATION -->
-
-  <div id="age-overlay">
-    <div class="age-box">
-      <div class="age-logo-mark">
-        <img src="logo.png" alt="Red Hand Research" style="width:72px; height:72px; object-fit:contain;"/>
-      </div>
-      <h2>Are you over 21?</h2>
-      <p>I confirm that I am 21 years of age or older and understand that certain products on this site are intended for <strong>research use only</strong>, as defined by the FDA. I agree to the <a href="terms-of-service.html">terms and conditions</a> of this site.</p>
-      <div class="age-buttons">
-        <button class="age-btn-no" onclick="denyAge()">No</button>
-        <button class="age-btn-yes" onclick="confirmAge()">Yes, Enter</button>
-      </div>
-    </div>
-  </div>
+</div>
 
   <!-- CART TOAST -->
 
@@ -890,7 +798,6 @@ footer { background: var(--text-dark); color: white; padding: 72px 72px 40px; }
     </div>
     <div class="products-grid">
 
-```
   <!-- BPC-157 -->
   <div class="product-card">
     <div class="product-img"><div class="product-purity-badge">≥99% Pure</div><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg></div>
@@ -970,7 +877,6 @@ footer { background: var(--text-dark); color: white; padding: 72px 72px 40px; }
   </div>
 
 </div>
-```
 
   </section>
 
@@ -1079,22 +985,8 @@ footer { background: var(--text-dark); color: white; padding: 72px 72px 40px; }
 
   <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
   <script>
-    // Age gate
-    function confirmAge() {
-      sessionStorage.setItem('ageVerified', 'true');
-      var overlay = document.getElementById('age-overlay');
-      overlay.classList.add('hidden');
-      overlay.style.display = 'none';
-      document.body.style.overflow = '';
-    }
-    function denyAge() { window.location.href = 'https://www.google.com'; }
-    document.addEventListener('DOMContentLoaded', function() {
-      var overlay = document.getElementById('age-overlay');
-      if (overlay) {
-        if (sessionStorage.getItem('ageVerified') === 'true') {
-          overlay.classList.add('hidden');
-          document.body.style.overflow = '';
-        } else {
+        document.addEventListener('DOMContentLoaded', function() {
+      else {
           document.body.style.overflow = 'hidden';
         }
       }
