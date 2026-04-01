@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>GLP-2 T &mdash; Red Hand Research</title>
+  <link rel="icon" href="favicon.ico"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--white:#fff;--off-white:#f8f7f5;--text-dark:#1a1814;--text-mid:#4a4540;--text-light:#8a857e;--red:#c0392b;--red-dark:#96281b;--red-light:#f9ecea;--border:#e8e4df;--green:#27ae60;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'DM Sans',sans-serif;background:var(--white);color:var(--text-dark);font-size:16px;line-height:1.6;}
+    a{text-decoration:none;color:inherit;}
+    #age-overlay{position:fixed;inset:0;z-index:9999;background:rgba(26,24,20,0.94);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);}
+    #age-overlay.hidden{display:none;}
+    .age-box{background:var(--white);border-radius:12px;padding:52px 48px;max-width:480px;width:90%;text-align:center;}
+    .age-box h2{font-family:'DM Serif Display',serif;font-size:30px;margin-bottom:14px;}
+    .age-box p{font-size:14px;color:var(--text-light);line-height:1.75;margin-bottom:32px;}
+    .age-box p a{color:var(--red);text-decoration:underline;}
+    .age-buttons{display:flex;gap:12px;}
+    .age-btn-no{flex:1;padding:15px;border:1px solid var(--border);border-radius:4px;background:white;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;}
+    .age-btn-yes{flex:1;padding:15px;border:none;border-radius:4px;background:var(--red);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;color:white;cursor:pointer;}
+    nav{position:sticky;top:0;z-index:100;background:var(--white);border-bottom:1px solid var(--border);padding:0 48px;display:flex;align-items:center;justify-content:space-between;height:68px;}
+    .nav-logo{display:flex;align-items:center;gap:10px;}
+    .logo-mark img{width:40px;height:40px;object-fit:contain;}
+    .logo-text{font-family:'DM Serif Display',serif;font-size:20px;letter-spacing:-0.02em;}
+    .logo-text span{color:var(--red);}
+    .nav-links{display:flex;gap:36px;list-style:none;font-size:14px;font-weight:500;color:var(--text-mid);}
+    .nav-links a:hover,.nav-links a.active{color:var(--red);}
+    .nav-cart{background:var(--red);color:white;font-size:13px;font-weight:600;padding:9px 20px;border-radius:4px;}
+    .nav-hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:36px;height:36px;cursor:pointer;background:none;border:none;padding:4px;}
+    .nav-hamburger span{display:block;height:2px;background:var(--text-dark);border-radius:2px;transition:all 0.25s;}
+    .nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .nav-hamburger.open span:nth-child(2){opacity:0;}
+    .nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+    .mobile-menu{display:none;position:fixed;top:68px;left:0;right:0;background:var(--white);border-bottom:1px solid var(--border);z-index:99;padding:24px 24px 32px;flex-direction:column;}
+    .mobile-menu.open{display:flex;}
+    .mobile-menu li{list-style:none;border-bottom:1px solid var(--border);}
+    .mobile-menu li a{display:block;padding:16px 0;font-size:16px;font-weight:500;}
+    .mobile-menu .mobile-cart{display:block;margin-top:20px;background:var(--red);color:white;text-align:center;padding:14px;border-radius:4px;font-weight:600;font-size:15px;}
+    .breadcrumb{padding:16px 72px;font-size:13px;color:var(--text-light);border-bottom:1px solid var(--border);}
+    .breadcrumb a{color:var(--text-light);}.breadcrumb a:hover{color:var(--red);}.breadcrumb span{margin:0 8px;}
+    .product-detail{display:grid;grid-template-columns:1fr 1fr;gap:72px;padding:56px 72px;max-width:1280px;margin:0 auto;}
+    .product-image-panel{position:sticky;top:84px;align-self:start;}
+    .product-image-wrap{background:var(--off-white);border:1px solid var(--border);border-radius:16px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;padding:48px;margin-bottom:16px;}
+    .product-image-wrap img{width:160px;height:160px;object-fit:contain;opacity:0.9;}
+    .product-meta-badges{display:flex;gap:8px;flex-wrap:wrap;}
+    .badge{font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:5px 12px;border-radius:100px;}
+    .badge-purity{background:#eafaf1;color:#1e8449;border:1px solid #a9dfbf;}
+    .badge-research{background:var(--off-white);color:var(--text-light);border:1px solid var(--border);}
+    .badge-iso{background:#eaf4fb;color:#1a5276;border:1px solid #aed6f1;}
+    .product-category{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--red);margin-bottom:12px;}
+    .product-info-panel h1{font-family:'DM Serif Display',serif;font-size:42px;line-height:1.1;letter-spacing:-0.02em;margin-bottom:8px;}
+    .product-subtitle{font-size:15px;color:var(--text-light);margin-bottom:28px;font-style:italic;}
+    .product-description{font-size:15px;color:var(--text-mid);line-height:1.8;margin-bottom:32px;}
+    .product-description p+p{margin-top:14px;}
+    .pricing-block{background:var(--off-white);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:28px;}
+    .pricing-block h4{font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-light);margin-bottom:16px;}
+    .price-tiers{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
+    .price-tier{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--white);border:1px solid var(--border);border-radius:8px;font-size:14px;}
+    .price-tier.bundle{border-color:var(--green);background:#f0faf5;}
+    .tier-label{font-weight:500;color:var(--text-dark);}
+    .tier-price{font-weight:700;color:var(--text-dark);}
+    .tier-save{font-size:11px;font-weight:700;color:var(--green);margin-left:8px;}
+    .dose-select-detail{width:100%;padding:12px 36px 12px 14px;border:1px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text-dark);background:var(--white);outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a857e' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;margin-bottom:12px;}
+    .dose-select-detail:focus{border-color:var(--red);}
+    .price-display{font-family:'DM Serif Display',serif;font-size:38px;color:var(--text-dark);margin-bottom:4px;}
+    .price-note{font-size:12px;color:var(--text-light);margin-bottom:16px;}
+    .add-to-cart-btn{width:100%;background:var(--red);color:white;border:none;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;padding:16px;border-radius:8px;cursor:pointer;transition:background 0.2s;}
+    .add-to-cart-btn:hover{background:var(--red-dark);}
+    .specs-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:32px;}
+    .spec-item{padding:14px 16px;background:var(--off-white);border:1px solid var(--border);border-radius:8px;}
+    .spec-label{font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-light);margin-bottom:4px;}
+    .spec-value{font-size:13px;font-weight:600;color:var(--text-dark);}
+    .studies-section{border-top:1px solid var(--border);padding-top:32px;margin-top:32px;}
+    .studies-section h3{font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:16px;}
+    .study-item{padding:14px 18px;border:1px solid var(--border);border-radius:8px;margin-bottom:10px;transition:border-color 0.2s,background 0.2s;}
+    .study-item:hover{border-color:var(--red);background:var(--red-light);}
+    .study-item a{display:block;}
+    .study-title{font-size:14px;font-weight:600;color:var(--text-dark);margin-bottom:4px;line-height:1.4;}
+    .study-item:hover .study-title{color:var(--red);}
+    .study-meta{font-size:12px;color:var(--text-light);}
+    .study-arrow{float:right;color:var(--text-light);font-size:16px;margin-top:2px;}
+    .research-disclaimer{background:#fff8f7;border:1px solid #f5c6c0;border-radius:8px;padding:16px 20px;font-size:12px;color:var(--text-light);line-height:1.7;margin-top:24px;}
+    .research-disclaimer strong{color:var(--red);}
+    footer{background:var(--text-dark);color:white;padding:72px 72px 40px;}
+    .footer-bottom{display:flex;justify-content:space-between;font-size:13px;color:rgba(255,255,255,0.3);padding-top:32px;border-top:1px solid rgba(255,255,255,0.08);margin-top:48px;}
+    @media(max-width:900px){nav{padding:0 20px;}.nav-links,.nav-cart{display:none;}.nav-hamburger{display:flex;}.breadcrumb{padding:14px 20px;}.product-detail{grid-template-columns:1fr;gap:32px;padding:28px 20px;}.product-image-panel{position:static;}.product-info-panel h1{font-size:32px;}footer{padding:48px 20px 28px;}.footer-bottom{flex-direction:column;gap:8px;text-align:center;}}
+    @media(max-width:540px){nav{padding:0 14px;}.breadcrumb{padding:12px 14px;}.product-detail{padding:20px 14px;gap:24px;}.product-info-panel h1{font-size:26px;}.specs-grid{grid-template-columns:1fr;}footer{padding:40px 14px 24px;}}
+</style>
+</head>
+<body>
+  <div id="age-overlay"><div class="age-box"><div style="width:72px;height:72px;margin:0 auto 24px;"><img src="logo.png" style="width:72px;height:72px;object-fit:contain;" alt="RHR"/></div><h2>Are you over 21?</h2><p>I confirm that I am 21 years of age or older and understand that certain products on this site are for <strong>research use only</strong>. I agree to the <a href="terms-of-service.html">terms and conditions</a>.</p><div class="age-buttons"><button class="age-btn-no" onclick="denyAge()">No</button><button class="age-btn-yes" onclick="confirmAge()">Yes, Enter</button></div></div></div>
+  <nav><a href="index.html" class="nav-logo"><div class="logo-mark"><img src="logo.png" alt="RHR"/></div><span class="logo-text">Red <span>Hand</span> Research</span></a><ul class="nav-links"><li><a href="products.html" class="active">Products</a></li><li><a href="research.html">Research</a></li><li><a href="faqs.html">FAQs</a></li><li><a href="certificates.html">Certificates</a></li></ul><a href="cart.html" class="nav-cart cart-count">Cart (0)</a><button class="nav-hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button></nav>
+  <ul class="mobile-menu" id="mobile-menu"><li><a href="products.html" onclick="toggleMenu()">Products</a></li><li><a href="research.html" onclick="toggleMenu()">Research</a></li><li><a href="faqs.html" onclick="toggleMenu()">FAQs</a></li><li><a href="certificates.html" onclick="toggleMenu()">Certificates</a></li><a href="cart.html" class="mobile-cart cart-count">Cart (0)</a></ul>
+  <div class="breadcrumb"><a href="index.html">Home</a><span>&#x203A;</span><a href="products.html">Products</a><span>&#x203A;</span>GLP-2 T</div>
+  <div class="product-detail">
+    <div class="product-image-panel"><div class="product-image-wrap"><img src="logo.png" alt="GLP-2 T"/></div><div class="product-meta-badges"><span class="badge badge-purity">&#x2265;99% Purity</span><span class="badge badge-iso">ISO 17025 Tested</span><span class="badge badge-research">Research Use Only</span></div></div>
+    <div class="product-info-panel">
+      <div class="product-category">Metabolic Peptides</div>
+      <h1>GLP-2 T</h1>
+      <div class="product-subtitle">Dual GIP/GLP-1 Receptor Agonist &bull; Lyophilized Research Peptide</div>
+      <div class="product-description"><p>GLP-2 T is a dual glucose-dependent insulinotropic polypeptide (GIP) and glucagon-like peptide-1 (GLP-1) receptor agonist. It represents a novel class of metabolic research compound that simultaneously activates two incretin hormone pathways.</p><p>The dual-agonist mechanism has generated substantial scientific interest, as simultaneous GIP and GLP-1 receptor activation appears to produce additive and potentially synergistic effects on glycemic control, weight regulation, and lipid metabolism. Published clinical literature includes large-scale trials examining outcomes in type 2 diabetes (SURPASS series) and obesity (SURMOUNT series).</p><p>GLP-2 T is supplied as a lyophilized powder at multiple concentration options, independently verified to &#x2265;99% purity.</p></div>
+      <div class="specs-grid"><div class="spec-item"><div class="spec-label">Receptor Targets</div><div class="spec-value">Dual GIP + GLP-1 Agonist</div></div><div class="spec-item"><div class="spec-label">Molecular Weight</div><div class="spec-value">4813.48 g/mol</div></div><div class="spec-item"><div class="spec-label">Form</div><div class="spec-value">Lyophilized Powder</div></div><div class="spec-item"><div class="spec-label">Purity</div><div class="spec-value">&#x2265;99% by HPLC</div></div><div class="spec-item"><div class="spec-label">CAS Number</div><div class="spec-value">2023788-19-2</div></div><div class="spec-item"><div class="spec-label">Storage</div><div class="spec-value">&#x2212;20&#xB0;C lyophilized / 2&ndash;8&#xB0;C reconstituted</div></div></div>
+      <div class="pricing-block"><h4>Select Option</h4><select class="dose-select-detail" id="prod-select" onchange="updateDetailPrice()"><option value="45">5mg &mdash; $45.00</option>
+<option value="85">10mg &mdash; $85.00</option>
+<option value="105">15mg &mdash; $105.00</option>
+<option value="120">20mg &mdash; $120.00</option>
+<option value="150">25mg &mdash; $150.00</option>
+<option value="180">30mg &mdash; $180.00</option>
+<option value="200">40mg &mdash; $200.00</option>
+<option value="250">50mg &mdash; $250.00</option>
+<option value="270">60mg &mdash; $270.00</option></select>
+<div class="price-note">Lyophilized powder, sterile-filled</div>
+<div style="height:8px;"></div>
+<div class="price-display" id="detail-price">$45.00</div><button class="add-to-cart-btn" onclick="handleDetailAddToCart()">Add to Cart</button></div>
+      <div class="studies-section"><h3>Published Research</h3><div class="study-item"><a href="https://pubmed.ncbi.nlm.nih.gov/34170647/" target="_blank" rel="noopener"><span class="study-arrow">&#x2197;</span><div class="study-title">Tirzepatide versus Semaglutide Once Weekly in Patients with Type 2 Diabetes &mdash; SURPASS-2</div><div class="study-meta">Fr&iacute;as et al. &bull; NEJM &bull; 2021</div></a></div><div class="study-item"><a href="https://pubmed.ncbi.nlm.nih.gov/36051755/" target="_blank" rel="noopener"><span class="study-arrow">&#x2197;</span><div class="study-title">Tirzepatide Once Weekly for the Treatment of Obesity &mdash; SURMOUNT-1</div><div class="study-meta">Jastreboff et al. &bull; NEJM &bull; 2022</div></a></div><div class="study-item"><a href="https://pubmed.ncbi.nlm.nih.gov/35220234/" target="_blank" rel="noopener"><span class="study-arrow">&#x2197;</span><div class="study-title">Tirzepatide, a GIP/GLP-1 dual receptor agonist for type 2 diabetes with and without obesity</div><div class="study-meta">Rosenstock et al. &bull; Lancet Diabetes &amp; Endocrinology &bull; 2022</div></a></div><div class="study-item"><a href="https://pubmed.ncbi.nlm.nih.gov/36856955/" target="_blank" rel="noopener"><span class="study-arrow">&#x2197;</span><div class="study-title">Tirzepatide versus Insulin Degludec in Patients with Type 2 Diabetes &mdash; SURPASS-5</div><div class="study-meta">Dahl et al. &bull; NEJM &bull; 2023</div></a></div></div>
+      <div class="research-disclaimer"><strong>Research Use Only.</strong> This product is not approved by the FDA for human use. All information is intended for educational and research purposes only. Not intended to diagnose, treat, cure, or prevent any disease.</div>
+    </div>
+  </div>
+  <footer><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;"><a href="index.html" style="font-family:'DM Serif Display',serif;font-size:20px;color:white;">Red <span style="color:var(--red)">Hand</span> Research</a><div style="display:flex;gap:24px;font-size:14px;"><a href="products.html" style="color:rgba(255,255,255,0.5);">Products</a><a href="faqs.html" style="color:rgba(255,255,255,0.5);">FAQs</a><a href="mailto:team@redhandresearch.com" style="color:rgba(255,255,255,0.5);">Contact</a></div></div><div class="footer-bottom"><span>&copy; 2026 Red Hand Research. All Rights Reserved.</span><span>For In-Vitro Research Use Only</span></div></footer>
+  <script>
+    function confirmAge(){sessionStorage.setItem('ageVerified','true');document.getElementById('age-overlay').classList.add('hidden');document.body.style.overflow='';}
+    function denyAge(){window.location.href='https://www.google.com';}
+    function toggleMenu(){document.getElementById('hamburger').classList.toggle('open');document.getElementById('mobile-menu').classList.toggle('open');}
+    function getCart(){try{return JSON.parse(localStorage.getItem('rhr_cart')||'[]');}catch(e){return[];}}
+    function saveCart(c){localStorage.setItem('rhr_cart',JSON.stringify(c));updateCartCount();}
+    function updateCartCount(){var count=getCart().reduce(function(s,i){return s+i.qty;},0);document.querySelectorAll('.cart-count').forEach(function(el){el.textContent='Cart ('+count+')';}); }
+    function updateDetailPrice(){var s=document.getElementById('prod-select');document.getElementById('detail-price').textContent='$'+parseFloat(s.value).toFixed(2);}
+    function handleDetailAddToCart(){var sel=document.getElementById('prod-select');var price=parseFloat(sel.value);var dose=sel.options[sel.selectedIndex].text.split('&mdash;')[0].split('—')[0].split('&')[0].trim();var name=document.querySelector('.product-info-panel h1').textContent;var cart=getCart();var key=name+'|'+dose;var ex=cart.find(function(i){return i.key===key;});if(ex){ex.qty+=1;}else{cart.push({key:key,name:name,dose:dose,price:price,qty:1});}saveCart(cart);var btn=document.querySelector('.add-to-cart-btn');btn.textContent='Added!';btn.style.background='#27ae60';setTimeout(function(){btn.textContent='Add to Cart';btn.style.background='';},1400);}
+    document.addEventListener('DOMContentLoaded',function(){if(sessionStorage.getItem('ageVerified')==='true'){document.getElementById('age-overlay').classList.add('hidden');document.body.style.overflow='';}else{document.body.style.overflow='hidden';}updateCartCount();});
+  </script>
+</body>
+</html>
