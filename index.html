@@ -50,7 +50,7 @@ img { max-width: 100%; display: block; }
   -webkit-backdrop-filter: blur(8px);
 }
 
-#age-overlay.hidden { display: none; }
+#age-overlay.hidden { display: none !important; }
 
 .age-box {
   background: var(--white);
@@ -1077,11 +1077,14 @@ footer { background: var(--text-dark); color: white; padding: 72px 72px 40px; }
     </div>
   </footer>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+  <script>
     // Age gate
     function confirmAge() {
       sessionStorage.setItem('ageVerified', 'true');
-      document.getElementById('age-overlay').classList.add('hidden');
+      var overlay = document.getElementById('age-overlay');
+      overlay.classList.add('hidden');
+      overlay.style.display = 'none';
       document.body.style.overflow = '';
     }
     function denyAge() { window.location.href = 'https://www.google.com'; }
