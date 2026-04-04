@@ -165,7 +165,7 @@
   <div class="how-it-works">
     <div class="how-step"><div class="step-num">1</div><div class="step-text"><h4>Fill Out Order</h4><p>Enter your details and billing info below.</p></div></div>
     <div class="how-step"><div class="step-num">2</div><div class="step-text"><h4>Secure Checkout</h4><p>You'll be redirected to our secure payment page.</p></div></div>
-    <div class="how-step"><div class="step-num">3</div><div class="step-text"><h4>Payment Confirmed</h4><p>Card or eCheck accepted securely.</p></div></div>
+    <div class="how-step"><div class="step-num">3</div><div class="step-text"><h4>Payment Confirmed</h4><p>Card accepted securely.</p></div></div>
     <div class="how-step"><div class="step-num">4</div><div class="step-text"><h4>Ships Same Day</h4><p>Confirmed before 3 PM CT ships today.</p></div></div>
   </div>
   <div class="form-layout">
@@ -235,7 +235,7 @@
 
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
             <button type="button" id="btn-card" onclick="selectPayment('card')" style="padding:16px 12px;border:2px solid var(--border);border-radius:6px;background:var(--white);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:var(--text-dark);cursor:pointer;transition:all 0.2s;text-align:center;line-height:1.4;">
-              🔒 Card / eCheck<br/><span style="font-size:12px;font-weight:400;color:var(--text-light);">Secure checkout</span>
+              🔒 Card<br/><span style="font-size:12px;font-weight:400;color:var(--text-light);">Secure checkout</span>
             </button>
             <button type="button" id="btn-zelle" onclick="selectPayment('zelle')" style="padding:16px 12px;border:2px solid var(--border);border-radius:6px;background:var(--white);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:var(--text-dark);cursor:pointer;transition:all 0.2s;text-align:center;line-height:1.4;">
               💜 Zelle<br/><span style="font-size:12px;font-weight:400;color:#27ae60;font-weight:600;">Save 5%</span>
@@ -244,18 +244,18 @@
 
           <!-- Card notice -->
           <div id="notice-card" style="display:none;background:#eaf4ea;border:1px solid #b8ddb8;border-radius:8px;padding:16px 20px;margin-bottom:20px;">
-            <p style="font-size:13px;color:#2d6a2d;margin:0;">After submitting you'll be redirected to our secure payment page. We accept credit cards and eCheck (ACH).</p>
+            <p style="font-size:13px;color:#2d6a2d;margin:0;">After submitting you'll be redirected to our secure payment page. We accept credit cards.</p>
           </div>
 
           <!-- Zelle notice -->
           <div id="notice-zelle" style="display:none;background:#f0f0ff;border:1px solid #c8c8f0;border-radius:8px;padding:16px 20px;margin-bottom:20px;">
             <p style="font-size:13px;color:#333;margin:0 0 6px;font-weight:600;">5% Zelle discount applied — new total: <span id="zelle-total" style="color:var(--red);">—</span></p>
-            <p style="font-size:13px;color:#555;margin:0;">Submit your order and we'll email you payment instructions. Send to <strong>$redhandresearch</strong> on Zelle.</p>
+            <p style="font-size:13px;color:#555;margin:0;">Submit your order and we'll email you payment instructions including the Zelle tag.</p>
           </div>
 
           <input type="hidden" id="f-payment-method" value=""/>
           <button type="submit" class="submit-btn" id="submit-btn" disabled style="opacity:0.5;">Select a Payment Method Above</button>
-          <p class="submit-note" id="submit-note-text">Choose card/eCheck or Zelle above to continue.</p>
+          <p class="submit-note" id="submit-note-text">Choose card or Zelle above to continue.</p>
         </form>
       </div>
       <div id="success-message">
@@ -263,16 +263,16 @@
         <h2>Redirecting to Payment...</h2>
         <p>Taking you to our secure payment page now. If you are not redirected automatically, <a href="#" id="manual-redirect" style="color:var(--red);">click here</a>.</p>
       </div>
+
+      <div id="error-message" style="display:none;text-align:center;padding:32px;background:var(--red-light);border:1px solid #f0c0bb;border-radius:8px;margin-top:20px;">
+        <p style="color:var(--red-dark);font-weight:600;margin-bottom:8px;">Payment setup failed.</p>
+        <p style="font-size:14px;color:var(--red-dark);">Please email <a href="mailto:team@redhandresearch.com" style="color:var(--red-dark);text-decoration:underline;">team@redhandresearch.com</a> or try again.</p>
+      </div>
       <div id="zelle-success" style="display:none;text-align:center;padding:48px 32px;">
         <div style="width:64px;height:64px;background:#f0f0ff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:28px;">💜</div>
         <h2 style="font-family:'DM Serif Display',serif;font-size:32px;margin-bottom:12px;">Order Received!</h2>
         <p style="font-size:16px;color:var(--text-mid);max-width:480px;margin:0 auto 16px;line-height:1.7;">We'll email you within a few hours with your Zelle payment instructions. Your 5% discount has been applied.</p>
-        <p style="font-size:15px;font-weight:600;color:var(--text-dark);margin-bottom:24px;">Send to: <span style="color:#6d1ed4;">$redhandresearch</span></p>
         <a href="products.html" style="display:inline-flex;align-items:center;gap:8px;background:var(--red);color:white;padding:14px 28px;border-radius:4px;font-weight:600;font-size:14px;">← Back to Products</a>
-      </div>
-      <div id="error-message" style="display:none;text-align:center;padding:32px;background:var(--red-light);border:1px solid #f0c0bb;border-radius:8px;margin-top:20px;">
-        <p style="color:var(--red-dark);font-weight:600;margin-bottom:8px;">Payment setup failed.</p>
-        <p style="font-size:14px;color:var(--red-dark);">Please email <a href="mailto:team@redhandresearch.com" style="color:var(--red-dark);text-decoration:underline;">team@redhandresearch.com</a> or try again.</p>
       </div>
     </div>
     <div class="order-sidebar">
@@ -294,8 +294,7 @@
       <div class="pm-card">
         <h3>We Accept</h3>
         <div class="pm-item"><div class="pm-dot"></div><span>Credit &amp; Debit Cards</span></div>
-        <div class="pm-item"><div class="pm-dot"></div><span>eCheck / ACH</span></div>
-        <div class="pm-item"><div class="pm-dot"></div><span>Zelle — Save 5% ($redhandresearch)</span></div>
+        <div class="pm-item"><div class="pm-dot"></div><span>Zelle — Save 5%</span></div>
       </div>
     </div>
   </div>
@@ -522,6 +521,7 @@
           promo_code: promo ? promo.code : 'None',
           payment_method: payMethod,
           zelle_total: payMethod === 'zelle' ? '$' + (_finalTotal * 0.95).toFixed(2) : 'N/A',
+          zelle_tag: payMethod === 'zelle' ? '$redhandresearch' : 'N/A',
         }),
         headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
       }).catch(function(){});
@@ -537,7 +537,7 @@
         return;
       }
 
-      // ── CARD / eCHECK flow → Bankful ─────────────────────────────────────
+      // ── CARD flow → Bankful ─────────────────────────────────────
       try {
         var res = await fetch(WORKER_URL, {
           method: 'POST',

@@ -412,7 +412,7 @@
       var shipMethod = document.querySelector('input[name="ship"]:checked');
       var shipKey = shipMethod ? shipMethod.value : 'standard';
       var shipCost = SHIP_RATES[shipKey];
-      var freeShip = subtotal >= 150;
+      var freeShip = subtotal >= 400;
 
       // Promo on post-bundle subtotal
       var promoAmt = activePromo ? subtotal * (activePromo.pct / 100) : 0;
@@ -451,13 +451,13 @@
         document.getElementById('ship-cost').textContent = '$' + shipCost.toFixed(2);
         document.getElementById('freeship-row').style.display = 'none';
       }
-      if (stdLabel) stdLabel.textContent = subtotal >= 150 ? 'FREE' : '$10.00';
+      if (stdLabel) stdLabel.textContent = subtotal >= 400 ? 'FREE' : '$10.00';
 
       document.getElementById('grand-total').textContent = '$' + grandTotal.toFixed(2);
 
       var badge = document.getElementById('bulk-badge');
       var nudgeItems = cart.filter(function(i) { return i.bundlePrice && i.qty === 1; });
-      var remaining = Math.max(0, 150 - subtotal);
+      var remaining = Math.max(0, 400 - subtotal);
       if (bundleSavings > 0) {
         var msg3plus = cart.some(function(i){ return i.bundlePrice && i.qty >= 3; }) ? ' \u2014 $5 off every extra vial!' : '';
         badge.textContent = '\uD83C\uDF89 Bundle savings applied \u2014 saving $' + bundleSavings.toFixed(2) + '!' + msg3plus;
@@ -504,13 +504,15 @@
         if (item.bundlePrice && item.qty >= 2) {
           bundleNote = '<div style="font-size:12px;color:#27ae60;font-weight:600;margin-top:2px;">\u2713 Bundle price applied (save $' + savings.toFixed(2) + ')</div>';
         } else if (item.bundlePrice && item.qty === 1) {
-          bundleNote = '<div style="font-size:12px;color:#8a857e;margin-top:2px;">Add 1 more to unlock bundle pricing</div>';
+          var potentialSavings = item.price - item.bundlePrice / 2;
+          bundleNote = '<div style="font-size:12px;color:#8a857e;margin-top:2px;">Add 1 more to save $' + potentialSavings.toFixed(2) + ' per vial</div>';
         }
         return '<div class="cart-item">' +
           '<div class="cart-item-info">' +
           '<h4>' + item.name + '</h4>' +
           '<div class="cart-item-dose">' + item.dose + '</div>' +
           '<div class="cart-item-unit">$' + item.price.toFixed(2) + ' each</div>' +
+          '<div class="cart-item-unit">Effective: $' + (lineTotal / item.qty).toFixed(2) + ' per vial</div>' +
           bundleNote +
           '</div>' +
           '<div class="qty-control">' +
