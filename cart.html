@@ -207,7 +207,7 @@
               <div style="font-size:13px;font-weight:600;color:var(--text-dark);">Hospira BAC Water</div>
               <div style="font-size:11px;color:var(--text-light);margin-top:2px;">Required for reconstitution</div>
             </div>
-            <button onclick="quickAdd('Hospira BAC Water','Standard',25)" style="background:var(--red);color:white;border:none;border-radius:4px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;">+ Add $25</button>
+            <button onclick="quickAdd('Hospira BAC Water','Standard',25,20)" style="background:var(--red);color:white;border:none;border-radius:4px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;">+ Add $25</button>
           </div>
 
         </div>
@@ -256,9 +256,8 @@
       </div>
           <div class="payment-card" style="background:var(--text-dark);border-radius:8px;padding:24px;margin-top:20px;">
         <h3 style="font-family:'DM Serif Display',serif;font-size:18px;color:white;margin-bottom:14px;">We Accept</h3>
-        <div style="display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08);"><div style="width:7px;height:7px;background:#c0392b;border-radius:50%;flex-shrink:0;"></div><span style="font-size:13px;color:rgba(255,255,255,0.6);">Zelle</span></div>
-        <div style="display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08);"><div style="width:7px;height:7px;background:#c0392b;border-radius:50%;flex-shrink:0;"></div><span style="font-size:13px;color:rgba(255,255,255,0.6);">Cash App</span></div>
-        <div style="display:flex;gap:10px;align-items:center;padding:8px 0;"><div style="width:7px;height:7px;background:#c0392b;border-radius:50%;flex-shrink:0;"></div><span style="font-size:13px;color:rgba(255,255,255,0.6);">Venmo</span></div>
+        <div style="display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08);"><div style="width:7px;height:7px;background:#c0392b;border-radius:50%;flex-shrink:0;"></div><span style="font-size:13px;color:rgba(255,255,255,0.6);">Credit &amp; Debit Cards</span></div>
+        <div style="display:flex;gap:10px;align-items:center;padding:8px 0;"><div style="width:7px;height:7px;background:#c0392b;border-radius:50%;flex-shrink:0;"></div><span style="font-size:13px;color:rgba(255,255,255,0.6);">Zelle — Save 5%</span></div>
       </div>
     </div>
 
@@ -308,12 +307,12 @@
     function toggleMenu() { document.getElementById('hamburger').classList.toggle('open'); document.getElementById('mobile-menu').classList.toggle('open'); }
 
     // CART UTILITIES
-    function quickAdd(name, dose, price) {
+    function quickAdd(name, dose, price, floorPrice) {
       var cart = getCart();
       var key = name + '|' + dose;
       var existing = null;
       for (var i = 0; i < cart.length; i++) { if (cart[i].key === key) { existing = cart[i]; break; } }
-      if (existing) { existing.qty += 1; } else { cart.push({ key: key, name: name, dose: dose, price: price, qty: 1, bundlePrice: null }); }
+      if (existing) { existing.qty += 1; } else { cart.push({ key: key, name: name, dose: dose, price: price, qty: 1, bundlePrice: null, floorPrice: floorPrice || 0 }); }
       saveCart(cart);
     }
     function getCart() { try { return JSON.parse(localStorage.getItem('rhr_cart') || '[]'); } catch(e) { return []; } }
@@ -376,8 +375,9 @@
       } else {
         // Non-bundled
         if (item.qty === 1) return item.price;
-        if (item.qty === 2) return (item.price - 5) * 2;
-        return Math.max(0, item.price - 10) * item.qty;
+        var floor = item.floorPrice || 0;
+        if (item.qty === 2) return Math.max(floor, item.price - 5) * 2;
+        return Math.max(floor, item.price - 10) * item.qty;
       }
     }
 

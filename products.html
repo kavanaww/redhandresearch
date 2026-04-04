@@ -987,7 +987,7 @@
         existing.qty += qty;
         existing.price = price; // update to bundle price
       } else {
-        cart.push({ key: key, name: name, dose: doseLabel, price: price, qty: qty });
+        cart.push({ key: key, name: name, dose: doseLabel, price: price, qty: qty, floorPrice: name.indexOf('BAC Water') !== -1 ? 20 : 0 });
       }
       saveCart(cart);
 

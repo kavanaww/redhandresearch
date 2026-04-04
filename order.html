@@ -374,8 +374,9 @@
         return rate3plus * item.qty;
       } else {
         if (item.qty === 1) return item.price;
-        if (item.qty === 2) return (item.price - 5) * 2;
-        return Math.max(0, item.price - 10) * item.qty;
+        var floor = item.floorPrice || 0;
+        if (item.qty === 2) return Math.max(floor, item.price - 5) * 2;
+        return Math.max(floor, item.price - 10) * item.qty;
       }
     }
     function itemBundleSavings(item) {
