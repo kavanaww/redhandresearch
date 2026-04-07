@@ -130,6 +130,7 @@
       .footer-top{grid-template-columns:1fr;gap:32px;}.footer-newsletter{flex-direction:column;}
     }
   </style>
+  <script src="pricing.js"></script>
 </head>
 <body>
   <div id="age-overlay">
@@ -332,11 +333,7 @@
     function denyAge(){window.location.href='https://www.google.com';}
     function toggleMenu(){document.getElementById('hamburger').classList.toggle('open');document.getElementById('mobile-menu').classList.toggle('open');}
 
-    // ─── PROMO CODES ─────────────────────────────────────────────────────────
-    const PROMO_CODES = {
-      'HUNTER10': 10, 'JESKA10': 10, 'JOSH10': 10, 'BRE10': 10,
-      'MOOSE20': 20, 'MOOSE10': 10, 'BRAND10': 10, 'RACHEL10': 10,
-    };
+    // PROMO_CODES, itemEffectiveTotal, itemBundleSavings — defined in pricing.js
 
     function applyOrderPromo() {
       var input = document.getElementById('promo-entry');
@@ -365,23 +362,7 @@
       document.querySelectorAll('.cart-count').forEach(function(el){ el.textContent='Cart ('+c+')'; });
     }
 
-    function itemEffectiveTotal(item) {
-      if (item.bundlePrice) {
-        if (item.qty === 1) return item.price;
-        var bundlePerVial = item.bundlePrice / 2;
-        if (item.qty === 2) return item.bundlePrice;
-        var rate3plus = Math.max(0, bundlePerVial - 5);
-        return rate3plus * item.qty;
-      } else {
-        if (item.qty === 1) return item.price;
-        if (item.name && item.name.indexOf('BAC Water') !== -1 && item.qty >= 2) return 19.99 * item.qty;
-        if (item.qty === 2) return (item.price - 5) * 2;
-        return Math.max(0, item.price - 10) * item.qty;
-      }
-    }
-    function itemBundleSavings(item) {
-      return Math.max(0, (item.price * item.qty) - itemEffectiveTotal(item));
-    }
+    // itemEffectiveTotal and itemBundleSavings loaded from pricing.js
 
     var _finalTotal = 0;
 

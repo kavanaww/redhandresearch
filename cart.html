@@ -143,6 +143,7 @@
       .footer-newsletter { flex-direction:column; }
     }
   </style>
+  <script src="pricing.js"></script>
 </head>
 <body>
 
@@ -322,17 +323,7 @@
       document.querySelectorAll('.cart-count').forEach(function(el) { el.textContent = 'Cart (' + count + ')'; });
     }
 
-    // PROMO CODES
-    const PROMO_CODES = {
-      'HUNTER10': 10,
-      'JESKA10':  10,
-      'JOSH10':   10,
-      'BRE10':    10,
-      'MOOSE20':  20,
-      'MOOSE10':  10,
-      'BRAND10':  10,
-      'RACHEL10': 10,
-    };
+    // PROMO_CODES, SHIP_RATES, itemEffectiveTotal, itemBundleSavings — defined in pricing.js
     var activePromo = null;
 
     function applyPromo() {
@@ -349,41 +340,6 @@
         msg.className = 'promo-msg error';
       }
       updateTotals();
-    }
-
-    // SHIPPING RATES
-    const SHIP_RATES = { standard: 10, expedited: 25, overnight: 50 };
-
-    // PRICING LOGIC
-    // BUNDLED products (have bundlePrice):
-    //   1 vial  = full price
-    //   2 vials = bundlePrice (sets a per-vial rate: bundlePrice/2)
-    //   3+ vials = (bundlePerVial - 5) × qty
-    // NON-BUNDLED products (no bundlePrice):
-    //   1 vial  = full price
-    //   2+ vials = (price - 5) × qty
-    //   3+ vials = (price - 10) × qty  [locks in]
-    function itemEffectiveTotal(item) {
-      if (item.bundlePrice) {
-        // Bundled
-        if (item.qty === 1) return item.price;
-        var bundlePerVial = item.bundlePrice / 2;
-        if (item.qty === 2) return item.bundlePrice;
-        // 3+: drop per-vial by $5 more, apply to all
-        var rate3plus = Math.max(0, bundlePerVial - 5);
-        return rate3plus * item.qty;
-      } else {
-        // Non-bundled
-        if (item.name && item.name.indexOf('BAC Water') !== -1 && item.qty >= 2) return 19.99 * item.qty;
-        if (item.qty === 1) return item.price;
-        if (item.qty === 2) return (item.price - 5) * 2;
-        return Math.max(0, item.price - 10) * item.qty;
-      }
-    }
-
-    // Savings vs paying full price for everything
-    function itemBundleSavings(item) {
-      return Math.max(0, (item.price * item.qty) - itemEffectiveTotal(item));
     }
 
     function updateTotals() {
@@ -506,6 +462,20 @@
         } else if (item.bundlePrice && item.qty === 1) {
           var potentialSavings = item.price - item.bundlePrice / 2;
           bundleNote = '<div style="font-size:12px;color:#8a857e;margin-top:2px;">Add 1 more to save $' + potentialSavings.toFixed(2) + ' per vial</div>';
+        }
+        if (item.name === 'BPC-157') {
+          if (item.qty >= 3) {
+            bundleNote += '<div style="font-size:12px;color:#27ae60;font-weight:600;margin-top:2px;">\u2713 $50/vial rate applied</div>';
+          } else {
+            bundleNote += '<div style="font-size:12px;color:#8a857e;margin-top:2px;">Price drops to $50/vial when ordering 3 or more.</div>';
+          }
+        }
+        if (item.name === 'GLP-3 R' && item.dose === '12mg') {
+          if (item.qty >= 3) {
+            bundleNote += '<div style="font-size:12px;color:#27ae60;font-weight:600;margin-top:2px;">\u2713 $99/vial rate applied</div>';
+          } else {
+            bundleNote += '<div style="font-size:12px;color:#8a857e;margin-top:2px;">Price drops to $99/vial when ordering 3 or more.</div>';
+          }
         }
         return '<div class="cart-item">' +
           '<div class="cart-item-info">' +

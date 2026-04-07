@@ -248,6 +248,7 @@
       .product-price { font-size: 19px; }
     }
   </style>
+  <script src="pricing.js"></script>
 </head>
 <body>
 
@@ -371,7 +372,7 @@
         </div>
 
         <!-- BPC-157 — CLICKABLE, qty pricing -->
-        <div class="product-card clickable" data-cat="peptides" data-name="BPC-157" data-detail="bpc-157.html" data-single="65" data-bundle2="120" data-bundle3plus="48">
+        <div class="product-card clickable" data-cat="peptides" data-name="BPC-157" data-detail="bpc-157.html" data-single="65" data-bundle2="120" data-bundle3plus="50">
           <div class="product-img" onclick="window.location='bpc-157.html'">
             <img src="logo.png" alt="BPC-157" class="product-img-logo"/>
             <span class="detail-badge">View Details</span>
@@ -381,11 +382,11 @@
             <select class="qty-select" onchange="updateQtyPrice(this)">
               <option value="65" data-qty="1">1 vial — $65.00</option>
               <option value="120" data-qty="2">2 vials — $120.00 ($60 each)</option>
-              <option value="144" data-qty="3">3 vials — $144.00 ($48 each)</option>
-              <option value="192" data-qty="4">4 vials — $192.00 ($48 each)</option>
-              <option value="240" data-qty="5">5 vials — $240.00 ($48 each)</option>
+              <option value="150" data-qty="3">3 vials — $150.00 ($50 each)</option>
+              <option value="200" data-qty="4">4 vials — $200.00 ($50 each)</option>
+              <option value="250" data-qty="5">5 vials — $250.00 ($50 each)</option>
             </select>
-            <div class="bundle-callout visible" id="bpc-bundle-callout">Buy 2 — $120 &nbsp;|&nbsp; Buy 3+ — $48 each</div>
+            <div class="bundle-callout visible" id="bpc-bundle-callout">Buy 2 — $120 &nbsp;|&nbsp; Buy 3+ — $50 each</div>
             <div class="product-footer"><span class="product-price">$65.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -506,17 +507,18 @@
           </div>
           <div class="product-body">
             <h3 onclick="window.location='glp-3r.html'">GLP-3 R</h3>
-            <select class="dose-select" onchange="updatePrice(this)">
-              <option value="109">12mg — $109.00</option>
-              <option value="139">18mg — $139.00</option>
-              <option value="155">20mg — $155.00</option>
-              <option value="169">24mg — $169.00</option>
-              <option value="195">30mg — $195.00</option>
-              <option value="219">40mg — $219.00</option>
-              <option value="255">48mg — $255.00</option>
-              <option value="275">60mg — $275.00</option>
+            <select class="dose-select" onchange="updateGlp3rPrice(this)">
+              <option value="114">12mg — $114.00</option>
+              <option value="144">18mg — $144.00</option>
+              <option value="160">20mg — $160.00</option>
+              <option value="174">24mg — $174.00</option>
+              <option value="200">30mg — $200.00</option>
+              <option value="224">40mg — $224.00</option>
+              <option value="260">48mg — $260.00</option>
+              <option value="280">60mg — $280.00</option>
             </select>
-            <div class="product-footer"><span class="product-price">$109.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
+            <div class="bundle-callout visible" id="glp3r-bundle-callout">Buy 3+ of 12mg — $99 each</div>
+            <div class="product-footer"><span class="product-price">$114.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
 
@@ -894,6 +896,18 @@
     function updateQtyPrice(select) {
       var card = select.closest('.product-card');
       card.querySelector('.product-price').textContent = '$' + parseFloat(select.value).toFixed(2);
+    }
+
+    // PRICE UPDATE — GLP-3 R (shows 12mg 3+ bundle callout only for 12mg option)
+    function updateGlp3rPrice(select) {
+      var card = select.closest('.product-card');
+      card.querySelector('.product-price').textContent = '$' + parseFloat(select.value).toFixed(2);
+      var callout = document.getElementById('glp3r-bundle-callout');
+      if (callout) {
+        var dose = select.options[select.selectedIndex].text.split('\u2014')[0].trim();
+        if (dose === '12mg') { callout.classList.add('visible'); }
+        else { callout.classList.remove('visible'); }
+      }
     }
 
     // KPV BUNDLE CALLOUT — per option
