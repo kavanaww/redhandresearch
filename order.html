@@ -441,6 +441,9 @@
       var zelleRow = document.getElementById('o-zelle-row');
       var oTotal = document.getElementById('o-total');
       if (method === 'zelle') {
+        // Zelle 5% discount applies to the post-promo total.
+        // Promo and Zelle stack: e.g., MOOSE20 + Zelle = 20% off subtotal,
+        // then an additional 5% off the discounted total.
         var zelleDiscount = _finalTotal * 0.05;
         var dueTotal = _finalTotal - zelleDiscount;
         document.getElementById('o-zelle-amt').textContent = '-$' + zelleDiscount.toFixed(2);
@@ -570,7 +573,6 @@
           throw new Error(data.message || 'No redirect URL returned');
         }
       } catch(err) {
-        console.error('Bankful error:', err);
         btn.disabled = false;
         btn.textContent = 'Proceed to Secure Payment →';
         document.getElementById('error-message').style.display = 'block';
