@@ -456,9 +456,16 @@
         }
         if (item.name === 'BPC-157') {
           if (item.qty >= 3) {
-            bundleNote += '<div style="font-size:12px;color:#27ae60;font-weight:600;margin-top:2px;">\u2713 $50/vial rate applied</div>';
+            bundleNote += '<div style="font-size:12px;color:#27ae60;font-weight:600;margin-top:2px;">\u2713 Tier pricing applied \u2014 saving $' + savings.toFixed(2) + '</div>';
           } else {
-            bundleNote += '<div style="font-size:12px;color:#8a857e;margin-top:2px;">Price drops to $50/vial when ordering 3 or more.</div>';
+            bundleNote += '<div style="font-size:12px;color:#8a857e;margin-top:2px;">Order 3+ for tier pricing</div>';
+          }
+        }
+        if (item.name === 'TB-500') {
+          if (item.qty >= 3) {
+            bundleNote += '<div style="font-size:12px;color:#27ae60;font-weight:600;margin-top:2px;">\u2713 Tier pricing applied \u2014 saving $' + savings.toFixed(2) + '</div>';
+          } else {
+            bundleNote += '<div style="font-size:12px;color:#8a857e;margin-top:2px;">Order 3+ for tier pricing</div>';
           }
         }
         if (item.name === 'GLP-3 R' && item.dose === '12mg') {

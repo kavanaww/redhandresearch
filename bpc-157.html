@@ -224,17 +224,17 @@
         <div class="price-tiers">
           <div class="price-tier"><span class="tier-label">1 vial</span><span class="tier-price">$65.00</span></div>
           <div class="price-tier"><span class="tier-label">2 vials</span><span class="tier-price">$120.00 <span class="tier-save">$60 each</span></span></div>
-          <div class="price-tier best-value"><span class="tier-label">3 vials <span class="best-value-tag">Best Value</span></span><span class="tier-price">$144.00 <span class="tier-save">$48 each</span></span></div>
-          <div class="price-tier best-value"><span class="tier-label">4 vials</span><span class="tier-price">$192.00 <span class="tier-save">$48 each</span></span></div>
-          <div class="price-tier best-value"><span class="tier-label">5 vials</span><span class="tier-price">$240.00 <span class="tier-save">$48 each</span></span></div>
+          <div class="price-tier best-value"><span class="tier-label">3 vials <span class="best-value-tag">Best Value</span></span><span class="tier-price">$150.00 <span class="tier-save">$50 each</span></span></div>
+          <div class="price-tier best-value"><span class="tier-label">4 vials</span><span class="tier-price">$200.00 <span class="tier-save">$50 each</span></span></div>
+          <div class="price-tier best-value"><span class="tier-label">5 vials</span><span class="tier-price">$210.00 <span class="tier-save">$42 each</span></span></div>
         </div>
 
         <select class="qty-select-detail" id="bpc-qty" onchange="updateDetailPrice()">
           <option value="65" data-qty="1">1 vial — $65.00</option>
           <option value="120" data-qty="2">2 vials — $120.00 ($60 each)</option>
-          <option value="144" data-qty="3">3 vials — $144.00 ($48 each)</option>
-          <option value="192" data-qty="4">4 vials — $192.00 ($48 each)</option>
-          <option value="240" data-qty="5">5 vials — $240.00 ($48 each)</option>
+          <option value="150" data-qty="3">3 vials — $150.00 ($50 each)</option>
+          <option value="200" data-qty="4">4 vials — $200.00 ($50 each)</option>
+          <option value="210" data-qty="5">5 vials — $210.00 ($42 each)</option>
         </select>
 
         <div class="price-display" id="detail-price">$65.00</div>
@@ -327,7 +327,7 @@
       var sel = document.getElementById('bpc-qty');
       var opt = sel.options[sel.selectedIndex];
       var qty = parseInt(opt.getAttribute('data-qty')||'1');
-      var price = parseFloat(sel.value);
+      var price = parseFloat(sel.options[0].value);
       var label = qty + (qty===1?' vial':' vials');
       var cart = getCart();
       var key = 'BPC-157|'+label;

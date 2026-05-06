@@ -125,14 +125,14 @@
           <div class="price-tier"><span class="tier-label">2 vials</span><span class="tier-price">$140.00 <span class="tier-save">$70 each</span></span></div>
           <div class="price-tier best-value"><span class="tier-label">3 vials <span class="best-value-tag">Best Value</span></span><span class="tier-price">$195.00 <span class="tier-save">$65 each</span></span></div>
           <div class="price-tier best-value"><span class="tier-label">4 vials</span><span class="tier-price">$260.00 <span class="tier-save">$65 each</span></span></div>
-          <div class="price-tier best-value"><span class="tier-label">5 vials</span><span class="tier-price">$325.00 <span class="tier-save">$65 each</span></span></div>
+          <div class="price-tier best-value"><span class="tier-label">5 vials</span><span class="tier-price">$265.00 <span class="tier-save">$53 each</span></span></div>
         </div>
         <select class="qty-select-detail" id="tb-qty" onchange="updateDetailPrice()">
           <option value="75" data-qty="1">1 vial — $75.00</option>
           <option value="140" data-qty="2">2 vials — $140.00 ($70 each)</option>
           <option value="195" data-qty="3">3 vials — $195.00 ($65 each)</option>
           <option value="260" data-qty="4">4 vials — $260.00 ($65 each)</option>
-          <option value="325" data-qty="5">5 vials — $325.00 ($65 each)</option>
+          <option value="265" data-qty="5">5 vials — $265.00 ($53 each)</option>
         </select>
         <div class="price-display" id="detail-price">$75.00</div>
         <div class="price-note">10mg per vial &bull; Lyophilized, sterile-filled</div>
@@ -157,7 +157,7 @@
     function getCart(){try{return JSON.parse(localStorage.getItem('rhr_cart')||'[]');}catch(e){return[];}}
     function saveCart(c){localStorage.setItem('rhr_cart',JSON.stringify(c));updateCartCount();}
     function updateCartCount(){var count=getCart().reduce(function(s,i){return s+i.qty;},0);document.querySelectorAll('.cart-count').forEach(function(el){el.textContent='Cart ('+count+')';}); }
-    function handleDetailAddToCart(){var sel=document.getElementById('tb-qty');var opt=sel.options[sel.selectedIndex];var qty=parseInt(opt.getAttribute('data-qty')||'1');var price=parseFloat(sel.value);var label=qty+(qty===1?' vial':' vials');var cart=getCart();var key='TB-500|'+label;var ex=cart.find(function(i){return i.key===key;});if(ex){ex.qty+=qty;ex.price=price;}else{cart.push({key:key,name:'TB-500',dose:label,price:price,qty:qty});}saveCart(cart);var btn=document.querySelector('.add-to-cart-btn');btn.textContent='Added!';btn.style.background='#27ae60';setTimeout(function(){btn.textContent='Add to Cart';btn.style.background='';},1400);}
+    function handleDetailAddToCart(){var sel=document.getElementById('tb-qty');var opt=sel.options[sel.selectedIndex];var qty=parseInt(opt.getAttribute('data-qty')||'1');var price=parseFloat(sel.options[0].value);var label=qty+(qty===1?' vial':' vials');var cart=getCart();var key='TB-500|'+label;var ex=cart.find(function(i){return i.key===key;});if(ex){ex.qty+=qty;ex.price=price;}else{cart.push({key:key,name:'TB-500',dose:label,price:price,qty:qty});}saveCart(cart);var btn=document.querySelector('.add-to-cart-btn');btn.textContent='Added!';btn.style.background='#27ae60';setTimeout(function(){btn.textContent='Add to Cart';btn.style.background='';},1400);}
     document.addEventListener('DOMContentLoaded',function(){if(sessionStorage.getItem('ageVerified')==='true'){document.getElementById('age-overlay').classList.add('hidden');document.body.style.overflow='';}else{document.body.style.overflow='hidden';}updateCartCount();});
   </script>
 </body>
