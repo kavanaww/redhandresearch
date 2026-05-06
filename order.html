@@ -292,6 +292,7 @@
         <div class="t-row"><span>Subtotal</span><span id="o-subtotal">—</span></div>
         <div class="t-row disc" id="o-bulk-row" style="display:none;"><span id="o-bulk-label">Bundle savings</span><span id="o-bulk-amt">—</span></div>
         <div class="t-row disc" id="o-disc-row" style="display:none;"><span id="o-disc-label">Promo</span><span id="o-disc-amt">—</span></div>
+        <div class="t-row disc" id="o-zelle-row" style="display:none;"><span>Zelle discount (-5%)</span><span id="o-zelle-amt">—</span></div>
         <div class="t-row"><span>Shipping</span><span id="o-ship-display">—</span></div>
         <hr class="t-divider"/>
         <div class="t-total"><span>Total</span><span id="o-total">—</span></div>
@@ -414,6 +415,7 @@
       document.getElementById('o-subtotal').textContent = '$' + sub.toFixed(2);
       document.getElementById('o-total').textContent = '$' + finalTotal.toFixed(2);
       document.getElementById('o-ship-display').textContent = sub >= FREE_SHIPPING_THRESHOLD ? 'Free' : shipLabel;
+      applyPaymentDisplay();
 
       var bulkRow = document.getElementById('o-bulk-row');
       if (bundleSavings > 0) {
@@ -431,6 +433,25 @@
     }
 
     document.addEventListener('DOMContentLoaded', function(){ updateCartCount(); loadCart(); });
+
+    // Sync sidebar total + Zelle row to current payment method.
+    // Reads _finalTotal (canonical pre-Zelle); never mutates it.
+    function applyPaymentDisplay() {
+      var method = document.getElementById('f-payment-method').value;
+      var zelleRow = document.getElementById('o-zelle-row');
+      var oTotal = document.getElementById('o-total');
+      if (method === 'zelle') {
+        var zelleDiscount = _finalTotal * 0.05;
+        var dueTotal = _finalTotal - zelleDiscount;
+        document.getElementById('o-zelle-amt').textContent = '-$' + zelleDiscount.toFixed(2);
+        document.getElementById('zelle-total').textContent = '$' + dueTotal.toFixed(2);
+        zelleRow.style.display = 'flex';
+        oTotal.textContent = '$' + dueTotal.toFixed(2);
+      } else {
+        zelleRow.style.display = 'none';
+        oTotal.textContent = '$' + _finalTotal.toFixed(2);
+      }
+    }
 
     // ── PAYMENT METHOD SELECTION ──────────────────────────────────────────────
     function selectPayment(method) {
@@ -463,11 +484,10 @@
         btnZelle.style.borderColor = '#6d1ed4';
         btnZelle.style.background = '#f5f0ff';
         noticeZelle.style.display = 'block';
-        var zelleTotal = (_finalTotal * 0.95).toFixed(2);
-        document.getElementById('zelle-total').textContent = '$' + zelleTotal;
         btn.textContent = 'Submit Zelle Order →';
         note.textContent = "We'll email you Zelle payment instructions within a few hours.";
       }
+      applyPaymentDisplay();
     }
 
     // ─── FORM SUBMIT ──────────────────────────────────────────────────────────
@@ -485,9 +505,10 @@
       var city = document.getElementById('f-city').value.trim();
       var state = document.getElementById('f-state').value;
       var zip = document.getElementById('f-zip').value.trim();
-      var amount = _finalTotal.toFixed(2);
       var newsletter = document.getElementById('f-newsletter').checked;
       var payMethod = document.getElementById('f-payment-method').value;
+      var bankfulAmount = _finalTotal.toFixed(2);                                            // pre-Zelle — what Bankful charges (card flow only)
+      var amountDue = (payMethod === 'zelle' ? _finalTotal * 0.95 : _finalTotal).toFixed(2); // what the customer owes
 
       var cart = getCart();
       var promo = getPromo();
@@ -503,10 +524,9 @@
           first_name: fname, last_name: lname, email: email, phone: phone,
           address: address, city: city, state: state, zip: zip,
           cart_contents: cartStr,
-          order_total: '$' + amount,
+          order_total: '$' + amountDue,
           promo_code: promo ? promo.code : 'None',
           payment_method: payMethod,
-          zelle_total: payMethod === 'zelle' ? '$' + (_finalTotal * 0.95).toFixed(2) : 'N/A',
           zelle_tag: payMethod === 'zelle' ? '$redhandresearch' : 'N/A',
         }),
         headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
@@ -531,7 +551,7 @@
           body: JSON.stringify({
             fname: fname, lname: lname, email: email, phone: phone,
             address: address, city: city, state: state, zip: zip,
-            amount: amount, newsletter: newsletter,
+            amount: bankfulAmount, newsletter: newsletter,
           })
         });
 
