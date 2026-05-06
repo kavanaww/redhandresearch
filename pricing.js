@@ -80,6 +80,7 @@ const PROMO_CODES = {
 
 // ─── SHIPPING RATES ───────────────────────────────────────────────────────────
 const SHIP_RATES = { standard: 10, expedited: 25, overnight: 50 };
+const FREE_SHIPPING_THRESHOLD = 150;
 
 // ─── CART PRICING LOGIC ───────────────────────────────────────────────────────
 // Shared by cart.html and order.html. Do not redefine locally.

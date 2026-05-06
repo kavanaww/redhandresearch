@@ -401,16 +401,15 @@
       var afterAll = sub - promoAmt;
 
       var shipData = (function(){ try{ return JSON.parse(localStorage.getItem('rhr_shipping')||'null'); } catch(e){ return null; } })();
-      var SHIP_RATES = { standard:10, expedited:25, overnight:50 };
       var shipKey = shipData ? shipData.key : 'standard';
       var shipLabel = shipData ? shipData.label : 'Standard ($10.00)';
-      var shipCost = sub >= 150 ? 0 : (SHIP_RATES[shipKey] || 10);
+      var shipCost = sub >= FREE_SHIPPING_THRESHOLD ? 0 : (SHIP_RATES[shipKey] || 10);
       var finalTotal = afterAll + shipCost;
       _finalTotal = finalTotal;
 
       document.getElementById('o-subtotal').textContent = '$' + sub.toFixed(2);
       document.getElementById('o-total').textContent = '$' + finalTotal.toFixed(2);
-      document.getElementById('o-ship-display').textContent = sub >= 150 ? 'Free' : shipLabel;
+      document.getElementById('o-ship-display').textContent = sub >= FREE_SHIPPING_THRESHOLD ? 'Free' : shipLabel;
 
       var bulkRow = document.getElementById('o-bulk-row');
       if (bundleSavings > 0) {
