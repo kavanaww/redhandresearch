@@ -11,8 +11,7 @@ const PRICING = {
     bundle3PlusPerVial:  50,    // $50/vial floor for 3+
   },
   'BPC-157 / TB-500 Blend': {
-    variants:   [{ dose: '10mg/10mg', price: 140 }],
-    bundle2Total: 255,
+    variants:   [{ dose: '10mg/10mg', price: 120 }],
   },
   'Cagrilintide':    { variants: [{ dose: '4.5mg',     price: 75    }] },
   'Cartalax':        { variants: [{ dose: '20mg',      price: 89    }] },
@@ -37,13 +36,13 @@ const PRICING = {
       { dose: '60mg', price: 280 },
     ],
   },
-  'Glow 70':         { variants: [{ dose: '70mg',      price: 135   }], bundle2Total: 225 },
+  'Glow 70 Blend':   { variants: [{ dose: '70mg',      price: 130   }] },
   'Glutathione':     { variants: [{ dose: '1760mg',    price: 85    }] },
   'HHB Hair Skin Nails Amino Blend': { variants: [{ dose: 'Standard', price: 79 }] },
   'IGF-1 LR3':       { variants: [{ dose: '1mg',       price: 89    }] },
   'Ipamorelin':      { variants: [{ dose: '5mg', price: 65 }, { dose: '10mg', price: 79 }] },
   'Kisspeptin':      { variants: [{ dose: '10mg',      price: 75    }] },
-  'KLOW 80':         { variants: [{ dose: '80mg',      price: 195   }], bundle2Total: 264 },
+  'KLOW 80':         { variants: [{ dose: '80mg',      price: 140   }] },
   'KPV':             { variants: [{ dose: '10mg', price: 65, bundle2Total: 88 }, { dose: '30mg', price: 85 }] },
   'Lipo-C':          { variants: [{ dose: 'Standard',  price: 79    }] },
   'Melanotan I':     { variants: [{ dose: '10mg',      price: 65    }] },
@@ -69,7 +68,7 @@ const PRICING = {
   },
   'Tesamorelin':     { variants: [{ dose: '10mg',      price: 89    }] },
   'VIP Vasoactive Intestinal Peptide': { variants: [{ dose: '5mg', price: 75 }], bundle2Total: 150 },
-  'Hospira BAC Water Bacteriostatic':  { variants: [{ dose: 'Standard', price: 24.99 }], bundle2PlusPerVial: 19.99 },
+  'Hospira BAC Water Bacteriostatic':  { variants: [{ dose: 'Standard', price: 25 }], bundle2PlusPerVial: 19.99 },
 };
 
 // ─── PROMO CODES ─────────────────────────────────────────────────────────────
@@ -91,6 +90,30 @@ function itemEffectiveTotal(item) {
     if (item.qty === 1) return 65;
     if (item.qty === 2) return 120;
     return 50 * item.qty;
+  }
+  // TB-500: tiered pricing — $75 / $140 / $65 per vial for 3+
+  if (item.name === 'TB-500') {
+    if (item.qty === 1) return 75;
+    if (item.qty === 2) return 140;
+    return 65 * item.qty;
+  }
+  // Wolverine Blend (BPC-157 / TB-500 Blend): $120 / $110 each for 2 / $100 each for 3+
+  if (item.name === 'BPC-157 / TB-500 Blend') {
+    if (item.qty === 1) return 120;
+    if (item.qty === 2) return 220;
+    return 100 * item.qty;
+  }
+  // Glow 70 Blend: $130 / $125 each for 2 / $120 each for 3+
+  if (item.name === 'Glow 70 Blend') {
+    if (item.qty === 1) return 130;
+    if (item.qty === 2) return 250;
+    return 120 * item.qty;
+  }
+  // KLOW 80: $140 / $135 each for 2 / $130 each for 3+
+  if (item.name === 'KLOW 80') {
+    if (item.qty === 1) return 140;
+    if (item.qty === 2) return 270;
+    return 130 * item.qty;
   }
   // GLP-3 R 12mg: $99/vial for 3+
   if (item.name === 'GLP-3 R' && item.dose === '12mg' && item.qty >= 3) {

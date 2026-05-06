@@ -347,6 +347,7 @@
           <div class="product-img"><img src="logo.png" alt="Adamax" class="product-img-logo"/></div>
           <div class="product-body"><h3>Adamax</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="79">5mg — $79.00</option></select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$79.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -356,6 +357,7 @@
           <div class="product-img"><img src="logo.png" alt="AHK-CU" class="product-img-logo"/></div>
           <div class="product-body"><h3>AHK-CU</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="48">10mg — $48.00</option></select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$48.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -368,12 +370,13 @@
               <option value="65">10mg — $65.00</option>
               <option value="89">30mg — $89.00</option>
             </select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$65.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
 
         <!-- BPC-157 — CLICKABLE, qty pricing -->
-        <div class="product-card clickable" data-cat="peptides" data-name="BPC-157" data-detail="bpc-157.html" data-single="65" data-bundle2="120" data-bundle3plus="50">
+        <div class="product-card clickable" data-cat="peptides" data-name="BPC-157" data-detail="bpc-157.html">
           <div class="product-img" onclick="window.location='bpc-157.html'">
             <img src="logo.png" alt="BPC-157" class="product-img-logo"/>
             <span class="detail-badge">View Details</span>
@@ -393,7 +396,7 @@
         </div>
 
         <!-- BPC-157 / TB-500 Blend (10mg/10mg) — CLICKABLE — Wolverine Blend -->
-        <div class="product-card clickable" data-cat="peptides" data-name="BPC-157 / TB-500 Blend" data-detail="bpc-tb500-blend.html" data-bundle="255">
+        <div class="product-card clickable" data-cat="peptides" data-name="BPC-157 / TB-500 Blend" data-detail="bpc-tb500-blend.html">
           <div class="product-img" onclick="window.location='bpc-tb500-blend.html'">
             <img src="logo.png" alt="BPC-157 / TB-500 Blend" class="product-img-logo"/>
             <span class="detail-badge">View Details</span>
@@ -402,11 +405,11 @@
             <h3 onclick="window.location='bpc-tb500-blend.html'">BPC-157 / TB-500 Blend</h3>
             <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--red);margin-bottom:8px;">The Wolverine Blend</div>
             <select class="dose-select" onchange="updatePrice(this)">
-              <option value="140">10mg/10mg — $140.00</option>
+              <option value="120">10mg/10mg — $120.00</option>
             </select>
             <div class="blend-ingredients"><span>BPC-157 10mg + TB-500 10mg</span></div>
-            <div class="bundle-callout visible">Buy 2 — 2 vials for $255 (save $25)</div>
-            <div class="product-footer"><span class="product-price">$140.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
+            <div class="product-footer"><span class="product-price">$120.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
 
@@ -415,6 +418,7 @@
           <div class="product-img"><img src="logo.png" alt="Cagrilintide" class="product-img-logo"/></div>
           <div class="product-body"><h3>Cagrilintide</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="75">4.5mg — $75.00</option></select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$75.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -424,6 +428,7 @@
           <div class="product-img"><img src="logo.png" alt="Cartalax" class="product-img-logo"/></div>
           <div class="product-body"><h3>Cartalax</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="89">20mg — $89.00</option></select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$89.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -436,26 +441,27 @@
               <option value="79">No DAC 10mg — $79.00</option>
               <option value="79">w/ DAC 5mg — $79.00</option>
             </select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$79.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
 
         <!-- DSIP -->
-        <div class="product-card" data-cat="peptides" data-name="DSIP" data-bundle="75">
+        <div class="product-card" data-cat="peptides" data-name="DSIP">
           <div class="product-img"><img src="logo.png" alt="DSIP" class="product-img-logo"/></div>
           <div class="product-body"><h3>DSIP</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="65">10mg — $65.00</option></select>
-            <div class="bundle-callout visible">Buy 2 — 2 vials for $75 (save $55)</div>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$65.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
 
         <!-- GHK-CU -->
-        <div class="product-card" data-cat="peptides" data-name="GHK-CU" data-bundle="150">
+        <div class="product-card" data-cat="peptides" data-name="GHK-CU">
           <div class="product-img"><img src="logo.png" alt="GHK-CU" class="product-img-logo"/></div>
           <div class="product-body"><h3>GHK-CU</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="90">100mg — $90.00</option></select>
-            <div class="bundle-callout visible">Buy 2 — 2 vials for $150 (save $30)</div>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$90.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -473,6 +479,7 @@
               <option value="70">10mg — $70.00</option>
               <option value="120">20mg — $120.00</option>
             </select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$45.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -496,6 +503,7 @@
               <option value="250">50mg — $250.00</option>
               <option value="270">60mg — $270.00</option>
             </select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$45.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -524,17 +532,17 @@
         </div>
 
         <!-- Glow 70 — CLICKABLE -->
-        <div class="product-card clickable" data-cat="peptides" data-name="Glow 70" data-detail="glow-70.html" data-bundle="225">
+        <div class="product-card clickable" data-cat="peptides" data-name="Glow 70 Blend" data-detail="glow-70.html">
           <div class="product-img" onclick="window.location='glow-70.html'">
             <img src="logo.png" alt="Glow 70" class="product-img-logo"/>
             <span class="detail-badge">View Details</span>
           </div>
           <div class="product-body">
             <h3 onclick="window.location='glow-70.html'">Glow 70 Blend</h3>
-            <select class="dose-select" onchange="updatePrice(this)"><option value="135">70mg — $135.00</option></select>
+            <select class="dose-select" onchange="updatePrice(this)"><option value="130">70mg — $130.00</option></select>
             <div class="blend-ingredients"><span>GHK-CU 50mg &middot; BPC-157 10mg &middot; TB-500 10mg</span></div>
-            <div class="bundle-callout visible">Buy 2 — 2 vials for $225 (save $45)</div>
-            <div class="product-footer"><span class="product-price">$135.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
+            <div class="product-footer"><span class="product-price">$130.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
 
@@ -543,6 +551,7 @@
           <div class="product-img"><img src="logo.png" alt="Glutathione" class="product-img-logo"/></div>
           <div class="product-body"><h3>Glutathione</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="85">1760mg — $85.00</option></select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$85.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -553,6 +562,7 @@
           <div class="product-body"><h3>HHB — Hair, Skin &amp; Nails Blend</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="79">Standard — $79.00</option></select>
             <div class="blend-ingredients"><span>GHK-CU &middot; AHK-CU &middot; BPC-157 &middot; Biotin Amino Complex</span></div>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$79.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -562,6 +572,7 @@
           <div class="product-img"><img src="logo.png" alt="IGF-1 LR3" class="product-img-logo"/></div>
           <div class="product-body"><h3>IGF-1 LR3</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="89">1mg — $89.00</option></select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$89.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -574,6 +585,7 @@
               <option value="65">5mg — $65.00</option>
               <option value="79">10mg — $79.00</option>
             </select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$65.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -583,18 +595,19 @@
           <div class="product-img"><img src="logo.png" alt="Kisspeptin" class="product-img-logo"/></div>
           <div class="product-body"><h3>Kisspeptin</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="75">10mg — $75.00</option></select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$75.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
 
         <!-- KLOW 80 -->
-        <div class="product-card" data-cat="peptides" data-name="KLOW 80" data-bundle="264">
+        <div class="product-card" data-cat="peptides" data-name="KLOW 80">
           <div class="product-img"><img src="logo.png" alt="KLOW 80" class="product-img-logo"/></div>
           <div class="product-body"><h3>KLOW 80</h3>
-            <select class="dose-select" onchange="updatePrice(this)"><option value="195">80mg — $195.00</option></select>
+            <select class="dose-select" onchange="updatePrice(this)"><option value="140">80mg — $140.00</option></select>
             <div class="blend-ingredients"><span>KPV 10mg &middot; GHK-CU 50mg &middot; TB-500 10mg &middot; BPC-157 10mg</span></div>
-            <div class="bundle-callout visible">Buy 2 — 2 vials for $264 (save $126)</div>
-            <div class="product-footer"><span class="product-price">$195.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
+            <div class="product-footer"><span class="product-price">$140.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
 
@@ -616,6 +629,7 @@
           <div class="product-img"><img src="logo.png" alt="Lipo-C" class="product-img-logo"/></div>
           <div class="product-body"><h3>Lipo-C</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="79">Standard — $79.00</option></select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$79.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -625,6 +639,7 @@
           <div class="product-img"><img src="logo.png" alt="Melanotan I" class="product-img-logo"/></div>
           <div class="product-body"><h3>Melanotan I</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="65">10mg — $65.00</option></select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$65.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -634,6 +649,7 @@
           <div class="product-img"><img src="logo.png" alt="Melanotan II" class="product-img-logo"/></div>
           <div class="product-body"><h3>Melanotan II</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="65">10mg — $65.00</option></select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$65.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -646,16 +662,17 @@
               <option value="50">10mg — $50.00</option>
               <option value="130">30mg — $130.00</option>
             </select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$50.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
 
         <!-- NA Selank Amidate -->
-        <div class="product-card" data-cat="peptides" data-name="NA Selank Amidate" data-bundle="234">
+        <div class="product-card" data-cat="peptides" data-name="NA Selank Amidate">
           <div class="product-img"><img src="logo.png" alt="NA Selank Amidate" class="product-img-logo"/></div>
           <div class="product-body"><h3>NA Selank Amidate</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="120">30mg — $120.00</option></select>
-            <div class="bundle-callout visible">Buy 2 — 2 vials for $234 (save $6)</div>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$120.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -665,6 +682,7 @@
           <div class="product-img"><img src="logo.png" alt="NA Semax Amidate" class="product-img-logo"/></div>
           <div class="product-body"><h3>NA Semax Amidate</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="120">30mg — $120.00</option></select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$120.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -681,6 +699,7 @@
               <option value="70">500mg — $70.00</option>
               <option value="100">1000mg — $100.00</option>
             </select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$70.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -690,6 +709,7 @@
           <div class="product-img"><img src="logo.png" alt="Prostamax" class="product-img-logo"/></div>
           <div class="product-body"><h3>Prostamax</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="79">20mg — $79.00</option></select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$79.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -699,6 +719,7 @@
           <div class="product-img"><img src="logo.png" alt="PT-141" class="product-img-logo"/></div>
           <div class="product-body"><h3>PT-141</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="65">10mg — $65.00</option></select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$65.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -708,6 +729,7 @@
           <div class="product-img"><img src="logo.png" alt="Selank" class="product-img-logo"/></div>
           <div class="product-body"><h3>Selank</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="60">10mg — $60.00</option></select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$60.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -717,6 +739,7 @@
           <div class="product-img"><img src="logo.png" alt="Semax" class="product-img-logo"/></div>
           <div class="product-body"><h3>Semax</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="60">10mg — $60.00</option></select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$60.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -726,6 +749,7 @@
           <div class="product-img"><img src="logo.png" alt="Sermorelin" class="product-img-logo"/></div>
           <div class="product-body"><h3>Sermorelin</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="89">10mg — $89.00</option></select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$89.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -735,6 +759,7 @@
           <div class="product-img"><img src="logo.png" alt="Setmelanotide" class="product-img-logo"/></div>
           <div class="product-body"><h3>Setmelanotide</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="85">10mg — $85.00</option></select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$85.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -744,6 +769,7 @@
           <div class="product-img"><img src="logo.png" alt="Snap-8" class="product-img-logo"/></div>
           <div class="product-body"><h3>Snap-8</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="50">10mg — $50.00</option></select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$50.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -753,6 +779,7 @@
           <div class="product-img"><img src="logo.png" alt="SS-31" class="product-img-logo"/></div>
           <div class="product-body"><h3>SS-31</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="119">50mg — $119.00</option></select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$119.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -765,22 +792,23 @@
               <option value="85">6mg — $85.00</option>
               <option value="99">12mg — $99.00</option>
             </select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$85.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
 
         <!-- TA1 -->
-        <div class="product-card" data-cat="peptides" data-name="TA1 Thymosin Alpha" data-bundle="98">
+        <div class="product-card" data-cat="peptides" data-name="TA1 Thymosin Alpha">
           <div class="product-img"><img src="logo.png" alt="TA1" class="product-img-logo"/></div>
           <div class="product-body"><h3>TA1 (Thymosin Alpha-1)</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="70">10mg — $70.00</option></select>
-            <div class="bundle-callout visible">Buy 2 — 2 vials for $98 (save $42)</div>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$70.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
 
         <!-- TB-500 — CLICKABLE, qty pricing -->
-        <div class="product-card clickable" data-cat="peptides" data-name="TB-500" data-detail="tb-500.html" data-single="75" data-bundle2="140" data-bundle3plus="65">
+        <div class="product-card clickable" data-cat="peptides" data-name="TB-500" data-detail="tb-500.html">
           <div class="product-img" onclick="window.location='tb-500.html'">
             <img src="logo.png" alt="TB-500" class="product-img-logo"/>
             <span class="detail-badge">View Details</span>
@@ -804,16 +832,17 @@
           <div class="product-img"><img src="logo.png" alt="Tesamorelin" class="product-img-logo"/></div>
           <div class="product-body"><h3>Tesamorelin</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="89">10mg — $89.00</option></select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$89.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
 
         <!-- VIP -->
-        <div class="product-card" data-cat="peptides" data-name="VIP Vasoactive Intestinal Peptide" data-bundle="150">
+        <div class="product-card" data-cat="peptides" data-name="VIP Vasoactive Intestinal Peptide">
           <div class="product-img"><img src="logo.png" alt="VIP" class="product-img-logo"/></div>
           <div class="product-body"><h3>VIP</h3>
             <select class="dose-select" onchange="updatePrice(this)"><option value="75">5mg — $75.00</option></select>
-            <div class="bundle-callout visible">Buy 2 — 2 vials for $150 (save $0)</div>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
             <div class="product-footer"><span class="product-price">$75.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
@@ -829,8 +858,9 @@
         <div class="product-card" data-cat="supplies" data-name="Hospira BAC Water Bacteriostatic">
           <div class="product-img"><img src="logo.png" alt="BAC Water" class="product-img-logo"/></div>
           <div class="product-body"><h3>Hospira BAC Water</h3>
-            <select class="dose-select" onchange="updatePrice(this)"><option value="24.99">Standard — $24.99</option></select>
-            <div class="product-footer"><span class="product-price">$24.99</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
+            <select class="dose-select" onchange="updatePrice(this)"><option value="25">Standard — $25.00</option></select>
+            <div style="font-size:11px;color:var(--text-light);margin-bottom:8px;">Bulk pricing — buy 2+ to save</div>
+            <div class="product-footer"><span class="product-price">$25.00</span><button class="product-btn" onclick="handleAddToCart(this)">Add to Cart</button></div>
           </div>
         </div>
 
