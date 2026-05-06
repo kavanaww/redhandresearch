@@ -89,13 +89,15 @@ function itemEffectiveTotal(item) {
   if (item.name === 'BPC-157') {
     if (item.qty === 1) return 65;
     if (item.qty === 2) return 120;
-    return 50 * item.qty;
+    if (item.qty <= 4) return 50 * item.qty;
+    return 42 * item.qty;
   }
   // TB-500: tiered pricing — $75 / $140 / $65 per vial for 3+
   if (item.name === 'TB-500') {
     if (item.qty === 1) return 75;
     if (item.qty === 2) return 140;
-    return 65 * item.qty;
+    if (item.qty <= 4) return 65 * item.qty;
+    return 53 * item.qty;
   }
   // Wolverine Blend (BPC-157 / TB-500 Blend): $120 / $110 each for 2 / $100 each for 3+
   if (item.name === 'BPC-157 / TB-500 Blend') {
