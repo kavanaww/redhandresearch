@@ -1006,7 +1006,7 @@
       var doseSelect = card.querySelector('.dose-select');
       var select = qtySelect || doseSelect;
 
-      var price, qty, doseLabel;
+      var price, qty, doseLabel, bundlePrice = null;
 
       if (select) {
         price = parseFloat(select.value);
@@ -1019,6 +1019,8 @@
           doseLabel = qty + (qty === 1 ? ' vial' : ' vials');
         } else {
           doseLabel = optText.split('—')[0].trim();
+          var bp = selectedOpt.getAttribute('data-bundle');
+          if (bp) bundlePrice = parseFloat(bp);
         }
       } else {
         // No dropdown — single-SKU card with data attributes
@@ -1036,8 +1038,9 @@
       if (existing) {
         existing.qty += qty;
         existing.price = price; // update to bundle price
+        existing.bundlePrice = bundlePrice;
       } else {
-        cart.push({ key: key, name: name, dose: doseLabel, price: price, qty: qty, floorPrice: name.indexOf('BAC Water') !== -1 ? 20 : 0 });
+        cart.push({ key: key, name: name, dose: doseLabel, price: price, qty: qty, bundlePrice: bundlePrice, floorPrice: name.indexOf('BAC Water') !== -1 ? 20 : 0 });
       }
       saveCart(cart);
 
