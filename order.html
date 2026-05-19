@@ -61,7 +61,7 @@
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
     .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
     .form-group label{font-size:13px;font-weight:600;}
-    .form-group input,.form-group select,.form-group textarea{padding:11px 14px;border:1px solid var(--border);border-radius:4px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text-dark);outline:none;background:var(--white);transition:border-color 0.2s;width:100%;}
+    .form-group input,.form-group select,.form-group textarea{padding:11px 14px;border:1px solid var(--border);border-radius:4px;font-family:'DM Sans',sans-serif;font-size:16px;color:var(--text-dark);outline:none;background:var(--white);transition:border-color 0.2s;width:100%;}
     .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--red);}
     .form-group textarea{resize:vertical;min-height:90px;}
     .form-group select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a857e' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
@@ -77,12 +77,6 @@
     .submit-btn:hover{background:var(--red-dark);}
     .submit-btn:disabled{background:var(--mid-gray);cursor:not-allowed;}
     .submit-note{font-size:12px;color:var(--text-light);text-align:center;margin-top:10px;}
-    #success-message{display:none;text-align:center;padding:64px 32px;}
-    #success-message .success-icon{width:64px;height:64px;background:var(--red-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;}
-    #success-message .success-icon svg{width:32px;height:32px;fill:var(--red);}
-    #success-message h2{font-family:'DM Serif Display',serif;font-size:32px;margin-bottom:12px;}
-    #success-message p{font-size:16px;color:var(--text-mid);max-width:480px;margin:0 auto 24px;line-height:1.7;}
-    #success-message a{display:inline-flex;align-items:center;gap:8px;background:var(--red);color:white;padding:14px 28px;border-radius:4px;font-weight:600;font-size:14px;}
     .order-sidebar{position:sticky;top:88px;}
     .cart-review{background:var(--off-white);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:20px;}
     .cart-review h3{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:16px;}
@@ -168,15 +162,15 @@
     <a href="cart.html" class="mobile-cart cart-count">Cart (0)</a>
   </ul>
   <div class="how-it-works">
-    <div class="how-step"><div class="step-num">1</div><div class="step-text"><h4>Fill Out Order</h4><p>Enter your details and billing info below.</p></div></div>
-    <div class="how-step"><div class="step-num">2</div><div class="step-text"><h4>Secure Checkout</h4><p>You'll be redirected to our secure payment page.</p></div></div>
-    <div class="how-step"><div class="step-num">3</div><div class="step-text"><h4>Payment Confirmed</h4><p>Card accepted securely.</p></div></div>
-    <div class="how-step"><div class="step-num">4</div><div class="step-text"><h4>Ships Same Day</h4><p>Confirmed before 3 PM CT ships today.</p></div></div>
+    <div class="how-step"><div class="step-num">1</div><div class="step-text"><h4>Fill Out Order</h4><p>Enter your details and order info below.</p></div></div>
+    <div class="how-step"><div class="step-num">2</div><div class="step-text"><h4>Choose Payment</h4><p>Elavon Invoice or Zelle (save 5%).</p></div></div>
+    <div class="how-step"><div class="step-num">3</div><div class="step-text"><h4>We Send Instructions</h4><p>Invoice or Zelle details to your email within 4 business hours.</p></div></div>
+    <div class="how-step"><div class="step-num">4</div><div class="step-text"><h4>Ships After Payment</h4><p>Orders typically ship within 1-2 business days of payment confirmation.</p></div></div>
   </div>
   <div class="form-layout">
     <div class="order-form">
       <h2>Complete Your Order</h2>
-      <p class="form-sub">Fill in your details below. You'll be redirected to our secure payment page to complete checkout.</p>
+      <p class="form-sub">Fill in your details below. We'll email you payment instructions within 4 business hours of submission.</p>
       <div id="form-wrapper">
         <form id="order-form">
           <div class="form-section">
@@ -242,46 +236,40 @@
           <!-- Payment Method Selection -->
           <div class="form-section-title" style="margin-top:8px;">Choose Payment Method</div>
 
+          <div style="background:var(--off-white);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:16px;">
+            <p style="font-size:13px;color:var(--text-mid);margin:0;line-height:1.6;">
+              <strong style="color:var(--text-dark);">Orders are not confirmed until payment is received.</strong>
+              We'll send your invoice or Zelle instructions to your email within <strong>4 business hours</strong> of order submission.
+            </p>
+          </div>
+
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
-            <button type="button" id="btn-card" onclick="selectPayment('card')" style="padding:16px 12px;border:2px solid var(--border);border-radius:6px;background:var(--white);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:var(--text-dark);cursor:pointer;transition:all 0.2s;text-align:center;line-height:1.4;">
-              🔒 Card<br/><span style="font-size:12px;font-weight:400;color:var(--text-light);">Secure checkout</span>
+            <button type="button" id="btn-invoice" onclick="selectPayment('invoice')" style="padding:16px 12px;border:2px solid var(--border);border-radius:6px;background:var(--white);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:var(--text-dark);cursor:pointer;transition:all 0.2s;text-align:center;line-height:1.4;">
+              Elavon Invoice<br/><span style="font-size:12px;font-weight:400;color:var(--text-light);">Card payment via emailed link</span>
             </button>
             <button type="button" id="btn-zelle" onclick="selectPayment('zelle')" style="padding:16px 12px;border:2px solid var(--border);border-radius:6px;background:var(--white);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:var(--text-dark);cursor:pointer;transition:all 0.2s;text-align:center;line-height:1.4;">
-              💜 Zelle<br/><span style="font-size:12px;font-weight:400;color:#27ae60;font-weight:600;">Save 5%</span>
+              Zelle<br/><span style="font-size:12px;font-weight:600;color:var(--red);">Save 5%</span>
             </button>
           </div>
 
-          <!-- Card notice -->
-          <div id="notice-card" style="display:none;background:#eaf4ea;border:1px solid #b8ddb8;border-radius:8px;padding:16px 20px;margin-bottom:20px;">
-            <p style="font-size:13px;color:#2d6a2d;margin:0;">After submitting you'll be redirected to our secure payment page. We accept credit cards.</p>
+          <!-- Elavon Invoice notice -->
+          <div id="notice-invoice" style="display:none;background:var(--off-white);border:1px solid var(--border);border-radius:8px;padding:16px 20px;margin-bottom:20px;">
+            <p style="font-size:13px;color:var(--text-mid);margin:0;line-height:1.6;">After submitting, we'll email you a secure Elavon payment link within 4 business hours. Pay via credit or debit card.</p>
           </div>
 
           <!-- Zelle notice -->
-          <div id="notice-zelle" style="display:none;background:#f0f0ff;border:1px solid #c8c8f0;border-radius:8px;padding:16px 20px;margin-bottom:20px;">
-            <p style="font-size:13px;color:#333;margin:0 0 6px;font-weight:600;">5% Zelle discount applied — new total: <span id="zelle-total" style="color:var(--red);">—</span></p>
-            <p style="font-size:13px;color:#555;margin:0;">Submit your order and we'll email you payment instructions including the Zelle tag.</p>
+          <div id="notice-zelle" style="display:none;background:var(--off-white);border:1px solid var(--border);border-radius:8px;padding:16px 20px;margin-bottom:20px;">
+            <p style="font-size:13px;color:var(--text-dark);margin:0 0 6px;font-weight:600;">5% Zelle discount applied — new total: <span id="zelle-total" style="color:var(--red);">—</span></p>
+            <p style="font-size:13px;color:var(--text-mid);margin:0;line-height:1.6;">After submitting, we'll email you Zelle payment instructions within 4 business hours.</p>
           </div>
 
           <input type="hidden" id="f-payment-method" value=""/>
           <button type="submit" class="submit-btn" id="submit-btn" disabled style="opacity:0.5;">Select a Payment Method Above</button>
-          <p class="submit-note" id="submit-note-text">Choose card or Zelle above to continue.</p>
+          <p class="submit-note" id="submit-note-text">Choose your payment method above to continue.</p>
+          <div id="submit-error" style="display:none;background:var(--red-light);border:1px solid #f0c0bb;border-radius:8px;padding:16px 20px;margin-top:14px;color:var(--red-dark);font-size:14px;line-height:1.6;">
+            <span id="submit-error-text"></span>
+          </div>
         </form>
-      </div>
-      <div id="success-message">
-        <div class="success-icon"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
-        <h2>Redirecting to Payment...</h2>
-        <p>Taking you to our secure payment page now. If you are not redirected automatically, <a href="#" id="manual-redirect" style="color:var(--red);">click here</a>.</p>
-      </div>
-
-      <div id="error-message" style="display:none;text-align:center;padding:32px;background:var(--red-light);border:1px solid #f0c0bb;border-radius:8px;margin-top:20px;">
-        <p style="color:var(--red-dark);font-weight:600;margin-bottom:8px;">Payment setup failed.</p>
-        <p style="font-size:14px;color:var(--red-dark);">Please email <a href="mailto:team@redhandresearch.com" style="color:var(--red-dark);text-decoration:underline;">team@redhandresearch.com</a> or try again.</p>
-      </div>
-      <div id="zelle-success" style="display:none;text-align:center;padding:48px 32px;">
-        <div style="width:64px;height:64px;background:#f0f0ff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:28px;">💜</div>
-        <h2 style="font-family:'DM Serif Display',serif;font-size:32px;margin-bottom:12px;">Order Received!</h2>
-        <p style="font-size:16px;color:var(--text-mid);max-width:480px;margin:0 auto 16px;line-height:1.7;">We'll email you within a few hours with your Zelle payment instructions. Your 5% discount has been applied.</p>
-        <a href="products.html" style="display:inline-flex;align-items:center;gap:8px;background:var(--red);color:white;padding:14px 28px;border-radius:4px;font-weight:600;font-size:14px;">← Back to Products</a>
       </div>
     </div>
     <div class="order-sidebar">
@@ -303,7 +291,7 @@
       </div>
       <div class="pm-card">
         <h3>We Accept</h3>
-        <div class="pm-item"><div class="pm-dot"></div><span>Credit &amp; Debit Cards</span></div>
+        <div class="pm-item"><div class="pm-dot"></div><span>Elavon Invoice (Card)</span></div>
         <div class="pm-item"><div class="pm-dot"></div><span>Zelle — Save 5%</span></div>
       </div>
     </div>
@@ -332,8 +320,15 @@
   </footer>
   <script>
     // ─── CONFIG ───────────────────────────────────────────────────────────────
-    const WORKER_URL = 'https://redhandbankful.timothykavanagh11.workers.dev';
     const FORMSPREE_URL = 'https://formspree.io/f/mgonglbq';
+
+    function showSubmitError(message) {
+      document.getElementById('submit-error-text').textContent = message;
+      document.getElementById('submit-error').style.display = 'block';
+    }
+    function hideSubmitError() {
+      document.getElementById('submit-error').style.display = 'none';
+    }
 
     // ─── AGE / NAV ────────────────────────────────────────────────────────────
     if(!sessionStorage.getItem('ageVerified')){document.body.style.overflow='hidden';}
@@ -462,36 +457,37 @@
     // ── PAYMENT METHOD SELECTION ──────────────────────────────────────────────
     function selectPayment(method) {
       document.getElementById('f-payment-method').value = method;
-      var btnCard = document.getElementById('btn-card');
+      var btnInvoice = document.getElementById('btn-invoice');
       var btnZelle = document.getElementById('btn-zelle');
-      var noticeCard = document.getElementById('notice-card');
+      var noticeInvoice = document.getElementById('notice-invoice');
       var noticeZelle = document.getElementById('notice-zelle');
       var btn = document.getElementById('submit-btn');
       var note = document.getElementById('submit-note-text');
 
       // Reset both buttons
-      btnCard.style.borderColor = 'var(--border)';
-      btnCard.style.background = 'var(--white)';
+      btnInvoice.style.borderColor = 'var(--border)';
+      btnInvoice.style.background = 'var(--white)';
       btnZelle.style.borderColor = 'var(--border)';
       btnZelle.style.background = 'var(--white)';
-      noticeCard.style.display = 'none';
+      noticeInvoice.style.display = 'none';
       noticeZelle.style.display = 'none';
+      hideSubmitError();
 
       btn.disabled = false;
       btn.style.opacity = '1';
 
-      if (method === 'card') {
-        btnCard.style.borderColor = 'var(--red)';
-        btnCard.style.background = 'var(--red-light)';
-        noticeCard.style.display = 'block';
-        btn.textContent = 'Proceed to Secure Payment →';
-        note.textContent = "You'll be redirected to our secure payment page.";
+      if (method === 'invoice') {
+        btnInvoice.style.borderColor = 'var(--red)';
+        btnInvoice.style.background = 'var(--red-light)';
+        noticeInvoice.style.display = 'block';
+        btn.textContent = 'Submit Order →';
+        note.textContent = "We'll email you a secure payment link within 4 business hours.";
       } else {
-        btnZelle.style.borderColor = '#6d1ed4';
-        btnZelle.style.background = '#f5f0ff';
+        btnZelle.style.borderColor = 'var(--red)';
+        btnZelle.style.background = 'var(--red-light)';
         noticeZelle.style.display = 'block';
         btn.textContent = 'Submit Zelle Order →';
-        note.textContent = "We'll email you Zelle payment instructions within a few hours.";
+        note.textContent = "We'll email you Zelle payment instructions within 4 business hours.";
       }
       applyPaymentDisplay();
     }
@@ -499,9 +495,7 @@
     // ─── FORM SUBMIT ──────────────────────────────────────────────────────────
     document.getElementById('order-form').addEventListener('submit', async function(e) {
       e.preventDefault();
-      var btn = document.getElementById('submit-btn');
-      btn.disabled = true;
-      btn.textContent = 'Processing...';
+      hideSubmitError();
 
       var fname = document.getElementById('f-fname').value.trim();
       var lname = document.getElementById('f-lname').value.trim();
@@ -511,10 +505,22 @@
       var city = document.getElementById('f-city').value.trim();
       var state = document.getElementById('f-state').value;
       var zip = document.getElementById('f-zip').value.trim();
+      var notes = document.getElementById('f-notes').value.trim();
       var newsletter = document.getElementById('f-newsletter').checked;
       var payMethod = document.getElementById('f-payment-method').value;
-      var bankfulAmount = _finalTotal.toFixed(2);                                            // pre-Zelle — what Bankful charges (card flow only)
-      var amountDue = (payMethod === 'zelle' ? _finalTotal * 0.95 : _finalTotal).toFixed(2); // what the customer owes
+
+      // Email is the manual-flow contract — fail closed if it's missing or malformed.
+      if (!email || email.indexOf('@') === -1 || email.lastIndexOf('.') < email.indexOf('@')) {
+        showSubmitError('Please enter a valid email address. We need it to send your invoice or Zelle instructions.');
+        document.getElementById('f-email').focus();
+        return;
+      }
+
+      var btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.textContent = 'Processing...';
+
+      var amountDue = (payMethod === 'zelle' ? _finalTotal * 0.95 : _finalTotal).toFixed(2);
 
       var cart = getCart();
       var promo = getPromo();
@@ -523,62 +529,39 @@
         return i.name + ' (' + i.dose + ') x' + i.qty + ' = $' + lt.toFixed(2);
       }).join(', ');
 
-      // Always fire Formspree for your records
-      fetch(FORMSPREE_URL, {
-        method: 'POST',
-        body: JSON.stringify({
-          first_name: fname, last_name: lname, email: email, phone: phone,
-          address: address, city: city, state: state, zip: zip,
-          cart_contents: cartStr,
-          order_total: '$' + amountDue,
-          promo_code: promo ? promo.code : 'None',
-          payment_method: payMethod,
-          zelle_tag: payMethod === 'zelle' ? '$redhandresearch' : 'N/A',
-        }),
-        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
-      }).catch(function(){});
+      try {
+        var res = await fetch(FORMSPREE_URL, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            first_name: fname, last_name: lname, email: email, phone: phone,
+            address: address, city: city, state: state, zip: zip,
+            notes: notes,
+            cart_contents: cartStr,
+            order_total: '$' + amountDue,
+            promo_code: promo ? promo.code : 'None',
+            payment_method: payMethod,
+            newsletter: newsletter ? 'yes' : 'no',
+          })
+        });
 
-      // ── ZELLE flow ────────────────────────────────────────────────────────
-      if (payMethod === 'zelle') {
+        if (!res.ok) throw new Error('Formspree returned ' + res.status);
+
+        // Hand off to confirmation page via sessionStorage.
+        sessionStorage.setItem('rhr_order_pm', payMethod);
+        sessionStorage.setItem('rhr_order_total', amountDue);
+        sessionStorage.setItem('rhr_order_email', email);
+
         localStorage.removeItem('rhr_cart');
         localStorage.removeItem('rhr_promo');
         localStorage.removeItem('rhr_bulk');
         localStorage.removeItem('rhr_shipping');
-        document.getElementById('form-wrapper').style.display = 'none';
-        document.getElementById('zelle-success').style.display = 'block';
-        return;
-      }
 
-      // ── CARD flow → Bankful ─────────────────────────────────────
-      try {
-        var res = await fetch(WORKER_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            fname: fname, lname: lname, email: email, phone: phone,
-            address: address, city: city, state: state, zip: zip,
-            amount: bankfulAmount, newsletter: newsletter,
-          })
-        });
-
-        var data = await res.json();
-
-        if (res.ok && data.redirect_url) {
-          localStorage.removeItem('rhr_cart');
-          localStorage.removeItem('rhr_promo');
-          localStorage.removeItem('rhr_bulk');
-          localStorage.removeItem('rhr_shipping');
-          document.getElementById('form-wrapper').style.display = 'none';
-          document.getElementById('success-message').style.display = 'block';
-          document.getElementById('manual-redirect').href = data.redirect_url;
-          window.location.href = data.redirect_url;
-        } else {
-          throw new Error(data.message || 'No redirect URL returned');
-        }
+        window.location.href = 'order-confirmation.html';
       } catch(err) {
         btn.disabled = false;
-        btn.textContent = 'Proceed to Secure Payment →';
-        document.getElementById('error-message').style.display = 'block';
+        btn.textContent = payMethod === 'zelle' ? 'Submit Zelle Order →' : 'Submit Order →';
+        showSubmitError("Order submission failed. Please email your order details to team@redhandresearch.com or call 636-556-GLOW. Sorry for the trouble.");
       }
     });
   </script>
