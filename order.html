@@ -163,9 +163,9 @@
   </ul>
   <div class="how-it-works">
     <div class="how-step"><div class="step-num">1</div><div class="step-text"><h4>Fill Out Order</h4><p>Enter your details and order info below.</p></div></div>
-    <div class="how-step"><div class="step-num">2</div><div class="step-text"><h4>Choose Payment</h4><p>Elavon Invoice or Zelle (save 5%).</p></div></div>
+    <div class="how-step"><div class="step-num">2</div><div class="step-text"><h4>Choose Payment</h4><p>Card or Zelle (save 5%).</p></div></div>
     <div class="how-step"><div class="step-num">3</div><div class="step-text"><h4>We Send Instructions</h4><p>Invoice or Zelle details to your email within 4 business hours.</p></div></div>
-    <div class="how-step"><div class="step-num">4</div><div class="step-text"><h4>Ships After Payment</h4><p>Orders typically ship within 1-2 business days of payment confirmation.</p></div></div>
+    <div class="how-step"><div class="step-num">4</div><div class="step-text"><h4>Ships After Payment</h4><p>Orders ship same day if payment is received by 1 PM CT.</p></div></div>
   </div>
   <div class="form-layout">
     <div class="order-form">
@@ -238,23 +238,22 @@
 
           <div style="background:var(--off-white);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:16px;">
             <p style="font-size:13px;color:var(--text-mid);margin:0;line-height:1.6;">
-              <strong style="color:var(--text-dark);">Orders are not confirmed until payment is received.</strong>
-              We'll send your invoice or Zelle instructions to your email within <strong>4 business hours</strong> of order submission.
+              Pick how you want to pay. We'll email your invoice or Zelle details within 4 business hours. Once payment clears, we ship.
             </p>
           </div>
 
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
             <button type="button" id="btn-invoice" onclick="selectPayment('invoice')" style="padding:16px 12px;border:2px solid var(--border);border-radius:6px;background:var(--white);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:var(--text-dark);cursor:pointer;transition:all 0.2s;text-align:center;line-height:1.4;">
-              Elavon Invoice<br/><span style="font-size:12px;font-weight:400;color:var(--text-light);">Card payment via emailed link</span>
+              Pay by Card<br/><span style="font-size:12px;font-weight:400;color:var(--text-light);">Secure invoice link via email</span>
             </button>
             <button type="button" id="btn-zelle" onclick="selectPayment('zelle')" style="padding:16px 12px;border:2px solid var(--border);border-radius:6px;background:var(--white);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:var(--text-dark);cursor:pointer;transition:all 0.2s;text-align:center;line-height:1.4;">
-              Zelle<br/><span style="font-size:12px;font-weight:600;color:var(--red);">Save 5%</span>
+              Pay by Zelle<br/><span style="font-size:12px;font-weight:600;color:var(--red);">Save 5%</span>
             </button>
           </div>
 
-          <!-- Elavon Invoice notice -->
+          <!-- Card invoice notice -->
           <div id="notice-invoice" style="display:none;background:var(--off-white);border:1px solid var(--border);border-radius:8px;padding:16px 20px;margin-bottom:20px;">
-            <p style="font-size:13px;color:var(--text-mid);margin:0;line-height:1.6;">After submitting, we'll email you a secure Elavon payment link within 4 business hours. Pay via credit or debit card.</p>
+            <p style="font-size:13px;color:var(--text-mid);margin:0;line-height:1.6;">After submitting, we'll email you a secure payment link within 4 business hours. Pay via credit or debit card.</p>
           </div>
 
           <!-- Zelle notice -->
@@ -291,7 +290,7 @@
       </div>
       <div class="pm-card">
         <h3>We Accept</h3>
-        <div class="pm-item"><div class="pm-dot"></div><span>Elavon Invoice (Card)</span></div>
+        <div class="pm-item"><div class="pm-dot"></div><span>Credit &amp; Debit Cards</span></div>
         <div class="pm-item"><div class="pm-dot"></div><span>Zelle — Save 5%</span></div>
       </div>
     </div>

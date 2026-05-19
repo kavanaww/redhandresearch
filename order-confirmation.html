@@ -160,12 +160,12 @@
       </div>
 
       <div class="method-detail" id="detail-generic">
-        <p>If you chose <strong>Elavon Invoice</strong>, you&rsquo;ll get a secure card payment link. If you chose <strong>Zelle</strong>, you&rsquo;ll get the Zelle handle and payment instructions (5% discount applied).</p>
+        <p>If you chose to pay by card, you&rsquo;ll get a secure payment link. If you chose <strong>Zelle</strong>, you&rsquo;ll get the Zelle handle and payment instructions (5% discount applied).</p>
       </div>
 
       <div class="method-detail" id="detail-invoice" style="display:none;">
-        <h3>Pay by Elavon link</h3>
-        <p>We&rsquo;ll send a secure card payment link from Elavon to your email within 4 business hours. Pay with credit or debit by clicking the link in the email.</p>
+        <h3>Pay by card link</h3>
+        <p>We&rsquo;ll send a secure card payment link to your email within 4 business hours. Pay with credit or debit by clicking the link in the email.</p>
       </div>
 
       <div class="method-detail" id="detail-zelle" style="display:none;">
@@ -173,7 +173,7 @@
         <p>We&rsquo;ll send our Zelle handle and full instructions to your email within 4 business hours. Once you&rsquo;ve sent payment to the Zelle handle, reply to that email so we can confirm receipt and ship your order.</p>
       </div>
 
-      <p class="shipping-note">Orders typically ship within 1-2 business days of payment confirmation.</p>
+      <p class="shipping-note">Orders ship same day if payment is received by 1 PM CT.</p>
     </div>
 
     <div class="support-block">
@@ -243,7 +243,7 @@
 
       // Show summary card
       document.getElementById('summary-method').textContent =
-        pm === 'invoice' ? 'Elavon Invoice' : 'Zelle (5% discount)';
+        pm === 'invoice' ? 'Card' : 'Zelle (5% discount)';
       if (total) {
         document.getElementById('summary-total').textContent = '$' + parseFloat(total).toFixed(2);
       } else {
