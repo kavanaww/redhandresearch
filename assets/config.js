@@ -29,7 +29,15 @@ window.RH_CONFIG = {
   ZELLE_DISCOUNT_PCT: 5,
   PROMO_CODES: { HUNTER10: 10, JESKA10: 10, JOSH10: 10, BRE10: 10, MOOSE20: 20, MOOSE10: 10, BRAND10: 10, RACHEL10: 10 },
 
-  /* 5. Contact + wording */
+  /* 5. Access gate — products and prices stay hidden until the visitor unlocks.
+        mode: "code"  = visitor enters the access code you give customers (starter code: RESEARCH2026)
+              "email" = visitor enters an email + research-use attestation (email lands in your order sheet)
+              "off"   = everyone sees products
+        To change the code, give Moose's assistant the new code or run:  echo -n "NEWCODE" | shasum -a 256
+        and paste the result as codeHash. */
+  ACCESS: { mode: "code", codeHash: "d168dbe1a797315004064386553622509f98240a860639fc5a5e6dc396da9c4b", days: 30 },
+
+  /* 6. Contact + wording */
   SITE_NAME: "Red Hand Research",
   SITE_URL: "https://redhandresearch.com",
   SUPPORT_EMAIL: "support@redhandresearch.com",

@@ -43,7 +43,24 @@ discount, Zelle %, promo codes, emails) live in **`assets/config.js`**, nowhere 
 3. Copy the link and paste it into `assets/config.js` as `SHEET_CSV_URL`.
 4. Push. The site now refreshes prices and stock every few minutes.
 
+## Access gate (sign in to see products)
+
+Products and prices are hidden until a visitor unlocks. `ACCESS.mode` in `assets/config.js`:
+
+- `code`  — visitor enters the access code you hand out. Starter code: **RESEARCH2026**. To change it,
+  run `echo -n "NEWCODE" | shasum -a 256` and paste the hash as `codeHash`.
+- `email` — visitor enters an email and confirms research use; emails collect in an "Access" tab of the
+  order sheet (needs the Apps Script endpoint).
+- `off`   — everyone sees products.
+
+A browser stays unlocked for `ACCESS.days`. "Sign out" is in the footer. This is a gate, not a vault:
+it keeps prices off search engines and away from casual visitors, but the data files are still public.
+
 ## Checkout
+
+Every order requires the research-use agreement at checkout, and the acceptance (with timestamp) is
+sent with the order and written to the sheet.
+
 
 Orders POST to `ORDER_ENDPOINT` in `config.js` (Formspree today). To write orders straight
 into the "Mooses Peptide Empire" sheet instead, deploy `tools/apps-script-orders.gs` as a web

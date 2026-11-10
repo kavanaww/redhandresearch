@@ -63,7 +63,17 @@
               </div>
               <div class="full"><label for="notes">Order notes (optional)</label><textarea id="notes" name="notes" placeholder="Anything we should know"></textarea></div>
               <div class="full"><label class="check"><input type="checkbox" name="newsletter" id="newsletter"><span>Email me about new compounds and restocks. No spam, unsubscribe anytime.</span></label></div>
-              <div class="full"><label class="check"><input type="checkbox" name="agree" id="agree" required><span>I confirm I am 21 or older and that everything in this order will be used strictly for lawful, in-vitro research. I agree to the <a href="policies.html#terms">Terms of Service</a> and <a href="policies.html#privacy">Privacy Policy</a>.</span></label></div>
+              <div class="full agreement" id="ruo-agreement">
+                <h3>Research use agreement</h3>
+                <p>Before we can accept your order, confirm each of the following:</p>
+                <ul>
+                  <li>Every product in this order is for <strong>laboratory, in-vitro research only</strong>.</li>
+                  <li>Nothing will be administered to, or consumed by, any human or animal.</li>
+                  <li>I am <strong>21 or older</strong> and a qualified researcher, scientist, or institution.</li>
+                  <li>I understand these products are not approved for diagnostic, therapeutic, or clinical use, and I will comply with all applicable laws.</li>
+                </ul>
+                <label class="check"><input type="checkbox" name="agree" id="agree" required><span><strong>I agree to all of the above</strong> and to the <a href="policies.html#terms">Terms of Service</a> and <a href="policies.html#privacy">Privacy Policy</a>. My acceptance is recorded with this order.</span></label>
+              </div>
             </div>
             <div style="margin-top:18px"><button class="btn" type="submit" id="submit" style="width:100%;padding:16px">Submit order</button></div>
           </form>

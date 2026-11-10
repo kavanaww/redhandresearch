@@ -217,7 +217,10 @@
         '<div><h4>Shop</h4><a href="shop.html">All products</a><a href="shop.html#glp">GLP</a><a href="shop.html#healing">Healing</a><a href="shop.html#growth-hormone">Growth hormone</a><a href="shop.html#skin-hair">Skin &amp; hair</a></div>' +
         '<div><h4>Help</h4><a href="faqs.html">FAQ</a><a href="certificates.html">Testing &amp; CoAs</a><a href="policies.html#shipping">Shipping policy</a><a href="policies.html#returns">Return policy</a><a href="cart.html">Cart</a></div>' +
         '<div><h4>Contact</h4><a href="mailto:' + C.SUPPORT_EMAIL + '">' + C.SUPPORT_EMAIL + '</a><a href="mailto:' + C.ORDER_EMAIL + '">' + C.ORDER_EMAIL + '</a><a href="tel:+16365564569">' + RH.esc(C.PHONE || '') + '</a><a href="policies.html#privacy">Privacy policy</a><a href="policies.html#terms">Terms of service</a></div>' +
-        '</div><div class="legal"><span>© ' + new Date().getFullYear() + ' ' + RH.esc(C.SITE_NAME || '') + '. All rights reserved.</span><span>All products are for research use only. Not for diagnostic, therapeutic, or human use.</span></div></div>';
+        '</div><div class="legal"><span>© ' + new Date().getFullYear() + ' ' + RH.esc(C.SITE_NAME || '') + '. All rights reserved. <a href="#" data-signout hidden style="display:inline;padding:0 0 0 8px;color:var(--muted);text-decoration:underline">Sign out</a></span><span>All products are for research use only. Not for diagnostic, therapeutic, or human use.</span></div></div>';
+      const so = RH.qs('[data-signout]', footer);
+      so.hidden = !(RH.access.mode() !== 'off' && RH.access.unlocked());
+      so.addEventListener('click', e => { e.preventDefault(); RH.access.lock(); });
     }
     let ok = false; try { ok = localStorage.getItem('rh_age_ok') === '1'; } catch (e) { /* ignore */ }
     if (!ok && document.body.dataset.gate !== 'off') {
@@ -239,6 +242,58 @@
     t.classList.add('show'); clearTimeout(RH._tt); RH._tt = setTimeout(() => t.classList.remove('show'), 3500);
   };
 
+  /* ---------- access gate: products + prices hidden until unlocked ---------- */
+  RH.access = {
+    key: 'rh_access_v1',
+    mode() { return (C.ACCESS && C.ACCESS.mode) || 'off'; },
+    unlocked() {
+      if (RH.access.mode() === 'off') return true;
+      try { const a = JSON.parse(localStorage.getItem(RH.access.key) || 'null'); return !!(a && a.until > Date.now()); } catch (e) { return false; }
+    },
+    unlock(how) {
+      const days = (C.ACCESS && C.ACCESS.days) || 30;
+      try { localStorage.setItem(RH.access.key, JSON.stringify({ how: how, until: Date.now() + days * 864e5 })); } catch (e) { /* ignore */ }
+      RH.qsa('[data-signout]').forEach(el => { el.hidden = false; });
+    },
+    lock() { try { localStorage.removeItem(RH.access.key); } catch (e) { /* ignore */ } location.reload(); }
+  };
+  async function sha256(s) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+  /* Renders the lock panel into `container` unless already unlocked; runs `then()` once unlocked. */
+  RH.requireAccess = function (container, then) {
+    if (RH.access.unlocked()) { then(); return; }
+    const email = RH.access.mode() === 'email';
+    container.innerHTML =
+      '<div class="lock"><img src="assets/logo.png" alt=""><div>' +
+      '<div class="eyebrow">Researchers only</div><h2>Sign in to view products and pricing</h2>' +
+      '<p>' + (email ? 'Enter your email and confirm research use to unlock the catalog.' : 'Enter the access code we gave you to unlock the catalog. Don\'t have one? Email <a href="mailto:' + C.SUPPORT_EMAIL + '">' + C.SUPPORT_EMAIL + '</a>.') + '</p>' +
+      '<form class="lock-form" novalidate>' +
+      (email
+        ? '<div><label for="lk-email">Email</label><input id="lk-email" type="email" required autocomplete="email" placeholder="you@lab.edu"></div>' +
+          '<label class="check"><input id="lk-agree" type="checkbox" required><span>I am 21 or older and a qualified researcher. Products are for laboratory research use only and will not be administered to humans or animals.</span></label>'
+        : '<div><label for="lk-code">Access code</label><input id="lk-code" type="password" required autocomplete="off" autocapitalize="characters"></div>') +
+      '<div class="lock-actions"><button class="btn" type="submit">Unlock</button><span class="lock-msg" aria-live="polite"></span></div>' +
+      '</form></div></div>';
+    const form = RH.qs('form', container), msg = RH.qs('.lock-msg', container);
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+      if (email) {
+        const addr = RH.qs('#lk-email', container).value.trim();
+        if (C.ORDER_ENDPOINT && !/formspree/.test(C.ORDER_ENDPOINT)) {
+          try { fetch(C.ORDER_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ type: 'access', email: addr, agreed: 'yes', at: new Date().toISOString(), page: location.pathname }) }); } catch (err) { /* best effort */ }
+        }
+        RH.access.unlock('email:' + addr); then(); return;
+      }
+      const code = RH.qs('#lk-code', container).value.trim().toUpperCase();
+      let hash = ''; try { hash = await sha256(code); } catch (err) { msg.textContent = 'This browser can\'t verify the code. Try a different browser.'; return; }
+      if (hash === (C.ACCESS && C.ACCESS.codeHash)) { RH.access.unlock('code'); then(); }
+      else { msg.textContent = 'That code isn\'t right.'; RH.qs('#lk-code', container).select(); }
+    });
+  };
+
   /* fills [data-cfg="KEY"] with values from config.js so no number is typed into HTML */
   RH.bindConfig = function () {
     RH.qsa('[data-cfg]').forEach(el => {
@@ -254,19 +309,27 @@
 
   pages.home = async function () {
     const groups = RH.groupProducts(await RH.loadProducts());
-    const grid = RH.qs('#featured');
-    const feat = groups.filter(g => g.featured && !g.soldOut).slice(0, 6);
-    (feat.length ? feat : groups.filter(g => !g.soldOut).slice(0, 6)).forEach(g => grid.appendChild(RH.renderCard(g)));
     const cats = Array.from(new Set(groups.map(g => g.category)));
     const el = RH.qs('#cats');
     cats.forEach(c => { const n = groups.filter(g => g.category === c).length; const a = document.createElement('a'); a.href = 'shop.html#' + RH.slug(c); a.innerHTML = RH.esc(c) + '<small>' + n + ' product' + (n === 1 ? '' : 's') + '</small>'; el.appendChild(a); });
     RH.qsa('[data-count-products]').forEach(e => { e.textContent = groups.length; });
+    const grid = RH.qs('#featured');
+    RH.requireAccess(grid, () => {
+      grid.innerHTML = '';
+      const feat = groups.filter(g => g.featured && !g.soldOut).slice(0, 6);
+      (feat.length ? feat : groups.filter(g => !g.soldOut).slice(0, 6)).forEach(g => grid.appendChild(RH.renderCard(g)));
+    });
   };
 
   pages.shop = async function () {
+    const grid = RH.qs('#grid'), filters = RH.qs('.filters'), status = RH.qs('#status');
+    filters.hidden = true;
+    RH.requireAccess(grid, () => { filters.hidden = false; shopInner(grid, status).catch(err => { console.error(err); grid.innerHTML = '<div class="empty">Products could not be loaded. Please refresh.</div>'; }); });
+  };
+  async function shopInner(grid, status) {
     const groups = RH.groupProducts(await RH.loadProducts());
     const cats = Array.from(new Set(groups.map(g => g.category)));
-    const bar = RH.qs('#cats'), q = RH.qs('#q'), grid = RH.qs('#grid'), status = RH.qs('#status');
+    const bar = RH.qs('#cats'), q = RH.qs('#q');
     let active = (location.hash || '').slice(1) || 'all';
     if (active !== 'all' && !cats.some(c => RH.slug(c) === active)) active = 'all';
     const mk = (label, val) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.dataset.val = val; b.setAttribute('aria-pressed', String(val === active)); b.addEventListener('click', () => { active = val; history.replaceState(null, '', val === 'all' ? location.pathname : '#' + val); Array.prototype.forEach.call(bar.children, x => x.setAttribute('aria-pressed', String(x.dataset.val === active))); draw(); }); return b; };
@@ -282,13 +345,16 @@
       status.textContent = list.length + ' product' + (list.length === 1 ? '' : 's') + (term ? ' matching “' + term + '”' : '') + (active !== 'all' ? ' in ' + (cats.find(c => RH.slug(c) === active) || '') : '');
     }
     draw();
-  };
+  }
 
   pages.product = async function () {
+    const root = RH.qs('#pdp');
+    RH.requireAccess(root, () => { productInner(root).catch(err => { console.error(err); root.innerHTML = '<div class="empty" style="grid-column:1/-1">This product could not be loaded. Please refresh.</div>'; }); });
+  };
+  async function productInner(root) {
     const slug = RH.param('p');
     const groups = RH.groupProducts(await RH.loadProducts());
     const g = groups.find(x => x.slug === slug);
-    const root = RH.qs('#pdp');
     if (!g) { root.innerHTML = '<div class="empty" style="grid-column:1/-1">We couldn\'t find that product. <a href="shop.html">Browse the shop</a>.</div>'; document.title = 'Product not found — ' + C.SITE_NAME; return; }
     document.title = g.name + ' — ' + C.SITE_NAME;
     RH.qs('#crumb-cat').textContent = g.category; RH.qs('#crumb-cat').href = 'shop.html#' + RH.slug(g.category);
@@ -336,9 +402,14 @@
     const rel = groups.filter(x => x.category === g.category && x.slug !== g.slug && !x.soldOut).slice(0, 3);
     const relGrid = RH.qs('#related');
     if (rel.length) { rel.forEach(x => relGrid.appendChild(RH.renderCard(x))); } else RH.qs('#related-section').hidden = true;
-  };
+  }
 
   pages.cart = async function () {
+    const layout = RH.qs('.cart-layout'), original = layout.innerHTML;
+    RH.qs('.steps').hidden = !RH.access.unlocked();
+    RH.requireAccess(layout, () => { layout.innerHTML = original; RH.qs('.steps').hidden = false; RH.bindConfig(); cartInner().catch(err => { console.error(err); RH.qs('#alerts').innerHTML = '<div class="alert err">The cart could not be loaded. Please refresh.</div>'; }); });
+  };
+  async function cartInner() {
     const items = await RH.loadProducts();
     const live = new Map(items.map(v => [v.slug + '|' + v.size, v]));
     const linesEl = RH.qs('#lines'), sumEl = RH.qs('#summary'), form = RH.qs('#checkout'), alerts = RH.qs('#alerts');
@@ -413,8 +484,9 @@
         '<div class="row total"><span>Total</span><span>' + RH.money2(t.total) + '</span></div>' +
         (C.FREE_SHIPPING_OVER && !t.freeShip && remaining > 0 && t.ship.id === 'standard' ? '<p class="hint">Add ' + RH.money(remaining) + ' more for free standard shipping.</p>' : '') +
         '<p class="hint">Nothing is charged on this site. After you submit, we email ' + (t.pm === 'zelle' ? 'Zelle instructions' : 'a secure card payment link') + ' within ' + RH.esc(C.PAYMENT_HOURS) + '. Orders ship once payment is received.</p>';
-      const submit = RH.qs('#submit'); submit.disabled = blocked || !t.good.length;
-      submit.textContent = blocked ? 'Remove unavailable items to continue' : 'Submit order · ' + RH.money2(t.total);
+      const agreed = !!(form.elements.agree && form.elements.agree.checked);
+      const submit = RH.qs('#submit'); submit.disabled = blocked || !t.good.length || !agreed;
+      submit.textContent = blocked ? 'Remove unavailable items to continue' : !agreed ? 'Accept the research use agreement to continue' : 'Submit order · ' + RH.money2(t.total);
       RH.qsa('[data-zelle-pct]').forEach(e => { e.textContent = C.ZELLE_DISCOUNT_PCT + '%'; });
     }
 
@@ -446,7 +518,9 @@
         shipping_method: t.ship.label + (t.freeShip ? ' (free)' : ''), payment_method: t.pm === 'zelle' ? 'Zelle' : 'Card (invoice link)',
         promo_code: promo ? promo.code : '', items: itemsText,
         subtotal: RH.money2(t.list), multi_vial_savings: RH.money2(t.multiSavings), promo_discount: RH.money2(t.promoAmt), zelle_discount: RH.money2(t.zelleAmt), shipping: RH.money2(t.shipping), total: RH.money2(t.total),
-        notes: f.notes.value.trim(), newsletter: f.newsletter.checked ? 'yes' : 'no', age_and_terms_confirmed: 'yes', submitted_at: d.toISOString()
+        notes: f.notes.value.trim(), newsletter: f.newsletter.checked ? 'yes' : 'no',
+        ruo_agreement: 'ACCEPTED ' + d.toISOString() + ' — research use only; no human or animal administration; 21+ qualified researcher; not for diagnostic/therapeutic use; Terms + Privacy accepted',
+        submitted_at: d.toISOString()
       };
       const btn = RH.qs('#submit'); btn.disabled = true; btn.textContent = 'Sending…';
       try {
@@ -471,8 +545,9 @@
         drawSummary();
       }
     });
+    const agree = RH.qs('#agree', form); if (agree) agree.addEventListener('change', drawSummary);
     draw();
-  };
+  }
 
   pages.confirmation = async function () {
     let o = null; try { o = JSON.parse(sessionStorage.getItem('rh_last_order') || 'null'); } catch (e) { /* ignore */ }

@@ -39,6 +39,10 @@ button{font:inherit}
   .logo-link .brand-sub{display:none}
   .site-header .bar{gap:8px;min-height:58px}
 }
+@media(max-width:520px){
+  .logo-link > div{display:none}
+  .nav .cart-link{padding:7px 11px}
+}
 
 /* ---------- page heads + sections ---------- */
 .page-head{padding:clamp(28px,5vw,56px) 0 22px}
@@ -184,7 +188,7 @@ section{padding:26px 0}
 .form-grid .full{grid-column:1/-1}
 @media(max-width:560px){.form-grid{grid-template-columns:1fr}}
 label{display:block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
-input[type=text],input[type=email],input[type=tel],select,textarea{width:100%;border:1px solid #d9d2cc;border-radius:9px;padding:11px 12px;font:inherit;background:#fff;color:var(--ink)}
+input[type=text],input[type=email],input[type=tel],input[type=password],select,textarea{width:100%;border:1px solid #d9d2cc;border-radius:9px;padding:11px 12px;font:inherit;background:#fff;color:var(--ink)}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--red);outline-offset:1px;border-color:var(--red)}
 textarea{min-height:90px;resize:vertical}
 .choice-list{display:grid;gap:10px}
@@ -204,6 +208,23 @@ textarea{min-height:90px;resize:vertical}
 .alert.err{background:#fbe9e7;color:#8a1c1c;border:1px solid #f1c8c3}
 .alert.ok{background:var(--green-bg);color:var(--green);border:1px solid #cfe9d8}
 .alert.info{background:var(--amber-bg);color:var(--amber);border:1px solid #f3dfb3}
+
+.agreement{border:1.5px solid var(--deep-red);background:#fcf5f4;border-radius:12px;padding:16px 18px}
+.agreement h3{margin:0 0 4px;font-size:15px}
+.agreement p{margin:0 0 6px;font-size:13px;color:var(--muted)}
+.agreement ul{margin:0 0 12px;padding-left:20px;font-size:13.5px;line-height:1.5}
+.agreement .check{font-size:14px}
+
+/* ---------- access gate ---------- */
+.lock{background:var(--white);border:1.5px solid var(--deep-red);border-radius:20px;padding:26px;display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;max-width:720px;margin:0 auto;box-shadow:var(--shadow)}
+.lock img{width:84px;height:84px;mix-blend-mode:multiply}
+.lock h2{margin:6px 0 8px}
+.lock p{color:var(--muted);margin:0 0 14px}
+.lock-form{display:grid;gap:12px;max-width:440px}
+.lock-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.lock-msg{color:var(--red);font-weight:600;font-size:13px}
+.grid > .lock,.cart-layout > .lock,.pdp > .lock{grid-column:1/-1}
+@media(max-width:560px){.lock{grid-template-columns:1fr;padding:20px}.lock img{width:60px;height:60px}}
 
 /* ---------- confirmation ---------- */
 .confirm{max-width:720px;margin:0 auto;padding:40px 0 60px}

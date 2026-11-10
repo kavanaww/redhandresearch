@@ -27,6 +27,15 @@ function doPost(e) {
   try {
     var d = JSON.parse(e.postData.contents);
     var ss = SpreadsheetApp.getActiveSpreadsheet();
+
+    // Access-gate sign-ins (only when config.js ACCESS.mode is "email") go to an "Access" tab.
+    if (d.type === 'access') {
+      var acc = ss.getSheetByName('Access') || ss.insertSheet('Access');
+      if (acc.getLastRow() === 0) acc.appendRow(['When', 'Email', 'Agreed research use', 'Page']);
+      acc.appendRow([d.at, d.email, d.agreed, d.page]);
+      return ContentService.createTextOutput(JSON.stringify({ ok: true })).setMimeType(ContentService.MimeType.JSON);
+    }
+
     var sh = ss.getSheetByName(SHEET_NAME) || ss.getSheets()[0];
     var address = [d.address, d.city, d.state, d.zip].filter(String).join(', ');
     var lines = String(d.items || '').split('\n').filter(String);
@@ -38,7 +47,7 @@ function doPost(e) {
         d.order_number, d.email, d.name, d.phone, address, d.shipping_method,
         m ? m[2] : line, m ? m[3] : '', m ? Number(m[1]) : '', m ? Number(m[5].replace(/,/g, '')) : '',
         i === 0 ? d.shipping : '', '', i === 0 ? d.total : '',
-        d.payment_method, d.promo_code, d.notes, d.submitted_at
+        d.payment_method, d.promo_code, d.notes, d.submitted_at, i === 0 ? d.ruo_agreement : ''
       ]);
     });
 
@@ -48,7 +57,7 @@ function doPost(e) {
       'Ship: ' + d.shipping_method, 'Pay: ' + d.payment_method, d.promo_code ? 'Promo: ' + d.promo_code : '', '',
       d.items, '',
       'Subtotal ' + d.subtotal, 'Multi-vial −' + d.multi_vial_savings, 'Promo −' + d.promo_discount, 'Zelle −' + d.zelle_discount,
-      'Shipping ' + d.shipping, 'TOTAL ' + d.total, '', d.notes ? 'Notes: ' + d.notes : ''
+      'Shipping ' + d.shipping, 'TOTAL ' + d.total, '', d.notes ? 'Notes: ' + d.notes : '', '', 'Research use agreement: ' + (d.ruo_agreement || 'not recorded')
     ].join('\n');
     GmailApp.sendEmail(NOTIFY, 'Order ' + d.order_number + ' — ' + d.name + ' — ' + d.total, summary, { name: FROM_NAME, replyTo: d.email });
 
@@ -69,6 +78,8 @@ function doPost(e) {
         'Reply to this email once it\'s sent and we\'ll confirm and ship. Payments received by ' + SHIP_CUTOFF + ' on a business day ship the same day, and you\'ll get a tracking number by email.',
         '',
         'Your order:', d.items, '',
+        'Reminder: everything we sell is for laboratory research use only and not for human consumption. You confirmed this at checkout.',
+        '',
         'Thanks,', 'Moose', 'Red Hand Research'
       ].join('\n');
     } else {
@@ -80,6 +91,8 @@ function doPost(e) {
         'Once payment clears, your order ships (same day if received by ' + SHIP_CUTOFF + ' on a business day) and you\'ll get a tracking number by email.',
         '',
         'Your order:', d.items, '',
+        'Reminder: everything we sell is for laboratory research use only and not for human consumption. You confirmed this at checkout.',
+        '',
         'Thanks,', 'Moose', 'Red Hand Research'
       ].join('\n');
     }
