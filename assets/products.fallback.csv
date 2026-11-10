@@ -1,71 +1,71 @@
 Category,Product,Size,Price,Codes,Vials,Stock,Show,Notes,Featured,Blurb
-GLP,GLP-1 S,5mg,$45,SM5,,In stock,Y,,N,GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
-GLP,GLP-1 S,10mg,$70,SM10,,In stock,Y,,N,GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
-GLP,GLP-1 S,20mg,$120,SM20,,In stock,Y,,N,GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
-GLP,GLP-1 S,30mg,,SM30,,Low,N,,N,GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
-GLP,GLP-2 T,5mg,$45,TR5,,In stock,Y,,Y,Dual GIP/GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
-GLP,GLP-2 T,10mg,$85,TR10,,In stock,Y,,Y,Dual GIP/GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
-GLP,GLP-2 T,15mg,$105,TR15,,In stock,Y,,Y,Dual GIP/GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
-GLP,GLP-2 T,20mg,$120,TR20,,In stock,Y,,Y,Dual GIP/GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
-GLP,GLP-2 T,25mg,$150,TR25,,Low,Y,,Y,Dual GIP/GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
-GLP,GLP-2 T,30mg,$180,TR30,,In stock,Y,,Y,Dual GIP/GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
-GLP,GLP-2 T,40mg,$200,TR40,,Low,Y,,Y,Dual GIP/GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
-GLP,GLP-2 T,50mg,$250,TR50,,Low,Y,,Y,Dual GIP/GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
-GLP,GLP-2 T,60mg,$270,TR60,,Low,Y,,Y,Dual GIP/GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
+GLP,GLP-1 S,5mg,$40.00,SM5,,In stock,Y,,N,GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
+GLP,GLP-1 S,10mg,$50.00,SM10,,In stock,Y,,N,GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
+GLP,GLP-1 S,20mg,$95.00,SM20,,In stock,Y,,N,GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
+GLP,GLP-1 S,30mg,$115.00,SM30,,Low,N,,N,GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
+GLP,GLP-2 T,5mg,$45.00,TR5,,In stock,Y,,Y,Dual GIP/GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
+GLP,GLP-2 T,10mg,$69.00,TR10,,In stock,Y,,Y,Dual GIP/GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
+GLP,GLP-2 T,15mg,$85.00,TR15,,In stock,Y,,Y,Dual GIP/GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
+GLP,GLP-2 T,20mg,$98.95,TR20,,In stock,Y,,Y,Dual GIP/GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
+GLP,GLP-2 T,25mg,$108.00,TR25,,Low,Y,,Y,Dual GIP/GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
+GLP,GLP-2 T,30mg,$115.99,TR30,,In stock,Y,,Y,Dual GIP/GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
+GLP,GLP-2 T,40mg,$144.00,TR40,,Low,Y,,Y,Dual GIP/GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
+GLP,GLP-2 T,50mg,$172.00,TR50,,Low,Y,,Y,Dual GIP/GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
+GLP,GLP-2 T,60mg,$199.99,TR60,,Low,Y,,Y,Dual GIP/GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
 GLP,GLP-2 T,100mg,,TR100,,Low,N,,Y,Dual GIP/GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
 GLP,GLP-2 T,120mg,,TR120,,Low,N,,Y,Dual GIP/GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
-GLP,GLP-3 R,10mg,,RT10,,In stock,N,,Y,Triple GIP/GLP-1/glucagon receptor agonist class peptide. Lyophilized powder in a sterile vial.
-GLP,GLP-3 R,12mg,$114,RT12,,Sold out,Y,,Y,Triple GIP/GLP-1/glucagon receptor agonist class peptide. Lyophilized powder in a sterile vial.
-GLP,GLP-3 R,18mg,$144,RT18,,Low,Y,,Y,Triple GIP/GLP-1/glucagon receptor agonist class peptide. Lyophilized powder in a sterile vial.
-GLP,GLP-3 R,20mg,$160,R20,,In stock,Y,,Y,Triple GIP/GLP-1/glucagon receptor agonist class peptide. Lyophilized powder in a sterile vial.
-GLP,GLP-3 R,24mg,$174,RT24,,Low,Y,,Y,Triple GIP/GLP-1/glucagon receptor agonist class peptide. Lyophilized powder in a sterile vial.
-GLP,GLP-3 R,30mg,$200,RT30,,In stock,Y,,Y,Triple GIP/GLP-1/glucagon receptor agonist class peptide. Lyophilized powder in a sterile vial.
-GLP,GLP-3 R,40mg,$224,RT40,,Low,Y,,Y,Triple GIP/GLP-1/glucagon receptor agonist class peptide. Lyophilized powder in a sterile vial.
-GLP,GLP-3 R,48mg,$260,RT48,,Sold out,Y,,Y,Triple GIP/GLP-1/glucagon receptor agonist class peptide. Lyophilized powder in a sterile vial.
-GLP,GLP-3 R,50mg,,RT50,,In stock,N,,Y,Triple GIP/GLP-1/glucagon receptor agonist class peptide. Lyophilized powder in a sterile vial.
-GLP,GLP-3 R,60mg,$280,RT60,,In stock,Y,,Y,Triple GIP/GLP-1/glucagon receptor agonist class peptide. Lyophilized powder in a sterile vial.
-GLP,Cagrilintide,10mg,$75,CG10,,In stock,Y,,N,Long-acting amylin analog. Lyophilized powder in a sterile vial.
-GLP,Survodutide,6mg,$85,SUR6,,In stock,Y,,N,Dual glucagon/GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
-Healing,BPC-157,10mg,$65,BP10,,In stock,Y,,Y,Synthetic pentadecapeptide (15 amino acids) derived from a gastric protein sequence. CAS 137525-51-0. Lyophilized powder.
-Healing,TB-500,10mg,$75,"TB10, TB410",,In stock,Y,,Y,Synthetic peptide fragment of thymosin beta-4. Lyophilized powder in a sterile vial.
-Healing,KPV,10mg,$65,KV10,,In stock,Y,,N,"Tripeptide Lys-Pro-Val, the C-terminal fragment of alpha-MSH. Lyophilized powder."
-Healing,KPV,30mg,$85,KV30,,In stock,Y,,N,"Tripeptide Lys-Pro-Val, the C-terminal fragment of alpha-MSH. Lyophilized powder."
-Growth Hormone,CJC-1295 No DAC,10mg,$79,CND10,,In stock,Y,,N,Modified GHRH (1-29) analog without drug affinity complex (Mod GRF 1-29). Lyophilized powder.
-Growth Hormone,CJC-1295 No DAC,5mg,,CND5,,Low,N,,N,Modified GHRH (1-29) analog without drug affinity complex (Mod GRF 1-29). Lyophilized powder.
-Growth Hormone,CJC-1295 w/ DAC,5mg,$79,CJD5,,In stock,Y,,N,Modified GHRH (1-29) analog with drug affinity complex. Lyophilized powder.
-Growth Hormone,Ipamorelin,5mg,$65,IP5,,Low,Y,,N,Pentapeptide growth hormone secretagogue receptor agonist. Lyophilized powder.
-Growth Hormone,Ipamorelin,10mg,$79,IP10,,In stock,Y,,N,Pentapeptide growth hormone secretagogue receptor agonist. Lyophilized powder.
-Growth Hormone,Sermorelin,10mg,$89,SR10,,In stock,Y,,N,GHRH (1-29) analog. Lyophilized powder in a sterile vial.
-Growth Hormone,Tesamorelin,10mg,$89,TS10,,In stock,Y,,N,Stabilized 44-amino-acid GHRH analog. Lyophilized powder in a sterile vial.
+GLP,GLP-3 R,10mg,$79.00,RT10,,In stock,N,,Y,Triple GIP/GLP-1/glucagon receptor agonist class peptide. Lyophilized powder in a sterile vial.
+GLP,GLP-3 R,12mg,$89.00,RT12,,Sold out,Y,,Y,Triple GIP/GLP-1/glucagon receptor agonist class peptide. Lyophilized powder in a sterile vial.
+GLP,GLP-3 R,18mg,$119.00,RT18,,Low,Y,,Y,Triple GIP/GLP-1/glucagon receptor agonist class peptide. Lyophilized powder in a sterile vial.
+GLP,GLP-3 R,20mg,$129.00,R20,,In stock,Y,,Y,Triple GIP/GLP-1/glucagon receptor agonist class peptide. Lyophilized powder in a sterile vial.
+GLP,GLP-3 R,24mg,$149.00,RT24,,Low,Y,,Y,Triple GIP/GLP-1/glucagon receptor agonist class peptide. Lyophilized powder in a sterile vial.
+GLP,GLP-3 R,30mg,$179.00,RT30,,In stock,Y,,Y,Triple GIP/GLP-1/glucagon receptor agonist class peptide. Lyophilized powder in a sterile vial.
+GLP,GLP-3 R,40mg,$212.00,RT40,,Low,Y,,Y,Triple GIP/GLP-1/glucagon receptor agonist class peptide. Lyophilized powder in a sterile vial.
+GLP,GLP-3 R,48mg,$239.00,RT48,,Sold out,Y,,Y,Triple GIP/GLP-1/glucagon receptor agonist class peptide. Lyophilized powder in a sterile vial.
+GLP,GLP-3 R,50mg,$246.00,RT50,,In stock,N,,Y,Triple GIP/GLP-1/glucagon receptor agonist class peptide. Lyophilized powder in a sterile vial.
+GLP,GLP-3 R,60mg,$279.00,RT60,,In stock,Y,,Y,Triple GIP/GLP-1/glucagon receptor agonist class peptide. Lyophilized powder in a sterile vial.
+GLP,Cagrilintide,10mg,$75.00,CG10,,In stock,Y,,N,Long-acting amylin analog. Lyophilized powder in a sterile vial.
+GLP,Survodutide,6mg,$85.00,SUR6,,In stock,Y,,N,Dual glucagon/GLP-1 receptor agonist class peptide. Lyophilized powder in a sterile vial.
+Healing,BPC-157,10mg,$48.00,BP10,,In stock,Y,,Y,Synthetic pentadecapeptide (15 amino acids) derived from a gastric protein sequence. CAS 137525-51-0. Lyophilized powder.
+Healing,TB-500,10mg,$55.00,"TB10, TB410",,In stock,Y,,Y,Synthetic peptide fragment of thymosin beta-4. Lyophilized powder in a sterile vial.
+Healing,KPV,10mg,$42.99,KV10,,In stock,Y,,N,"Tripeptide Lys-Pro-Val, the C-terminal fragment of alpha-MSH. Lyophilized powder."
+Healing,KPV,30mg,$85.00,KV30,,In stock,Y,,N,"Tripeptide Lys-Pro-Val, the C-terminal fragment of alpha-MSH. Lyophilized powder."
+Growth Hormone,CJC-1295 No DAC,10mg,$79.00,CND10,,In stock,Y,,N,Modified GHRH (1-29) analog without drug affinity complex (Mod GRF 1-29). Lyophilized powder.
+Growth Hormone,CJC-1295 No DAC,5mg,$44.99,CND5,,Low,N,,N,Modified GHRH (1-29) analog without drug affinity complex (Mod GRF 1-29). Lyophilized powder.
+Growth Hormone,CJC-1295 w/ DAC,5mg,$61.99,CJD5,,In stock,Y,,N,Modified GHRH (1-29) analog with drug affinity complex. Lyophilized powder.
+Growth Hormone,Ipamorelin,5mg,$35.00,IP5,,Low,Y,,N,Pentapeptide growth hormone secretagogue receptor agonist. Lyophilized powder.
+Growth Hormone,Ipamorelin,10mg,$50.00,IP10,,In stock,Y,,N,Pentapeptide growth hormone secretagogue receptor agonist. Lyophilized powder.
+Growth Hormone,Sermorelin,10mg,$79.00,SR10,,In stock,Y,,N,GHRH (1-29) analog. Lyophilized powder in a sterile vial.
+Growth Hormone,Tesamorelin,10mg,$80.00,TS10,,In stock,Y,,N,Stabilized 44-amino-acid GHRH analog. Lyophilized powder in a sterile vial.
 Growth Hormone,Tesamorelin / Ipamorelin Blend,10mg/5mg,,TI15,,In stock,N,,N,Tesamorelin 10mg and Ipamorelin 5mg in one sterile vial. Lyophilized powder.
-Growth Hormone,CJC-1295 / Ipamorelin Blend,5mg/5mg,,CP10,,In stock,N,,N,CJC-1295 (No DAC) 5mg and Ipamorelin 5mg in one sterile vial. Lyophilized powder.
-Skin & Hair,GHK-Cu,50mg,,GU50,,In stock,N,,N,Copper tripeptide-1 complex (Gly-His-Lys:Cu). Lyophilized powder in a sterile vial.
-Skin & Hair,GHK-Cu,100mg,$90,GU100,,In stock,Y,,N,Copper tripeptide-1 complex (Gly-His-Lys:Cu). Lyophilized powder in a sterile vial.
-Skin & Hair,AHK-Cu,10mg,$48,AKU10,,Low,Y,,N,Copper tripeptide complex (Ala-His-Lys:Cu). Lyophilized powder in a sterile vial.
-Skin & Hair,Glow 70 Blend,70mg,$130,GLW70,,Low,Y,,Y,"GHK-Cu 50mg, BPC-157 10mg and TB-500 10mg in one sterile vial, 70mg total. Lyophilized powder."
-Skin & Hair,KLOW 80,80mg,$140,KLW80,,Sold out,Y,,N,"Four-peptide blend of GHK-Cu, BPC-157, TB-500 and KPV in one sterile vial, 80mg total. Lyophilized powder."
-Skin & Hair,HHB Hair Skin Nails,150mg,$79,HHB150,,Low,Y,,N,"Multi-peptide blend for hair, skin and nail research, 150mg total. Lyophilized powder."
-Skin & Hair,Snap-8,10mg,$50,S810,,In stock,Y,,N,Acetyl octapeptide-3. Lyophilized powder in a sterile vial.
-Skin & Hair,Melanotan I,10mg,$65,M110,,In stock,Y,,N,"Afamelanotide, a linear alpha-MSH analog. Lyophilized powder in a sterile vial."
-Skin & Hair,Melanotan II,10mg,$65,MT10,,In stock,Y,,N,Cyclic alpha-MSH analog. Lyophilized powder in a sterile vial.
-Cognitive & Sleep,Selank,10mg,$60,SK10,,In stock,Y,,N,Heptapeptide tuftsin analog (Thr-Lys-Pro-Arg-Pro-Gly-Pro). Lyophilized powder.
-Cognitive & Sleep,Semax,10mg,$60,SX10,,In stock,Y,,N,Heptapeptide ACTH (4-10) analog. Lyophilized powder in a sterile vial.
-Cognitive & Sleep,NA Selank Amidate,30mg,$120,NAK30,,In stock,Y,,N,"N-acetyl Selank amidate, a modified form of Selank. Lyophilized powder."
-Cognitive & Sleep,NA Semax Amidate,30mg,$120,NAX30,,In stock,Y,,N,"N-acetyl Semax amidate, a modified form of Semax. Lyophilized powder."
-Cognitive & Sleep,DSIP,10mg,$65,DP10,,In stock,Y,,N,"Delta sleep-inducing peptide, a nonapeptide. Lyophilized powder in a sterile vial."
-Cognitive & Sleep,Adamax,5mg,$79,AD5,,In stock,Y,,N,Synthetic Semax-derived peptide analog. Lyophilized powder in a sterile vial.
-Longevity,NAD+,500mg,$70,NAD500,,In stock,Y,,Y,"Nicotinamide adenine dinucleotide, CAS 53-84-9. Lyophilized powder in a sterile vial."
-Longevity,NAD+,1000mg,$100,NJ1000,,In stock,Y,,Y,"Nicotinamide adenine dinucleotide, CAS 53-84-9. Lyophilized powder in a sterile vial."
-Longevity,Glutathione,1500mg,$85,GL1500,,In stock,Y,,N,Reduced L-glutathione tripeptide (Glu-Cys-Gly). Lyophilized powder in a sterile vial.
-Longevity,SS-31,50mg,$119,2S50,,In stock,Y,,N,"Elamipretide, a mitochondria-targeted tetrapeptide. Lyophilized powder."
-Longevity,Lipo-C,10mg,$79,LIPO10,,Low,Y,,N,Lipotropic compound blend. Lyophilized powder in a sterile vial.
-Longevity,Cartalax,20mg,$89,CAX20,,In stock,Y,,N,Short-chain peptide bioregulator. Lyophilized powder in a sterile vial.
-Longevity,Prostamax,20mg,$79,PRX20,,Low,Y,,N,Short-chain peptide bioregulator. Lyophilized powder in a sterile vial.
-Longevity,TA1 Thymosin Alpha-1,10mg,$70,TA10,,In stock,Y,,N,"Thymosin alpha-1, a 28-amino-acid peptide. Lyophilized powder in a sterile vial."
-Longevity,ARA-290,10mg,$65,AR10,,In stock,Y,,N,"Cibinetide, an 11-amino-acid erythropoietin-derived peptide. Lyophilized powder."
-Longevity,ARA-290,30mg,$89,AR30,,In stock,Y,,N,"Cibinetide, an 11-amino-acid erythropoietin-derived peptide. Lyophilized powder."
-Longevity,5-Amino-1MQ,50mg,,AM50,,In stock,N,,N,"5-amino-1-methylquinolinium, a small-molecule compound (not a peptide). Powder in a sterile vial."
-Other,PT-141,10mg,$65,PT10,,In stock,Y,,N,"Bremelanotide, a cyclic melanocortin receptor agonist peptide. Lyophilized powder."
-Other,Kisspeptin,10mg,$75,KP10,,In stock,Y,,N,Kisspeptin-10 decapeptide. Lyophilized powder in a sterile vial.
-Other,Setmelanotide,10mg,$85,ST10,,In stock,Y,,N,Cyclic MC4 receptor agonist peptide. Lyophilized powder in a sterile vial.
-Supplies,Bacteriostatic Water (Hospira),30mL,$25,,,In stock,Y,,N,"Sterile water with 0.9% benzyl alcohol, 30mL vial. For reconstitution in laboratory use."
+Growth Hormone,CJC-1295 / Ipamorelin Blend,5mg/5mg,$64.00,CP10,,In stock,N,,N,CJC-1295 (No DAC) 5mg and Ipamorelin 5mg in one sterile vial. Lyophilized powder.
+Skin & Hair,GHK-Cu,50mg,$44.99,GU50,,In stock,N,,N,Copper tripeptide-1 complex (Gly-His-Lys:Cu). Lyophilized powder in a sterile vial.
+Skin & Hair,GHK-Cu,100mg,$69.99,GU100,,In stock,Y,,N,Copper tripeptide-1 complex (Gly-His-Lys:Cu). Lyophilized powder in a sterile vial.
+Skin & Hair,AHK-Cu,10mg,$48.00,AKU10,,Low,Y,,N,Copper tripeptide complex (Ala-His-Lys:Cu). Lyophilized powder in a sterile vial.
+Skin & Hair,Glow 70 Blend,70mg,$109.00,GLW70,,Low,Y,,Y,"GHK-Cu 50mg, BPC-157 10mg and TB-500 10mg in one sterile vial, 70mg total. Lyophilized powder."
+Skin & Hair,KLOW 80,80mg,$119.99,KLW80,,Sold out,Y,,N,"Four-peptide blend of GHK-Cu, BPC-157, TB-500 and KPV in one sterile vial, 80mg total. Lyophilized powder."
+Skin & Hair,HHB Hair Skin Nails,150mg,$79.00,HHB150,,Low,Y,,N,"Multi-peptide blend for hair, skin and nail research, 150mg total. Lyophilized powder."
+Skin & Hair,Snap-8,10mg,$42.99,S810,,In stock,Y,,N,Acetyl octapeptide-3. Lyophilized powder in a sterile vial.
+Skin & Hair,Melanotan I,10mg,$42.00,M110,,In stock,Y,,N,"Afamelanotide, a linear alpha-MSH analog. Lyophilized powder in a sterile vial."
+Skin & Hair,Melanotan II,10mg,$42.99,MT10,,In stock,Y,,N,Cyclic alpha-MSH analog. Lyophilized powder in a sterile vial.
+Cognitive & Sleep,Selank,10mg,$40.00,SK10,,In stock,Y,,N,Heptapeptide tuftsin analog (Thr-Lys-Pro-Arg-Pro-Gly-Pro). Lyophilized powder.
+Cognitive & Sleep,Semax,10mg,$40.00,SX10,,In stock,Y,,N,Heptapeptide ACTH (4-10) analog. Lyophilized powder in a sterile vial.
+Cognitive & Sleep,NA Selank Amidate,30mg,$120.00,NAK30,,In stock,Y,,N,"N-acetyl Selank amidate, a modified form of Selank. Lyophilized powder."
+Cognitive & Sleep,NA Semax Amidate,30mg,$120.00,NAX30,,In stock,Y,,N,"N-acetyl Semax amidate, a modified form of Semax. Lyophilized powder."
+Cognitive & Sleep,DSIP,10mg,$50.00,DP10,,In stock,Y,,N,"Delta sleep-inducing peptide, a nonapeptide. Lyophilized powder in a sterile vial."
+Cognitive & Sleep,Adamax,5mg,$79.00,AD5,,In stock,Y,,N,Synthetic Semax-derived peptide analog. Lyophilized powder in a sterile vial.
+Longevity,NAD+,500mg,$55.00,NAD500,,In stock,Y,,Y,"Nicotinamide adenine dinucleotide, CAS 53-84-9. Lyophilized powder in a sterile vial."
+Longevity,NAD+,1000mg,$85.00,NJ1000,,In stock,Y,,Y,"Nicotinamide adenine dinucleotide, CAS 53-84-9. Lyophilized powder in a sterile vial."
+Longevity,Glutathione,1500mg,$60.00,GL1500,,In stock,Y,,N,Reduced L-glutathione tripeptide (Glu-Cys-Gly). Lyophilized powder in a sterile vial.
+Longevity,SS-31,50mg,$119.00,2S50,,In stock,Y,,N,"Elamipretide, a mitochondria-targeted tetrapeptide. Lyophilized powder."
+Longevity,Lipo-C,10mg,$79.00,LIPO10,,Low,Y,,N,Lipotropic compound blend. Lyophilized powder in a sterile vial.
+Longevity,Cartalax,20mg,$65.00,CAX20,,In stock,Y,,N,Short-chain peptide bioregulator. Lyophilized powder in a sterile vial.
+Longevity,Prostamax,20mg,$79.00,PRX20,,Low,Y,,N,Short-chain peptide bioregulator. Lyophilized powder in a sterile vial.
+Longevity,TA1 Thymosin Alpha-1,10mg,$69.00,TA10,,In stock,Y,,N,"Thymosin alpha-1, a 28-amino-acid peptide. Lyophilized powder in a sterile vial."
+Longevity,ARA-290,10mg,$54.99,AR10,,In stock,Y,,N,"Cibinetide, an 11-amino-acid erythropoietin-derived peptide. Lyophilized powder."
+Longevity,ARA-290,30mg,$89.00,AR30,,In stock,Y,,N,"Cibinetide, an 11-amino-acid erythropoietin-derived peptide. Lyophilized powder."
+Longevity,5-Amino-1MQ,50mg,$89.00,AM50,,In stock,N,,N,"5-amino-1-methylquinolinium, a small-molecule compound (not a peptide). Powder in a sterile vial."
+Other,PT-141,10mg,$65.00,PT10,,In stock,Y,,N,"Bremelanotide, a cyclic melanocortin receptor agonist peptide. Lyophilized powder."
+Other,Kisspeptin,10mg,$59.00,KP10,,In stock,Y,,N,Kisspeptin-10 decapeptide. Lyophilized powder in a sterile vial.
+Other,Setmelanotide,10mg,$85.00,ST10,,In stock,Y,,N,Cyclic MC4 receptor agonist peptide. Lyophilized powder in a sterile vial.
+Supplies,Bacteriostatic Water (Hospira),30mL,$18.00,,,In stock,Y,,N,"Sterile water with 0.9% benzyl alcohol, 30mL vial. For reconstitution in laboratory use."

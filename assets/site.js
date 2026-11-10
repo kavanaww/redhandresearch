@@ -450,8 +450,17 @@
       };
       const btn = RH.qs('#submit'); btn.disabled = true; btn.textContent = 'Sending…';
       try {
-        const r = await fetch(C.ORDER_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(payload) });
+        if (!C.ORDER_ENDPOINT) throw new Error('ORDER_ENDPOINT is not set in assets/config.js');
+        // Apps Script needs a "simple" request (text/plain) to accept it cross-origin; Formspree wants JSON.
+        const isFormspree = /formspree\.io/.test(C.ORDER_ENDPOINT);
+        const r = await fetch(C.ORDER_ENDPOINT, {
+          method: 'POST',
+          headers: isFormspree ? { 'Content-Type': 'application/json', 'Accept': 'application/json' } : { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
         if (!r.ok) throw new Error('HTTP ' + r.status);
+        let j = null; try { j = JSON.parse(await r.text()); } catch (ignore) { /* non-JSON reply still counts as sent */ }
+        if (j && j.ok === false) throw new Error(j.error || 'Endpoint reported failure');
         try { sessionStorage.setItem('rh_last_order', JSON.stringify({ order: orderNo, pm: t.pm, total: t.total, email: payload.email })); sessionStorage.removeItem('rh_promo'); } catch (err) { /* ignore */ }
         RH.cart.clear();
         location.href = 'order-confirmation.html?o=' + encodeURIComponent(orderNo) + '&pm=' + t.pm;

@@ -10,7 +10,10 @@ window.RH_CONFIG = {
   SHEET_CSV_URL: "",
   REFRESH_MINUTES: 5,            // how long a browser keeps the sheet data before re-fetching
 
-  /* 2. Where checkout submissions go. Formspree today; swap for your Apps Script URL later. */
+  /* 2. Where checkout submissions go: the Google Apps Script web app attached to the
+        "Mooses Peptide Empire" sheet (see tools/apps-script-orders.gs for the 5-click setup).
+        Paste its /exec URL here. The old Formspree address is left in only so checkout keeps
+        working until then; remove it once the script URL is in. */
   ORDER_ENDPOINT: "https://formspree.io/f/mgonglbq",
 
   /* 3. Shipping */
