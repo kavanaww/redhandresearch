@@ -69,16 +69,27 @@
       if (c && Date.now() - c.t < ttl && Array.isArray(c.items) && c.items.length) { RH._items = c.items; RH._source = c.src; return c.items; }
     } catch (e) { /* storage unavailable */ }
     let items = null, src = '';
-    if (C.SHEET_CSV_URL) {
-      try {
-        const url = C.SHEET_CSV_URL + (C.SHEET_CSV_URL.indexOf('?') > -1 ? '&' : '?') + 'v=' + Math.floor(Date.now() / 60000);
-        const r = await fetch(url, { cache: 'no-store' });
-        if (r.ok) { items = RH.normalize(RH.parseCSV(await r.text())); src = 'sheet'; }
-      } catch (e) { console.warn('Could not reach the price sheet, using fallback.', e); }
-    }
-    if (!items || !items.length) {
-      try { const r = await fetch('assets/products.fallback.csv', { cache: 'no-store' }); items = RH.normalize(RH.parseCSV(await r.text())); src = 'fallback'; }
-      catch (e) { items = []; }
+    if (RH.access.mode() === 'otp') {
+      /* Signed-in mode: the backend serves the Website tab only to a valid token. Nothing public to fall back to. */
+      if (!RH.access.token()) return [];
+      const j = await RH.api({ type: 'products', token: RH.access.token() });
+      if (!j.ok) { if (j.error === 'auth') { RH.access.lock(); return []; } throw new Error(j.error || 'Could not load products'); }
+      const head = (j.header || []).map(h => String(h).trim().toLowerCase());
+      items = RH.normalize((j.rows || []).map(r => { const o = {}; head.forEach((h, i) => { o[h] = String(r[i] == null ? '' : r[i]).trim(); }); return o; }));
+      src = 'backend';
+    } else {
+      if (C.SHEET_CSV_URL) {
+        try {
+          const url = C.SHEET_CSV_URL + (C.SHEET_CSV_URL.indexOf('?') > -1 ? '&' : '?') + 'v=' + Math.floor(Date.now() / 60000);
+          const r = await fetch(url, { cache: 'no-store' });
+          if (r.ok) { items = RH.normalize(RH.parseCSV(await r.text())); src = 'sheet'; }
+        } catch (e) { console.warn('Could not reach the price sheet.', e); }
+      }
+      if (!items || !items.length) {
+        try { const r = await fetch('assets/products.fallback.csv', { cache: 'no-store' }); if (r.ok) { items = RH.normalize(RH.parseCSV(await r.text())); src = 'fallback'; } }
+        catch (e) { /* no fallback file */ }
+      }
+      items = items || [];
     }
     RH._items = items; RH._source = src;
     try { sessionStorage.setItem(KEY, JSON.stringify({ t: Date.now(), items: items, src: src })); } catch (e) { /* ignore */ }
@@ -242,56 +253,96 @@
     t.classList.add('show'); clearTimeout(RH._tt); RH._tt = setTimeout(() => t.classList.remove('show'), 3500);
   };
 
-  /* ---------- access gate: products + prices hidden until unlocked ---------- */
+  /* ---------- backend calls (the Apps Script web app) ---------- */
+  RH.isBackend = () => /script\.google\.com/.test(C.ORDER_ENDPOINT || '');
+  RH.api = async function (payload) {
+    const r = await fetch(C.ORDER_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    let j = null; try { j = JSON.parse(await r.text()); } catch (e) { throw new Error('Unexpected reply from the server'); }
+    return j || {};
+  };
+
+  /* ---------- access: sign in to see products + prices ---------- */
   RH.access = {
-    key: 'rh_access_v1',
-    mode() { return (C.ACCESS && C.ACCESS.mode) || 'off'; },
-    unlocked() {
-      if (RH.access.mode() === 'off') return true;
-      try { const a = JSON.parse(localStorage.getItem(RH.access.key) || 'null'); return !!(a && a.until > Date.now()); } catch (e) { return false; }
-    },
-    unlock(how) {
-      const days = (C.ACCESS && C.ACCESS.days) || 30;
-      try { localStorage.setItem(RH.access.key, JSON.stringify({ how: how, until: Date.now() + days * 864e5 })); } catch (e) { /* ignore */ }
+    key: 'rh_access_v2',
+    /* "otp" needs the Apps Script backend; without it the site quietly falls back to the access code. */
+    mode() { const m = (C.ACCESS && C.ACCESS.mode) || 'off'; return m === 'otp' && !RH.isBackend() ? 'code' : m; },
+    state() { try { return JSON.parse(localStorage.getItem(RH.access.key) || 'null'); } catch (e) { return null; } },
+    unlocked() { if (RH.access.mode() === 'off') return true; const a = RH.access.state(); return !!(a && a.until > Date.now() && (RH.access.mode() !== 'otp' || a.token)); },
+    token() { const a = RH.access.state(); return a && a.token; },
+    email() { const a = RH.access.state(); return (a && a.email) || ''; },
+    unlock(data) {
+      const days = (data && data.days) || (C.ACCESS && C.ACCESS.days) || 30;
+      try { localStorage.setItem(RH.access.key, JSON.stringify(Object.assign({ until: Date.now() + days * 864e5 }, data || {}))); } catch (e) { /* ignore */ }
       RH.qsa('[data-signout]').forEach(el => { el.hidden = false; });
     },
-    lock() { try { localStorage.removeItem(RH.access.key); } catch (e) { /* ignore */ } location.reload(); }
+    lock() { try { localStorage.removeItem(RH.access.key); sessionStorage.removeItem('rh_products_v1'); } catch (e) { /* ignore */ } location.reload(); }
   };
   async function sha256(s) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
   }
-  /* Renders the lock panel into `container` unless already unlocked; runs `then()` once unlocked. */
+  /* Renders the sign-in panel into `container` unless already unlocked; runs `then()` once unlocked. */
   RH.requireAccess = function (container, then) {
     if (RH.access.unlocked()) { then(); return; }
-    const email = RH.access.mode() === 'email';
+    const otp = RH.access.mode() === 'otp';
     container.innerHTML =
       '<div class="lock"><img src="assets/logo.png" alt=""><div>' +
       '<div class="eyebrow">Researchers only</div><h2>Sign in to view products and pricing</h2>' +
-      '<p>' + (email ? 'Enter your email and confirm research use to unlock the catalog.' : 'Enter the access code we gave you to unlock the catalog. Don\'t have one? Email <a href="mailto:' + C.SUPPORT_EMAIL + '">' + C.SUPPORT_EMAIL + '</a>.') + '</p>' +
+      '<p data-lk-intro>' + (otp
+        ? 'Enter your email and we\'ll send you a 6-digit sign-in code. No password needed.'
+        : 'Enter the access code we gave you to unlock the catalog. Don\'t have one? Email <a href="mailto:' + C.SUPPORT_EMAIL + '">' + C.SUPPORT_EMAIL + '</a>.') + '</p>' +
       '<form class="lock-form" novalidate>' +
-      (email
-        ? '<div><label for="lk-email">Email</label><input id="lk-email" type="email" required autocomplete="email" placeholder="you@lab.edu"></div>' +
-          '<label class="check"><input id="lk-agree" type="checkbox" required><span>I am 21 or older and a qualified researcher. Products are for laboratory research use only and will not be administered to humans or animals.</span></label>'
+      (otp
+        ? '<div data-step="1"><label for="lk-email">Email</label><input id="lk-email" type="email" required autocomplete="email" inputmode="email" placeholder="you@lab.edu"></div>' +
+          '<label class="check" data-step="1"><input id="lk-agree" type="checkbox" required><span>I am 21 or older and a qualified researcher. Products are for laboratory research use only and will not be administered to humans or animals.</span></label>' +
+          '<div data-step="2" hidden><label for="lk-otp">6-digit code from your email</label><input id="lk-otp" type="text" inputmode="numeric" pattern="\\d{6}" maxlength="6" autocomplete="one-time-code" placeholder="123456"></div>'
         : '<div><label for="lk-code">Access code</label><input id="lk-code" type="password" required autocomplete="off" autocapitalize="characters"></div>') +
-      '<div class="lock-actions"><button class="btn" type="submit">Unlock</button><span class="lock-msg" aria-live="polite"></span></div>' +
+      '<div class="lock-actions"><button class="btn" type="submit" data-lk-submit>' + (otp ? 'Send code' : 'Unlock') + '</button>' +
+      (otp ? '<button class="btn secondary small" type="button" data-lk-back hidden>Use a different email</button>' : '') +
+      '<span class="lock-msg" aria-live="polite"></span></div>' +
       '</form></div></div>';
-    const form = RH.qs('form', container), msg = RH.qs('.lock-msg', container);
+    const form = RH.qs('form', container), msg = RH.qs('.lock-msg', container), submit = RH.qs('[data-lk-submit]', container);
+    let step = 1, pendingEmail = '';
+    const show = n => { step = n; RH.qsa('[data-step]', container).forEach(el => { el.hidden = el.dataset.step !== String(n); }); RH.qs('[data-lk-back]', container).hidden = n === 1; submit.textContent = n === 1 ? 'Send code' : 'Verify and sign in'; msg.style.color = ''; };
+    if (otp) RH.qs('[data-lk-back]', container).addEventListener('click', () => { show(1); msg.textContent = ''; });
     form.addEventListener('submit', async e => {
       e.preventDefault();
-      if (!form.reportValidity()) return;
-      if (email) {
-        const addr = RH.qs('#lk-email', container).value.trim();
-        if (C.ORDER_ENDPOINT && !/formspree/.test(C.ORDER_ENDPOINT)) {
-          try { fetch(C.ORDER_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ type: 'access', email: addr, agreed: 'yes', at: new Date().toISOString(), page: location.pathname }) }); } catch (err) { /* best effort */ }
-        }
-        RH.access.unlock('email:' + addr); then(); return;
+      msg.style.color = '';
+      if (!otp) {
+        if (!form.reportValidity()) return;
+        const code = RH.qs('#lk-code', container).value.trim().toUpperCase();
+        let hash = ''; try { hash = await sha256(code); } catch (err) { msg.textContent = 'This browser can\'t verify the code. Try a different browser.'; return; }
+        if (hash === (C.ACCESS && C.ACCESS.codeHash)) { RH.access.unlock({ how: 'code' }); then(); }
+        else { msg.textContent = 'That code isn\'t right.'; RH.qs('#lk-code', container).select(); }
+        return;
       }
-      const code = RH.qs('#lk-code', container).value.trim().toUpperCase();
-      let hash = ''; try { hash = await sha256(code); } catch (err) { msg.textContent = 'This browser can\'t verify the code. Try a different browser.'; return; }
-      if (hash === (C.ACCESS && C.ACCESS.codeHash)) { RH.access.unlock('code'); then(); }
-      else { msg.textContent = 'That code isn\'t right.'; RH.qs('#lk-code', container).select(); }
+      if (step === 1) {
+        const emailEl = RH.qs('#lk-email', container), agree = RH.qs('#lk-agree', container);
+        if (!emailEl.checkValidity()) { emailEl.reportValidity(); return; }
+        if (!agree.checked) { agree.reportValidity(); return; }
+        pendingEmail = emailEl.value.trim().toLowerCase();
+        submit.disabled = true; msg.textContent = 'Sending…';
+        try {
+          const j = await RH.api({ type: 'otp_request', email: pendingEmail });
+          if (j.ok) { show(2); msg.style.color = 'var(--green)'; msg.textContent = 'Code sent to ' + pendingEmail + '. Check spam if it\'s not there in a minute.'; RH.qs('#lk-otp', container).focus(); }
+          else if (j.error === 'pending') { msg.textContent = j.message || 'Your access request is pending approval.'; }
+          else { msg.textContent = j.error || 'Could not send a code.'; }
+        } catch (err) { msg.textContent = 'Can\'t reach the sign-in server right now. Try again in a moment.'; }
+        submit.disabled = false;
+        return;
+      }
+      const otpEl = RH.qs('#lk-otp', container), code = otpEl.value.replace(/\D/g, '');
+      if (code.length !== 6) { msg.textContent = 'Enter the 6-digit code.'; otpEl.focus(); return; }
+      submit.disabled = true; msg.textContent = 'Checking…';
+      try {
+        const j = await RH.api({ type: 'otp_verify', email: pendingEmail, code: code });
+        if (j.ok && j.token) { RH.access.unlock({ how: 'otp', token: j.token, email: j.email || pendingEmail, days: j.days }); then(); return; }
+        msg.textContent = j.error || 'That code isn\'t right.'; otpEl.select();
+      } catch (err) { msg.textContent = 'Can\'t reach the sign-in server right now. Try again in a moment.'; }
+      submit.disabled = false;
     });
+    if (otp) show(1);
   };
 
   /* fills [data-cfg="KEY"] with values from config.js so no number is typed into HTML */
@@ -307,27 +358,36 @@
   /* ---------- pages ---------- */
   const pages = (RH.pages = {});
 
+  RH.unavailable = el => { el.innerHTML = '<div class="empty" style="grid-column:1/-1">The catalog is temporarily unavailable. Please refresh in a minute, or email <a href="mailto:' + C.SUPPORT_EMAIL + '">' + C.SUPPORT_EMAIL + '</a>.</div>'; };
+
   pages.home = async function () {
-    const groups = RH.groupProducts(await RH.loadProducts());
-    const cats = Array.from(new Set(groups.map(g => g.category)));
-    const el = RH.qs('#cats');
-    cats.forEach(c => { const n = groups.filter(g => g.category === c).length; const a = document.createElement('a'); a.href = 'shop.html#' + RH.slug(c); a.innerHTML = RH.esc(c) + '<small>' + n + ' product' + (n === 1 ? '' : 's') + '</small>'; el.appendChild(a); });
-    RH.qsa('[data-count-products]').forEach(e => { e.textContent = groups.length; });
-    const grid = RH.qs('#featured');
-    RH.requireAccess(grid, () => {
-      grid.innerHTML = '';
-      const feat = groups.filter(g => g.featured && !g.soldOut).slice(0, 6);
-      (feat.length ? feat : groups.filter(g => !g.soldOut).slice(0, 6)).forEach(g => grid.appendChild(RH.renderCard(g)));
+    const grid = RH.qs('#featured'), catsSection = RH.qs('#cats').closest('section');
+    catsSection.hidden = !RH.access.unlocked();
+    RH.requireAccess(grid, async () => {
+      try {
+        const groups = RH.groupProducts(await RH.loadProducts());
+        if (!groups.length) { RH.unavailable(grid); return; }
+        const cats = Array.from(new Set(groups.map(g => g.category)));
+        const el = RH.qs('#cats'); el.innerHTML = '';
+        cats.forEach(c => { const n = groups.filter(g => g.category === c).length; const a = document.createElement('a'); a.href = 'shop.html#' + RH.slug(c); a.innerHTML = RH.esc(c) + '<small>' + n + ' product' + (n === 1 ? '' : 's') + '</small>'; el.appendChild(a); });
+        catsSection.hidden = false;
+        RH.qsa('[data-count-products]').forEach(e => { e.textContent = groups.length; });
+        grid.innerHTML = '';
+        const feat = groups.filter(g => g.featured && !g.soldOut).slice(0, 6);
+        (feat.length ? feat : groups.filter(g => !g.soldOut).slice(0, 6)).forEach(g => grid.appendChild(RH.renderCard(g)));
+      } catch (err) { console.error(err); RH.unavailable(grid); }
     });
   };
 
   pages.shop = async function () {
     const grid = RH.qs('#grid'), filters = RH.qs('.filters'), status = RH.qs('#status');
     filters.hidden = true;
-    RH.requireAccess(grid, () => { filters.hidden = false; shopInner(grid, status).catch(err => { console.error(err); grid.innerHTML = '<div class="empty">Products could not be loaded. Please refresh.</div>'; }); });
+    RH.requireAccess(grid, () => { shopInner(grid, status, filters).catch(err => { console.error(err); RH.unavailable(grid); }); });
   };
-  async function shopInner(grid, status) {
+  async function shopInner(grid, status, filters) {
     const groups = RH.groupProducts(await RH.loadProducts());
+    if (!groups.length) { RH.unavailable(grid); return; }
+    filters.hidden = false;
     const cats = Array.from(new Set(groups.map(g => g.category)));
     const bar = RH.qs('#cats'), q = RH.qs('#q');
     let active = (location.hash || '').slice(1) || 'all';
@@ -355,6 +415,7 @@
     const slug = RH.param('p');
     const groups = RH.groupProducts(await RH.loadProducts());
     const g = groups.find(x => x.slug === slug);
+    if (!groups.length) { RH.unavailable(root); return; }
     if (!g) { root.innerHTML = '<div class="empty" style="grid-column:1/-1">We couldn\'t find that product. <a href="shop.html">Browse the shop</a>.</div>'; document.title = 'Product not found — ' + C.SITE_NAME; return; }
     document.title = g.name + ' — ' + C.SITE_NAME;
     RH.qs('#crumb-cat').textContent = g.category; RH.qs('#crumb-cat').href = 'shop.html#' + RH.slug(g.category);
@@ -520,7 +581,8 @@
         subtotal: RH.money2(t.list), multi_vial_savings: RH.money2(t.multiSavings), promo_discount: RH.money2(t.promoAmt), zelle_discount: RH.money2(t.zelleAmt), shipping: RH.money2(t.shipping), total: RH.money2(t.total),
         notes: f.notes.value.trim(), newsletter: f.newsletter.checked ? 'yes' : 'no',
         ruo_agreement: 'ACCEPTED ' + d.toISOString() + ' — research use only; no human or animal administration; 21+ qualified researcher; not for diagnostic/therapeutic use; Terms + Privacy accepted',
-        submitted_at: d.toISOString()
+        submitted_at: d.toISOString(),
+        token: RH.access.token() || '', account_email: RH.access.email() || ''
       };
       const btn = RH.qs('#submit'); btn.disabled = true; btn.textContent = 'Sending…';
       try {
@@ -534,6 +596,7 @@
         });
         if (!r.ok) throw new Error('HTTP ' + r.status);
         let j = null; try { j = JSON.parse(await r.text()); } catch (ignore) { /* non-JSON reply still counts as sent */ }
+        if (j && j.ok === false && j.error === 'auth') { RH.access.lock(); return; }
         if (j && j.ok === false) throw new Error(j.error || 'Endpoint reported failure');
         try { sessionStorage.setItem('rh_last_order', JSON.stringify({ order: orderNo, pm: t.pm, total: t.total, email: payload.email })); sessionStorage.removeItem('rh_promo'); } catch (err) { /* ignore */ }
         RH.cart.clear();
@@ -546,6 +609,7 @@
       }
     });
     const agree = RH.qs('#agree', form); if (agree) agree.addEventListener('change', drawSummary);
+    if (RH.access.email() && form.elements.email && !form.elements.email.value) form.elements.email.value = RH.access.email();
     draw();
   }
 

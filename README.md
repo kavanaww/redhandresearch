@@ -43,28 +43,27 @@ discount, Zelle %, promo codes, emails) live in **`assets/config.js`**, nowhere 
 3. Copy the link and paste it into `assets/config.js` as `SHEET_CSV_URL`.
 4. Push. The site now refreshes prices and stock every few minutes.
 
-## Access gate (sign in to see products)
+## Sign-in (accounts)
 
-Products and prices are hidden until a visitor unlocks. `ACCESS.mode` in `assets/config.js`:
+Products and prices are hidden until the visitor signs in. `ACCESS.mode` in `assets/config.js`:
 
-- `code`  — visitor enters the access code you hand out. Starter code: **RESEARCH2026**. To change it,
-  run `echo -n "NEWCODE" | shasum -a 256` and paste the hash as `codeHash`.
-- `email` — visitor enters an email and confirms research use; emails collect in an "Access" tab of the
-  order sheet (needs the Apps Script endpoint).
-- `off`   — everyone sees products.
+- `otp` (default) — the visitor enters an email, gets a 6-digit code by email, and is signed in for
+  30 days. The email is the account; no passwords. Every address lands in an **Accounts** tab of the
+  order sheet (first seen, last sign-in, count, Approved). Set `APPROVAL_REQUIRED = true` in the
+  script to vet people before they get a code. In this mode the product list is served by the script
+  only to a valid sign-in, so prices are genuinely private. **Delete `assets/products.fallback.csv`
+  once this mode is live** — it is a public copy of the prices.
+- `code` — one shared access code you hand out (starter: **RESEARCH2026**). Change it with
+  `echo -n "NEWCODE" | shasum -a 256` → `codeHash`. Used automatically if the script isn't set up yet.
+- `off` — everyone sees products.
 
-A browser stays unlocked for `ACCESS.days`. "Sign out" is in the footer. This is a gate, not a vault:
-it keeps prices off search engines and away from casual visitors, but the data files are still public.
+"Sign out" is in the footer.
 
 ## Checkout
 
-Every order requires the research-use agreement at checkout, and the acceptance (with timestamp) is
-sent with the order and written to the sheet.
-
-
-Orders POST to `ORDER_ENDPOINT` in `config.js` (Formspree today). To write orders straight
-into the "Mooses Peptide Empire" sheet instead, deploy `tools/apps-script-orders.gs` as a web
-app and paste its URL as `ORDER_ENDPOINT`.
+Every order requires the research-use agreement; the acceptance (with timestamp) is sent with the
+order and written to the sheet. Orders POST to `ORDER_ENDPOINT` in `config.js`: the Apps Script web
+app from `tools/apps-script-orders.gs` (the old Formspree address is only a placeholder until then).
 
 ## Before every push
 
