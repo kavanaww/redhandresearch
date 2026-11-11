@@ -10,11 +10,11 @@ window.RH_CONFIG = {
   SHEET_CSV_URL: "",
   REFRESH_MINUTES: 5,            // how long a browser keeps the sheet data before re-fetching
 
-  /* 2. Where checkout submissions go: the Google Apps Script web app attached to the
-        "Mooses Peptide Empire" sheet (see tools/apps-script-orders.gs for the 5-click setup).
-        Paste its /exec URL here. The old Formspree address is left in only so checkout keeps
-        working until then; remove it once the script URL is in. */
-  ORDER_ENDPOINT: "https://formspree.io/f/mgonglbq",
+  /* 2. The site's backend: the Google Apps Script web app attached to the "Mooses Peptide Empire"
+        sheet (source: tools/apps-script-orders.gs). Handles sign-in codes, the product list, and orders.
+        Deployed Nov 11, 2026 as "Red Hand site". To update the script: edit it in Apps Script, then
+        Deploy → Manage deployments → pencil → New version → Deploy (the URL stays the same). */
+  ORDER_ENDPOINT: "https://script.google.com/macros/s/AKfycby4UWtFrH0n0_796-GtHec0hya2D9KwReENeEIvQShwZhT2VegOFdl7aMyzHAbMtE-idw/exec",
 
   /* 3. Shipping */
   SHIPPING: [

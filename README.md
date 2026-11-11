@@ -12,8 +12,8 @@ cart, checkout) reads that tab and draws itself from it.
 - Hide a product → set `Show` to `N`.
 - Put a product on the home page → `Featured` = `Y`.
 - Stock status is automatic (linked to the inventory sheet).
-- `assets/products.fallback.csv` is a snapshot used only if the sheet can't be reached.
-  Refresh it now and then: File → Download → CSV of the Website tab, save over that file.
+- The product list is served by the Apps Script backend to signed-in visitors only; there is no
+  public copy of the prices anywhere in this repo.
 
 Business numbers that aren't per-product (shipping rates, free-shipping threshold, multi-vial
 discount, Zelle %, promo codes, emails) live in **`assets/config.js`**, nowhere else.
@@ -31,17 +31,15 @@ discount, Zelle %, promo codes, emails) live in **`assets/config.js`**, nowhere 
 | `assets/config.js` | Settings (sheet URL, endpoint, shipping, discounts, contacts) |
 | `assets/site.js` | All logic: sheet loader, cards, cart, checkout, header/footer |
 | `assets/site.css` | All styles |
-| `assets/products.fallback.csv` | Snapshot of the Website tab |
 | `tools/check.sh` | Run before pushing: fails if a price is typed into HTML or a link is broken |
 | `tools/apps-script-orders.gs` | Optional: Google Apps Script to write orders into the order sheet |
 | `products.html`, `order.html`, `bpc-157.html`, `article-*.html`, … | Tiny stubs that redirect old URLs to the new pages |
 
-## Connect the live sheet (one time)
+## How the sheet reaches the site
 
-1. Open the sheet → **File → Share → Publish to web**.
-2. Under *Link*, choose the **Website** tab and **Comma-separated values (.csv)**. Click **Publish**.
-3. Copy the link and paste it into `assets/config.js` as `SHEET_CSV_URL`.
-4. Push. The site now refreshes prices and stock every few minutes.
+In `otp` mode (the default) the Apps Script reads the Website tab directly and hands it to
+signed-in visitors; nothing to publish. `SHEET_CSV_URL` is only needed for `code`/`off` modes
+(File → Share → Publish to web → Website tab → CSV, paste the link into config.js).
 
 ## Sign-in (accounts)
 
@@ -51,8 +49,7 @@ Products and prices are hidden until the visitor signs in. `ACCESS.mode` in `ass
   30 days. The email is the account; no passwords. Every address lands in an **Accounts** tab of the
   order sheet (first seen, last sign-in, count, Approved). Set `APPROVAL_REQUIRED = true` in the
   script to vet people before they get a code. In this mode the product list is served by the script
-  only to a valid sign-in, so prices are genuinely private. **Delete `assets/products.fallback.csv`
-  once this mode is live** — it is a public copy of the prices.
+  only to a valid sign-in, so prices are genuinely private.
 - `code` — one shared access code you hand out (starter: **RESEARCH2026**). Change it with
   `echo -n "NEWCODE" | shasum -a 256` → `codeHash`. Used automatically if the script isn't set up yet.
 - `off` — everyone sees products.
@@ -63,7 +60,7 @@ Products and prices are hidden until the visitor signs in. `ACCESS.mode` in `ass
 
 Every order requires the research-use agreement; the acceptance (with timestamp) is sent with the
 order and written to the sheet. Orders POST to `ORDER_ENDPOINT` in `config.js`: the Apps Script web
-app from `tools/apps-script-orders.gs` (the old Formspree address is only a placeholder until then).
+app from `tools/apps-script-orders.gs`, deployed Nov 11, 2026. Formspree is gone.
 
 ## Before every push
 
