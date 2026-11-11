@@ -9,7 +9,7 @@ window.RH_CONFIG = {
   SHEET_CSV_URL: "",
   REFRESH_MINUTES: 5,            // how long a browser keeps the sheet data before re-fetching
 
-  /* 2. The site's backend: the Google Apps Script web app attached to the "Mooses Peptide Empire"
+  /* 2. The site's backend: the Google Apps Script web app attached to the "Red Hand Research – Orders"
         sheet (source: tools/apps-script-orders.gs). Handles sign-in codes, the product list, and orders.
         Deployed Nov 11, 2026 as "Red Hand site". To update the script: edit it in Apps Script, then
         Deploy → Manage deployments → pencil → New version → Deploy (the URL stays the same). */

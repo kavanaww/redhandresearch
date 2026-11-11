@@ -1,23 +1,23 @@
 /**
- * Red Hand Research — site backend (Google Apps Script). Replaces Formspree.
+ * Red Hand Research — site backend (Google Apps Script). Bound to "Red Hand Research – Orders".
  *
  * Handles, all in one web app:
  *   • Sign-in by email code (OTP): sends a 6-digit code, verifies it, issues a 30-day token.
  *   • Accounts: every email that signs in gets a row in an "Accounts" tab (first seen, last sign-in,
  *     count, Approved). Set APPROVAL_REQUIRED = true to vet people before they can see prices.
  *   • Products: serves the Website tab of the price sheet, only to a valid token.
- *   • Orders: appends to this sheet (one row per line), emails you, emails the customer
+ *   • Orders: appends to this sheet's Orders tab (one row per line), emails you, emails the customer
  *     (Zelle instructions with the exact amount, or a "card link coming" note), signed Moose.
  *
  * SET UP (one time, about 5 minutes):
- *   1. Open the "Mooses Peptide Empire" sheet → Extensions → Apps Script.
+ *   1. Open the "Red Hand Research – Orders" sheet (signed in as team@) → Extensions → Apps Script.
  *   2. Delete what's there, paste this whole file. Fill in ZELLE_HANDLE. Check SHEET_NAME.
  *   3. Deploy → New deployment → gear icon → Web app.
  *      Execute as: Me.  Who has access: Anyone.  → Deploy. Approve the permissions when asked.
  *   4. Copy the Web app URL (ends in /exec) and paste it into assets/config.js as ORDER_ENDPOINT.
  *   To change the script later: edit, then Deploy → Manage deployments → pencil → New version → Deploy.
  */
-var SHEET_NAME        = 'Sheet1';                                   // orders tab in this spreadsheet
+var SHEET_NAME        = 'Orders';                                   // orders tab in this spreadsheet
 var PRICES_SHEET_ID   = '1xEx46CoxdRinn2vvEW5rS6swFII-oFrHnwtxgCpSWhQ'; // "Red Hand Research – Website Prices"
 var PRICES_TAB        = 'Website';
 var NOTIFY            = 'team@redhandresearch.com';                 // your copy of orders + new sign-ups
