@@ -9,11 +9,12 @@ window.RH_CONFIG = {
   SHEET_CSV_URL: "",
   REFRESH_MINUTES: 5,            // how long a browser keeps the sheet data before re-fetching
 
-  /* 2. The site's backend: the Google Apps Script web app attached to the "Red Hand Research – Orders"
-        sheet (source: tools/apps-script-orders.gs). Handles sign-in codes, the product list, and orders.
-        Deployed Nov 11, 2026 as "Red Hand site". To update the script: edit it in Apps Script, then
-        Deploy → Manage deployments → pencil → New version → Deploy (the URL stays the same). */
-  ORDER_ENDPOINT: "https://script.google.com/macros/s/AKfycby4UWtFrH0n0_796-GtHec0hya2D9KwReENeEIvQShwZhT2VegOFdl7aMyzHAbMtE-idw/exec",
+  /* 2. The site's backend: the Google Apps Script web app "Red Hand site backend", owned by
+        team@redhandresearch.com (source: tools/apps-script-orders.gs). Handles sign-in codes, the product
+        list, and orders; emails come from team@. Deployed Nov 11, 2026. To update the script: open it at
+        script.google.com as team@, edit, then Deploy → Manage deployments → pencil → New version → Deploy
+        (the URL stays the same). */
+  ORDER_ENDPOINT: "https://script.google.com/macros/s/AKfycbxx0IsWYaaiwp8Jqc6T-Jxo-e9Fk0f77pQlDrFRNth_qSNrZOVd5LCRkt-TYGqSIEut8Q/exec",
 
   /* 3. Shipping */
   SHIPPING: [

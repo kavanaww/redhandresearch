@@ -32,7 +32,7 @@ discount, Zelle %, promo codes, emails) live in **`assets/config.js`**, nowhere 
 | `assets/site.js` | All logic: sheet loader, cards, cart, checkout, header/footer |
 | `assets/site.css` | All styles |
 | `tools/check.sh` | Run before pushing: fails if a price is typed into HTML or a link is broken |
-| `tools/apps-script-orders.gs` | Optional: Google Apps Script to write orders into the order sheet |
+| `tools/apps-script-orders.gs` | The backend: a standalone Google Apps Script owned by team@ (sign-in codes, product list, orders → "Red Hand Research – Orders" sheet) |
 | `products.html`, `order.html`, `bpc-157.html`, `article-*.html`, … | Tiny stubs that redirect old URLs to the new pages |
 
 ## How the sheet reaches the site
@@ -61,6 +61,16 @@ Products and prices are hidden until the visitor signs in. `ACCESS.mode` in `ass
 Every order requires the research-use agreement; the acceptance (with timestamp) is sent with the
 order and written to the sheet. Orders POST to `ORDER_ENDPOINT` in `config.js`: the Apps Script web
 app from `tools/apps-script-orders.gs`, deployed Nov 11, 2026. Formspree is gone.
+
+## Backend (where emails come from)
+
+The script runs as **team@redhandresearch.com**, so sign-in codes and order emails come from that
+address. It is a *standalone* script at script.google.com (owner team@), not one attached to the
+sheet: Google Workspace won't deploy a sheet-bound script when the sheet is owned by an outside
+account. It writes to "Red Hand Research – Orders" by ID (team@ is an editor) and reads
+"Red Hand Research – Website Prices" by ID. To change it: open script.google.com as team@ →
+"Red Hand site backend" → edit → Deploy → Manage deployments → pencil → New version → Deploy.
+The URL doesn't change.
 
 ## Before every push
 

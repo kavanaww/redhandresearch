@@ -1,23 +1,26 @@
 /**
- * Red Hand Research — site backend (Google Apps Script). Bound to "Red Hand Research – Orders".
+ * Red Hand Research — site backend (Google Apps Script). A STANDALONE script owned by
+ * team@redhandresearch.com; it writes to the "Red Hand Research – Orders" sheet by ID.
  *
  * Handles, all in one web app:
  *   • Sign-in by email code (OTP): sends a 6-digit code, verifies it, issues a 30-day token.
- *   • Accounts: every email that signs in gets a row in an "Accounts" tab (first seen, last sign-in,
- *     count, Approved). Set APPROVAL_REQUIRED = true to vet people before they can see prices.
+ *   • Accounts: every email that signs in gets a row in the "Accounts" tab of the orders sheet
+ *     (first seen, last sign-in, count, Approved). Set APPROVAL_REQUIRED = true to vet people first.
  *   • Products: serves the Website tab of the price sheet, only to a valid token.
- *   • Orders: appends to this sheet's Orders tab (one row per line), emails you, emails the customer
+ *   • Orders: appends to the Orders tab (one row per line), emails you, emails the customer
  *     (Zelle instructions with the exact amount, or a "card link coming" note), signed Moose.
  *
- * SET UP (one time, about 5 minutes):
- *   1. Open the "Red Hand Research – Orders" sheet (signed in as team@) → Extensions → Apps Script.
- *   2. Delete what's there, paste this whole file. Fill in ZELLE_HANDLE. Check SHEET_NAME.
+ * SET UP (one time, about 5 minutes), signed in as team@redhandresearch.com:
+ *   1. Go to script.google.com → New project (standalone — NOT Extensions → Apps Script from the
+ *      sheet: a script bound to a sheet owned by another account can't be deployed from a Workspace user).
+ *   2. Delete what's there, paste this whole file. Fill in ZELLE_HANDLE. Check ORDERS_SHEET_ID.
  *   3. Deploy → New deployment → gear icon → Web app.
  *      Execute as: Me.  Who has access: Anyone.  → Deploy. Approve the permissions when asked.
  *   4. Copy the Web app URL (ends in /exec) and paste it into assets/config.js as ORDER_ENDPOINT.
  *   To change the script later: edit, then Deploy → Manage deployments → pencil → New version → Deploy.
  */
-var SHEET_NAME        = 'Orders';                                   // orders tab in this spreadsheet
+var ORDERS_SHEET_ID   = '1By-3fDm4lcg0Oexamev9JF8hJoiz4CbFOYZ7P3i4Um8'; // "Red Hand Research – Orders" (team@ must be an editor)
+var SHEET_NAME        = 'Orders';                                   // orders tab in that spreadsheet
 var PRICES_SHEET_ID   = '1xEx46CoxdRinn2vvEW5rS6swFII-oFrHnwtxgCpSWhQ'; // "Red Hand Research – Website Prices"
 var PRICES_TAB        = 'Website';
 var NOTIFY            = 'team@redhandresearch.com';                 // your copy of orders + new sign-ups
@@ -47,6 +50,7 @@ function doPost(e) {
 }
 function doGet() { return ContentService.createTextOutput('Red Hand Research backend is running.'); }
 function out(obj) { return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON); }
+function ordersBook() { return SpreadsheetApp.openById(ORDERS_SHEET_ID); }
 
 /* ------------------------------------------------------------- sign-in */
 function otpRequest(d) {
@@ -110,7 +114,7 @@ function cleanEmail(s) { s = String(s || '').trim().toLowerCase(); return /^[^\s
 
 /* ------------------------------------------------------------ accounts */
 function accountsSheet() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet(), sh = ss.getSheetByName('Accounts');
+  var ss = ordersBook(), sh = ss.getSheetByName('Accounts');
   if (!sh) { sh = ss.insertSheet('Accounts'); sh.appendRow(['Email', 'First seen', 'Last sign-in', 'Sign-ins', 'Approved', 'Notes']); sh.setFrozenRows(1); }
   return sh;
 }
@@ -148,7 +152,7 @@ function products(d) {
 function order(d) {
   var who = verifyToken(d.token);
   if (!who) return { ok: false, error: 'auth' };
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = ordersBook();
   var sh = ss.getSheetByName(SHEET_NAME) || ss.getSheets()[0];
   var address = [d.address, d.city, d.state, d.zip].filter(String).join(', ');
   var lines = String(d.items || '').split('\n').filter(String);
