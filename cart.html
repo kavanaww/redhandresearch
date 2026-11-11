@@ -82,9 +82,12 @@
 
       <aside class="panel summary" aria-label="Order summary">
         <h2>Summary</h2>
-        <div class="promo"><input id="promo" type="text" placeholder="Promo code" aria-label="Promo code" autocomplete="off"><button class="btn secondary small" type="button" id="promo-apply">Apply</button></div>
-        <p class="hint" id="promo-msg" aria-live="polite"></p>
         <div id="summary"></div>
+        <details class="promo-wrap" id="promo-wrap">
+          <summary>Have a promo code?</summary>
+          <div class="promo"><input id="promo" type="text" placeholder="Promo code" aria-label="Promo code" autocomplete="off"><button class="btn secondary small" type="button" id="promo-apply">Apply</button></div>
+          <p class="hint" id="promo-msg" aria-live="polite"></p>
+        </details>
       </aside>
     </div>
   </div>

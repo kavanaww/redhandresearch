@@ -559,7 +559,7 @@
       try { sessionStorage.setItem('rh_promo', JSON.stringify(promo)); } catch (e) { /* ignore */ }
       drawSummary();
     });
-    if (promo) { promoIn.value = promo.code; promoMsg.textContent = promo.code + ' applied: ' + promo.pct + '% off.'; promoMsg.style.color = 'var(--green)'; }
+    if (promo) { promoIn.value = promo.code; promoMsg.textContent = promo.code + ' applied: ' + promo.pct + '% off.'; promoMsg.style.color = 'var(--green)'; const w = RH.qs('#promo-wrap'); if (w) w.open = true; }
     shipSel.addEventListener('change', drawSummary);
     RH.qsa('input[name=payment]', form).forEach(r => r.addEventListener('change', drawSummary));
 

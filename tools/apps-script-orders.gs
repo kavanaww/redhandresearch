@@ -67,9 +67,7 @@ function otpRequest(d) {
   cache.put('otp:' + email, sha256(code + '|' + email), CODE_MINUTES * 60);
   cache.put('att:' + email, '0', CODE_MINUTES * 60);
   cache.put('rl:' + email, String(rl + 1), 600);
-  GmailApp.sendEmail(email, code + ' is your Red Hand Research sign-in code',
-    ['Your sign-in code is:', '', '    ' + code, '', 'It works for ' + CODE_MINUTES + ' minutes. If you didn\'t request it, ignore this email.', '', 'Red Hand Research'].join('\n'),
-    { name: FROM_NAME, replyTo: REPLY_TO });
+  sendCodeEmail(email, code);
   return { ok: true };
 }
 
@@ -167,33 +165,130 @@ function order(d) {
     ]);
   });
 
-  var summary = [
-    'Order ' + d.order_number, '', d.name, d.email + (who !== cleanEmail(d.email) ? ' (signed in as ' + who + ')' : ''), d.phone, address, '',
-    'Ship: ' + d.shipping_method, 'Pay: ' + d.payment_method, d.promo_code ? 'Promo: ' + d.promo_code : '', '',
-    d.items, '',
-    'Subtotal ' + d.subtotal, 'Multi-vial −' + d.multi_vial_savings, 'Promo −' + d.promo_discount, 'Zelle −' + d.zelle_discount,
-    'Shipping ' + d.shipping, 'TOTAL ' + d.total, '', d.notes ? 'Notes: ' + d.notes : '', '',
-    'Research use agreement: ' + (d.ruo_agreement || 'not recorded')
-  ].join('\n');
-  GmailApp.sendEmail(NOTIFY, 'Order ' + d.order_number + ' — ' + d.name + ' — ' + d.total, summary, { name: FROM_NAME, replyTo: d.email });
+  var totals = orderTotals(d);
+  var where = [d.name, address, d.phone].filter(String).join('\n');
 
+  // your copy (plain text, only the lines that matter)
+  var mine = [
+    'Order ' + d.order_number + '  ·  ' + d.total + '  ·  ' + d.payment_method, '',
+    d.name, d.email + (who !== cleanEmail(d.email) ? '  (signed in as ' + who + ')' : ''), d.phone, address, '',
+    'Ship: ' + d.shipping_method, d.promo_code ? 'Promo: ' + d.promo_code : '', '',
+    d.items, ''
+  ].concat(totals.map(function (t) { return t.label + '  ' + t.value; }))
+   .concat(['', d.notes ? 'Notes: ' + d.notes : '', '', 'Research use agreement: ' + (d.ruo_agreement || 'not recorded')])
+   .filter(function (l, i, a) { return !(l === '' && a[i - 1] === ''); }).join('\n');
+  GmailApp.sendEmail(NOTIFY, 'Order ' + d.order_number + ' — ' + d.name + ' — ' + d.total, mine, { name: FROM_NAME, replyTo: d.email });
+
+  // the customer's copy
   var isZelle = /zelle/i.test(d.payment_method || '');
-  var first = String(d.name || '').split(' ')[0] || 'there';
-  var body = isZelle ? [
-    'Hi ' + first + ',', '',
-    'Thanks for your order. Here is how to pay by Zelle:', '',
-    '  Send to:  ' + ZELLE_HANDLE + '  (' + ZELLE_NAME + ')',
-    '  Amount:   ' + d.total,
-    '  Memo:     ' + d.order_number, '',
-    'Reply to this email once it\'s sent and we\'ll confirm and ship. Payments received by ' + SHIP_CUTOFF + ' on a business day ship the same day, and you\'ll get a tracking number by email.'
-  ] : [
-    'Hi ' + first + ',', '',
-    'Thanks for your order. A secure card payment link for ' + d.total + ' is on its way to this address in a separate email. Pay with any credit or debit card.', '',
-    'Once payment clears, your order ships (same day if received by ' + SHIP_CUTOFF + ' on a business day) and you\'ll get a tracking number by email.'
-  ];
-  body = body.concat(['', 'Your order:', d.items, '',
-    'Reminder: everything we sell is for laboratory research use only and not for human consumption. You confirmed this at checkout.', '',
-    'Thanks,', 'Moose', 'Red Hand Research']).join('\n');
-  GmailApp.sendEmail(d.email, (isZelle ? 'Zelle instructions for order ' : 'Order received — ') + d.order_number, body, { name: FROM_NAME, replyTo: REPLY_TO });
+  var first = String(d.name || '').trim().split(' ')[0] || 'there';
+  var subject = isZelle ? 'Thanks, ' + first + ' — Zelle details for order ' + d.order_number
+                        : 'Thanks, ' + first + ' — order ' + d.order_number + ' received';
+  var intro = isZelle
+    ? 'We have your order and we\'re glad you\'re here. Here is everything you need to send payment by Zelle:'
+    : 'We have your order and we\'re glad you\'re here. A secure card payment link for <strong>' + esc(d.total) + '</strong> will follow in a separate email within 4 business hours — any credit or debit card works.';
+  var payBox = isZelle
+    ? kv('Send to', esc(ZELLE_HANDLE) + ' <span style="color:#8a7f78;">(' + esc(ZELLE_NAME) + ')</span>') + kv('Amount', esc(d.total), true) + kv('Memo', esc(d.order_number))
+    : kv('Order', esc(d.order_number)) + kv('Amount due', esc(d.total), true) + kv('How to pay', 'Secure card link, arriving within 4 business hours');
+  var next = isZelle
+    ? 'Once it\'s sent, just reply to this email and we\'ll confirm and get your order packed. Payments received by ' + esc(SHIP_CUTOFF) + ' on a business day ship the same day, and you\'ll get a tracking number the moment it\'s on its way.'
+    : 'Once payment clears, your order ships — same day if it clears by ' + esc(SHIP_CUTOFF) + ' on a business day — and you\'ll get a tracking number the moment it\'s on its way.';
+  var html = emailShell(
+    h1('Thank you, ' + esc(first) + '.') +
+    para(intro) +
+    box(payBox) +
+    para(next) +
+    h2('Your order') +
+    itemsTable(d.items, totals) +
+    (where ? h2('Shipping to') + para(esc(where).replace(/\n/g, '<br>') + '<br><span style="color:#8a7f78;">' + esc(d.shipping_method) + '</span>') : '') +
+    para('Questions? Just reply to this email — it comes straight to me.') +
+    para('Moose<br><span style="color:#8a7f78;">Red Hand Research</span>') +
+    small('A reminder: everything we sell is for laboratory research use only and not for human consumption. You confirmed this at checkout.'),
+    (isZelle ? 'Zelle: send ' + d.total + ' to ' + ZELLE_HANDLE + ', memo ' + d.order_number : 'Your card payment link is on its way'));
+  var text = ['Hi ' + first + ',', '', stripTags(intro), '']
+    .concat(isZelle ? ['  Send to:  ' + ZELLE_HANDLE + '  (' + ZELLE_NAME + ')', '  Amount:   ' + d.total, '  Memo:     ' + d.order_number] : ['  Order:       ' + d.order_number, '  Amount due:  ' + d.total])
+    .concat(['', stripTags(next), '', 'Your order:', d.items, ''])
+    .concat(totals.map(function (t) { return '  ' + t.label + '  ' + t.value; }))
+    .concat(['', 'Questions? Just reply to this email — it comes straight to me.', '', 'Moose', 'Red Hand Research', '',
+             'A reminder: everything we sell is for laboratory research use only and not for human consumption. You confirmed this at checkout.']).join('\n');
+  GmailApp.sendEmail(d.email, subject, text, { name: FROM_NAME, replyTo: REPLY_TO, htmlBody: html });
   return { ok: true };
+}
+
+/* ---------------------------------------------------------------- email look */
+var LOGO_URL = 'https://redhandresearch.com/assets/logo.png';
+var SITE_URL = 'https://redhandresearch.com';
+var INK = '#1f1a17', MUTED = '#8a7f78', RED = '#7a1f1f', PAGE = '#f2f0ed', LINE = '#e6e2dc', TINT = '#faf7f4';
+
+function sendCodeEmail(email, code) {
+  var html = emailShell(
+    h1('Here\'s your sign-in code') +
+    para('Welcome in. Enter this code on the site to see the catalog and pricing:') +
+    '<div style="margin:18px 0;padding:22px 16px;background:' + TINT + ';border:1px solid ' + LINE + ';border-radius:8px;text-align:center;font-family:Georgia,\'Times New Roman\',serif;font-size:38px;letter-spacing:.22em;color:' + RED + ';">' + code + '</div>' +
+    para('It works for the next ' + CODE_MINUTES + ' minutes. If you didn\'t ask for it, you can ignore this email — nothing happens without the code.') +
+    para('Glad you\'re here,<br>Moose<br><span style="color:' + MUTED + ';">Red Hand Research</span>'),
+    'Your code: ' + code + ' (good for ' + CODE_MINUTES + ' minutes)');
+  var text = ['Welcome in. Enter this code on the site to see the catalog and pricing:', '', '    ' + code, '',
+    'It works for the next ' + CODE_MINUTES + ' minutes. If you didn\'t ask for it, you can ignore this email — nothing happens without the code.', '',
+    'Glad you\'re here,', 'Moose', 'Red Hand Research'].join('\n');
+  GmailApp.sendEmail(email, code + ' is your Red Hand Research sign-in code', text, { name: FROM_NAME, replyTo: REPLY_TO, htmlBody: html });
+}
+
+// Only the money lines that actually apply (no "Promo −$0.00" when no code was used).
+function orderTotals(d) {
+  var rows = [['Subtotal', d.subtotal]];
+  if (nz(d.multi_vial_savings)) rows.push(['Multi-vial savings', '−' + d.multi_vial_savings]);
+  if (nz(d.promo_discount)) rows.push(['Promo' + (d.promo_code ? ' ' + d.promo_code : ''), '−' + d.promo_discount]);
+  if (nz(d.zelle_discount)) rows.push(['Zelle discount', '−' + d.zelle_discount]);
+  rows.push(['Shipping', nz(d.shipping) ? d.shipping : 'Free']);
+  rows.push(['Total', d.total]);
+  return rows.map(function (r) { return { label: r[0], value: r[1] }; });
+}
+function nz(v) { v = String(v == null ? '' : v).replace(/[^\d.]/g, ''); return v !== '' && Number(v) > 0; }
+function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function stripTags(s) { return String(s).replace(/<[^>]+>/g, ''); }
+var FONT = 'font-family:Helvetica,Arial,sans-serif;';
+var SERIF = 'font-family:Georgia,\'Times New Roman\',serif;';
+function h1(t) { return '<h1 style="margin:14px 0 10px;' + SERIF + 'font-weight:400;font-size:26px;line-height:1.2;color:' + INK + ';">' + t + '</h1>'; }
+function h2(t) { return '<h2 style="margin:26px 0 8px;' + FONT + 'font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:' + RED + ';">' + t + '</h2>'; }
+function para(t) { return '<p style="margin:0 0 14px;">' + t + '</p>'; }
+function small(t) { return '<p style="margin:22px 0 0;padding-top:14px;border-top:1px solid ' + LINE + ';font-size:12px;line-height:1.5;color:' + MUTED + ';">' + t + '</p>'; }
+function box(inner) { return '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:18px 0;background:' + TINT + ';border:1px solid ' + LINE + ';border-radius:8px;"><tr><td style="padding:14px 18px;">' + inner + '</td></tr></table>'; }
+function kv(k, v, strong) {
+  return '<table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr>' +
+    '<td style="padding:5px 0;' + FONT + 'font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:' + MUTED + ';width:34%;vertical-align:top;">' + k + '</td>' +
+    '<td style="padding:5px 0;' + FONT + 'font-size:' + (strong ? '20px' : '15px') + ';font-weight:' + (strong ? '700' : '400') + ';color:' + INK + ';">' + v + '</td></tr></table>';
+}
+function itemsTable(items, totals) {
+  var rows = String(items || '').split('\n').filter(String).map(function (line) {
+    var m = line.match(/^(\d+)\s*×\s*(.+?)\s+(\S+)(?:\s+\(([^)]+)\))?\s+—\s+(\$[\d,.]+)$/);
+    var left = m ? esc(m[2]) + ' <span style="color:' + MUTED + ';">' + esc(m[3]) + (m[4] ? ' · REF ' + esc(m[4]) : '') + '</span>' : esc(line);
+    var qty = m ? m[1] : '', price = m ? m[5] : '';
+    return '<tr><td style="padding:9px 0;border-bottom:1px solid ' + LINE + ';' + FONT + 'font-size:15px;color:' + INK + ';">' + left + '</td>' +
+      '<td style="padding:9px 8px;border-bottom:1px solid ' + LINE + ';' + FONT + 'font-size:14px;color:' + MUTED + ';text-align:center;white-space:nowrap;">' + (qty ? '× ' + qty : '') + '</td>' +
+      '<td style="padding:9px 0;border-bottom:1px solid ' + LINE + ';' + FONT + 'font-size:15px;color:' + INK + ';text-align:right;white-space:nowrap;">' + esc(price) + '</td></tr>';
+  }).join('');
+  var sums = totals.map(function (t, i) {
+    var last = i === totals.length - 1;
+    return '<tr><td colspan="2" style="padding:' + (last ? '10px 0 0' : '4px 0') + ';' + FONT + 'font-size:' + (last ? '16px' : '14px') + ';color:' + (last ? INK : MUTED) + ';' + (last ? 'font-weight:700;' : '') + '">' + esc(t.label) + '</td>' +
+      '<td style="padding:' + (last ? '10px 0 0' : '4px 0') + ';' + FONT + 'font-size:' + (last ? '18px' : '14px') + ';color:' + INK + ';text-align:right;white-space:nowrap;' + (last ? 'font-weight:700;' : '') + '">' + esc(t.value) + '</td></tr>';
+  }).join('');
+  return '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:4px 0 6px;">' + rows + '<tr><td colspan="3" style="height:6px;"></td></tr>' + sums + '</table>';
+}
+function emailShell(inner, preheader) {
+  return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head>' +
+    '<body style="margin:0;padding:0;background:' + PAGE + ';">' +
+    (preheader ? '<div style="display:none;max-height:0;overflow:hidden;font-size:1px;line-height:1px;color:' + PAGE + ';">' + esc(preheader) + '</div>' : '') +
+    '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:' + PAGE + ';"><tr><td align="center" style="padding:28px 12px;">' +
+    '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px;background:#ffffff;border:1px solid ' + LINE + ';border-top:4px solid ' + RED + ';border-radius:8px;">' +
+    '<tr><td style="padding:26px 32px 4px;"><table role="presentation" cellspacing="0" cellpadding="0"><tr>' +
+    '<td style="vertical-align:middle;padding-right:12px;"><img src="' + LOGO_URL + '" width="44" height="43" alt="" style="display:block;border:0;"></td>' +
+    '<td style="vertical-align:middle;' + SERIF + 'font-size:19px;letter-spacing:.14em;color:' + INK + ';line-height:1.05;">RED HAND<br><span style="font-size:9px;letter-spacing:.34em;color:' + RED + ';">RESEARCH</span></td>' +
+    '</tr></table></td></tr>' +
+    '<tr><td style="padding:10px 32px 30px;' + FONT + 'font-size:16px;line-height:1.55;color:' + INK + ';">' + inner + '</td></tr>' +
+    '</table>' +
+    '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px;"><tr><td style="padding:16px 12px 0;' + FONT + 'font-size:12px;line-height:1.6;color:' + MUTED + ';text-align:center;">' +
+    '<a href="' + SITE_URL + '" style="color:' + MUTED + ';">redhandresearch.com</a> &nbsp;·&nbsp; <a href="mailto:' + REPLY_TO + '" style="color:' + MUTED + ';">' + REPLY_TO + '</a><br>' +
+    'For laboratory research use only. Not for human consumption.' +
+    '</td></tr></table></td></tr></table></body></html>';
 }
