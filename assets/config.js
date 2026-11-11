@@ -4,9 +4,8 @@
    "Red Hand Research – Website Prices" (Website tab). */
 
 window.RH_CONFIG = {
-  /* 1. Paste the sheet's "Publish to web" CSV link here (File → Share → Publish to web →
-        pick the "Website" tab → Comma-separated values → Publish → copy link).
-        Until this is filled in, the site reads assets/products.fallback.csv. */
+  /* 1. Only used when ACCESS.mode is "code" or "off" (public catalog): the sheet's "Publish to web"
+        CSV link for the Website tab. In "otp" mode the backend reads the sheet directly. */
   SHEET_CSV_URL: "",
   REFRESH_MINUTES: 5,            // how long a browser keeps the sheet data before re-fetching
 

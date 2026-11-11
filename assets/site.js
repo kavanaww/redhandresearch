@@ -587,13 +587,8 @@
       const btn = RH.qs('#submit'); btn.disabled = true; btn.textContent = 'Sending…';
       try {
         if (!C.ORDER_ENDPOINT) throw new Error('ORDER_ENDPOINT is not set in assets/config.js');
-        // Apps Script needs a "simple" request (text/plain) to accept it cross-origin; Formspree wants JSON.
-        const isFormspree = /formspree\.io/.test(C.ORDER_ENDPOINT);
-        const r = await fetch(C.ORDER_ENDPOINT, {
-          method: 'POST',
-          headers: isFormspree ? { 'Content-Type': 'application/json', 'Accept': 'application/json' } : { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify(payload)
-        });
+        // text/plain keeps this a "simple" request, which the Apps Script backend accepts cross-origin.
+        const r = await fetch(C.ORDER_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
         if (!r.ok) throw new Error('HTTP ' + r.status);
         let j = null; try { j = JSON.parse(await r.text()); } catch (ignore) { /* non-JSON reply still counts as sent */ }
         if (j && j.ok === false && j.error === 'auth') { RH.access.lock(); return; }
