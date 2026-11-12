@@ -243,6 +243,41 @@ function order(d) {
   return { ok: true };
 }
 
+/* ------------------------------------------------------------ win-back */
+// One-off email to people who haven't ordered in a while. NOT reachable from the web: run it by hand
+// from the Apps Script editor (pick "winbackTest" to send yourself a preview, then "winback").
+// Fill WINBACK_RECIPIENTS in the editor copy only; keep customer details out of this public repo.
+var WINBACK_CODE  = 'BACK20';
+var WINBACK_UNTIL = 'December 15';
+var WINBACK_RECIPIENTS = [
+  // { first: 'Jane', email: 'jane@example.com', line: 'BPC-157 10mg is $48 now (you paid $65)' }
+];
+function winbackTest() { winbackSend([{ first: 'Moose', email: NOTIFY, line: 'BPC-157 10mg is $48 now (you paid $65)' }]); }
+function winback()     { winbackSend(WINBACK_RECIPIENTS); }
+function winbackSend(list) {
+  list.forEach(function (r) {
+    var html = emailShell(
+      h1('It\'s been a minute, ' + esc(r.first) + '.') +
+      para('It\'s been a while since your last order and I wanted to reach out myself, because a few things have changed at Red Hand Research — all of them in your favor.') +
+      para('<strong>Lower prices.</strong> We rebuilt the site and reset our pricing to match the best in the space. On what you\'ve ordered before: ' + esc(r.line) + '. Across the board: GLP-3 R from $79, BPC-157 $48, TB-500 $55, Glow 70 $109. Standard shipping is free over $150, and Zelle still takes 5% off.') +
+      para('<strong>A cleaner site.</strong> Sign in with your email — no password, we send you a code — and you\'ll see live stock on every vial and multi-vial savings that apply on their own.') +
+      box(kv('Your code', '<span style="' + SERIF + 'font-size:24px;letter-spacing:.12em;color:' + RED + ';">' + WINBACK_CODE + '</span>') + kv('Takes off', '20% of your next order') + kv('Good through', WINBACK_UNTIL)) +
+      para('Enter it at checkout. If anything about a past order was less than right, reply and tell me — I read every one of these.') +
+      para('Glad you\'re part of this,<br>Moose<br><span style="color:' + MUTED + ';">Red Hand Research</span>') +
+      '<p style="margin:18px 0 0;"><a href="' + SITE_URL + '/shop.html" style="display:inline-block;background:' + RED + ';color:#ffffff;text-decoration:none;padding:12px 22px;border-radius:6px;font-weight:700;">Open the shop</a></p>',
+      '20% off your next order with code ' + WINBACK_CODE + ' — and lower prices across the board.');
+    var text = ['Hi ' + r.first + ',', '',
+      'It\'s been a while since your last order and I wanted to reach out myself, because a few things have changed at Red Hand Research — all of them in your favor.', '',
+      'Lower prices. We rebuilt the site and reset our pricing to match the best in the space. On what you\'ve ordered before: ' + r.line + '. Across the board: GLP-3 R from $79, BPC-157 $48, TB-500 $55, Glow 70 $109. Standard shipping is free over $150, and Zelle still takes 5% off.', '',
+      'A cleaner site. Sign in with your email — no password, we send you a code — and you\'ll see live stock on every vial and multi-vial savings that apply on their own.', '',
+      '20% off your next order, on me: use code ' + WINBACK_CODE + ' at checkout. Good through ' + WINBACK_UNTIL + '.', '',
+      'If anything about a past order was less than right, reply and tell me — I read every one of these.', '',
+      'Glad you\'re part of this,', 'Moose', 'Red Hand Research', SITE_URL + '/shop.html'].join('\n');
+    GmailApp.sendEmail(r.email, 'It\'s been a minute, ' + r.first + ' — lower prices and 20% off at Red Hand', text, { name: FROM_NAME, replyTo: REPLY_TO, htmlBody: html });
+    Utilities.sleep(400);
+  });
+}
+
 /* ---------------------------------------------------------------- email look */
 var LOGO_URL = 'https://redhandresearch.com/assets/logo.png';
 var SITE_URL = 'https://redhandresearch.com';
