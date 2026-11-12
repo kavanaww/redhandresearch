@@ -118,14 +118,17 @@
     const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' }); // YYYY-MM-DD
     return { pct: v.pct, until: v.until || '', expired: !!(v.until && today > v.until) };
   };
-  RH.unitPrice = (price, qty) => {
+  /* Multi-vial pricing never applies to categories listed in MULTI_VIAL.exclude (e.g. Supplies). */
+  RH.noMulti = (item) => !!(item && item.category && ((C.MULTI_VIAL || {}).exclude || []).some(c => String(c).toLowerCase() === String(item.category).toLowerCase()));
+  RH.unitPrice = (price, qty, item) => {
     const m = C.MULTI_VIAL || {};
+    if (RH.noMulti(item)) return price;
     if (qty >= 3) return Math.max(0, price - (m.threePlus || 0));
     if (qty === 2) return Math.max(0, price - (m.two || 0));
     return price;
   };
-  RH.lineTotal = (price, qty) => RH.unitPrice(price, qty) * qty;
-  RH.lineSavings = (price, qty) => price * qty - RH.lineTotal(price, qty);
+  RH.lineTotal = (price, qty, item) => RH.unitPrice(price, qty, item) * qty;
+  RH.lineSavings = (price, qty, item) => price * qty - RH.lineTotal(price, qty, item);
 
   /* ---------- cart (browser storage) ---------- */
   const CART_KEY = 'rh_cart_v2';
@@ -454,13 +457,13 @@
       const st = RH.qs('[data-stock]', root); st.textContent = RH.stockLabel(v.stock); st.className = 'chip ' + RH.stockClass(v.stock);
       const vial = RH.qs('[data-vial]', root); vial.innerHTML = RH.vialSVG(g.name, v.size); vial.classList.toggle('faded', v.stock === 'Sold out');
       const m = C.MULTI_VIAL || {};
-      RH.qs('[data-tiers]', root).innerHTML = [[1, '1 vial'], [2, '2 vials'], [3, '3 or more']].map(t => '<tr><td>' + t[1] + '</td><td>' + RH.money(RH.unitPrice(v.price, t[0])) + (t[0] > 1 && RH.unitPrice(v.price, t[0]) < v.price ? ' <span style="color:var(--green);font-weight:700">save ' + RH.money(v.price - RH.unitPrice(v.price, t[0])) + ' each</span>' : '') + '</td><td>' + (t[0] === 3 ? RH.money(RH.lineTotal(v.price, 3)) + '+' : RH.money(RH.lineTotal(v.price, t[0]))) + '</td></tr>').join('');
-      if (!m.two && !m.threePlus) RH.qs('.tiers', root).hidden = true;
+      RH.qs('[data-tiers]', root).innerHTML = [[1, '1 vial'], [2, '2 vials'], [3, '3 or more']].map(t => '<tr><td>' + t[1] + '</td><td>' + RH.money(RH.unitPrice(v.price, t[0], v)) + (t[0] > 1 && RH.unitPrice(v.price, t[0], v) < v.price ? ' <span style="color:var(--green);font-weight:700">save ' + RH.money(v.price - RH.unitPrice(v.price, t[0], v)) + ' each</span>' : '') + '</td><td>' + (t[0] === 3 ? RH.money(RH.lineTotal(v.price, 3, v)) + '+' : RH.money(RH.lineTotal(v.price, t[0], v))) + '</td></tr>').join('');
+      RH.qs('.tiers', root).hidden = (!m.two && !m.threePlus) || RH.noMulti(v);
       refreshPrice();
     }
     function refreshPrice() {
-      const n = qty(), total = RH.lineTotal(current.price, n);
-      RH.qs('[data-price]', root).innerHTML = RH.money(total) + (n > 1 ? '<small>' + RH.money(RH.unitPrice(current.price, n)) + ' each × ' + n + '</small>' : '');
+      const n = qty(), total = RH.lineTotal(current.price, n, current);
+      RH.qs('[data-price]', root).innerHTML = RH.money(total) + (n > 1 ? '<small>' + RH.money(RH.unitPrice(current.price, n, current)) + ' each × ' + n + '</small>' : '');
       const buy = RH.qs('[data-buy]', root); buy.disabled = current.stock === 'Sold out'; buy.textContent = buy.disabled ? 'Sold out' : 'Add ' + n + ' to cart';
     }
     RH.qs('[data-dec]', root).addEventListener('click', () => { qtyEl.value = Math.max(1, qty() - 1); refreshPrice(); });
@@ -492,7 +495,7 @@
         const v = live.get(l.key);
         if (!v) { l.problem = 'No longer available'; return; }
         if (v.price !== l.price) { notes.push(l.product + ' ' + l.size + ' price updated to ' + RH.money(v.price)); l.price = v.price; }
-        l.code = v.code; l.problem = v.stock === 'Sold out' ? 'Sold out' : '';
+        l.code = v.code; l.category = v.category; l.problem = v.stock === 'Sold out' ? 'Sold out' : '';
       });
       RH.cart.set(cart);
       if (notes.length) alerts.innerHTML = '<div class="alert info">' + RH.esc(notes.join('. ')) + '.</div>';
@@ -502,7 +505,7 @@
     function totals(cart) {
       const good = cart.filter(l => !l.problem);
       const list = good.reduce((s, l) => s + l.price * l.qty, 0);
-      const subtotal = good.reduce((s, l) => s + RH.lineTotal(l.price, l.qty), 0);
+      const subtotal = good.reduce((s, l) => s + RH.lineTotal(l.price, l.qty, l), 0);
       const promoAmt = promo ? subtotal * promo.pct / 100 : 0;
       const pm = (form.elements.payment && form.elements.payment.value) || 'card';
       const afterPromo = subtotal - promoAmt;
@@ -522,13 +525,13 @@
       }
       RH.qs('#checkout-panel').hidden = false;
       linesEl.innerHTML = cart.map(l => {
-        const n = l.qty, each = RH.unitPrice(l.price, n), save = RH.lineSavings(l.price, n);
+        const n = l.qty, each = RH.unitPrice(l.price, n, l), save = RH.lineSavings(l.price, n, l);
         return '<div class="line" data-key="' + RH.esc(l.key) + '">' +
           '<div><div class="name"><a href="product.html?p=' + encodeURIComponent(l.slug) + '" style="color:inherit;text-decoration:none">' + RH.esc(l.product) + '</a> · ' + RH.esc(l.size) + '</div>' +
           (l.problem ? '<div class="problem">' + RH.esc(l.problem) + ' — remove to continue</div>' : '<div class="sub">' + RH.money(each) + ' each' + (save > 0 ? ' · <span class="save">saving ' + RH.money(save) + '</span>' : '') + (l.code ? ' · REF ' + RH.esc(l.code) : '') + '</div>') +
           '<button class="remove" type="button" data-remove>Remove</button></div>' +
           '<div class="qty"><button type="button" data-dec aria-label="Decrease">−</button><input type="number" min="0" max="99" value="' + n + '" aria-label="Quantity" data-qty><button type="button" data-inc aria-label="Increase">+</button></div>' +
-          '<div class="total">' + (l.problem ? '—' : RH.money2(RH.lineTotal(l.price, n))) + '</div></div>';
+          '<div class="total">' + (l.problem ? '—' : RH.money2(RH.lineTotal(l.price, n, l))) + '</div></div>';
       }).join('');
       RH.qsa('.line', linesEl).forEach(row => {
         const k = row.dataset.key, inp = RH.qs('[data-qty]', row);
@@ -581,7 +584,7 @@
       const f = form.elements, d = new Date();
       const orderNo = 'RH-' + d.toISOString().slice(2, 10).replace(/-/g, '') + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();
       const name = f.first.value.trim() + ' ' + f.last.value.trim();
-      const itemsText = t.good.map(l => l.qty + ' × ' + l.product + ' ' + l.size + (l.code ? ' (' + l.code + ')' : '') + ' — ' + RH.money2(RH.lineTotal(l.price, l.qty))).join('\n');
+      const itemsText = t.good.map(l => l.qty + ' × ' + l.product + ' ' + l.size + (l.code ? ' (' + l.code + ')' : '') + ' — ' + RH.money2(RH.lineTotal(l.price, l.qty, l))).join('\n');
       const payload = {
         _subject: 'Order ' + orderNo + ' — ' + name + ' — ' + RH.money2(t.total), _replyto: f.email.value.trim(),
         order_number: orderNo, name: name, email: f.email.value.trim(), phone: f.phone.value.trim(),

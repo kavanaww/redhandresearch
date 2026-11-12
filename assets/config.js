@@ -25,7 +25,7 @@ window.RH_CONFIG = {
   FREE_SHIPPING_OVER: 150,       // subtotal (after discounts) that makes Standard shipping free
 
   /* 4. Discounts */
-  MULTI_VIAL: { two: 5, threePlus: 10 },   // $ off EACH vial of the same product + size: 2 vials / 3 or more
+  MULTI_VIAL: { two: 5, threePlus: 10, exclude: ["Supplies"] },   // $ off EACH vial of the same product + size: 2 vials / 3 or more. Categories in `exclude` never get it.
   ZELLE_DISCOUNT_PCT: 5,
   /* A code is a percent, or { pct, until: "YYYY-MM-DD" } for a code that stops working after that day. */
   PROMO_CODES: {
