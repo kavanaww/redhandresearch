@@ -110,6 +110,14 @@
   };
 
   /* ---------- pricing rules (numbers come from config.js) ---------- */
+  /* A promo code in config is either a number (percent) or { pct, until: "YYYY-MM-DD" } (valid through that day). */
+  RH.promoFor = (code) => {
+    const v = (C.PROMO_CODES || {})[String(code || '').trim().toUpperCase()];
+    if (v == null) return null;
+    if (typeof v === 'number') return { pct: v, expired: false };
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' }); // YYYY-MM-DD
+    return { pct: v.pct, until: v.until || '', expired: !!(v.until && today > v.until) };
+  };
   RH.unitPrice = (price, qty) => {
     const m = C.MULTI_VIAL || {};
     if (qty >= 3) return Math.max(0, price - (m.threePlus || 0));
@@ -552,13 +560,15 @@
     }
 
     promoBtn.addEventListener('click', () => {
-      const code = promoIn.value.trim().toUpperCase(); const pct = (C.PROMO_CODES || {})[code];
+      const code = promoIn.value.trim().toUpperCase(); const p = RH.promoFor(code);
       if (!code) { promo = null; promoMsg.textContent = ''; }
-      else if (pct) { promo = { code: code, pct: pct }; promoMsg.textContent = code + ' applied: ' + pct + '% off.'; promoMsg.style.color = 'var(--green)'; }
+      else if (p && p.expired) { promo = null; promoMsg.textContent = 'That code expired on ' + p.until + '.'; promoMsg.style.color = 'var(--red)'; }
+      else if (p) { promo = { code: code, pct: p.pct }; promoMsg.textContent = code + ' applied: ' + p.pct + '% off.'; promoMsg.style.color = 'var(--green)'; }
       else { promo = null; promoMsg.textContent = 'That code isn\'t valid.'; promoMsg.style.color = 'var(--red)'; }
       try { sessionStorage.setItem('rh_promo', JSON.stringify(promo)); } catch (e) { /* ignore */ }
       drawSummary();
     });
+    if (promo) { const p = RH.promoFor(promo.code); if (!p || p.expired) promo = null; }
     if (promo) { promoIn.value = promo.code; promoMsg.textContent = promo.code + ' applied: ' + promo.pct + '% off.'; promoMsg.style.color = 'var(--green)'; const w = RH.qs('#promo-wrap'); if (w) w.open = true; }
     shipSel.addEventListener('change', drawSummary);
     RH.qsa('input[name=payment]', form).forEach(r => r.addEventListener('change', drawSummary));

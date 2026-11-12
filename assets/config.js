@@ -27,7 +27,12 @@ window.RH_CONFIG = {
   /* 4. Discounts */
   MULTI_VIAL: { two: 5, threePlus: 10 },   // $ off EACH vial of the same product + size: 2 vials / 3 or more
   ZELLE_DISCOUNT_PCT: 5,
-  PROMO_CODES: { HUNTER10: 10, JESKA10: 10, JOSH10: 10, BRE10: 10, MOOSE20: 20, MOOSE10: 10, BRAND10: 10, RACHEL10: 10 },
+  /* A code is a percent, or { pct, until: "YYYY-MM-DD" } for a code that stops working after that day. */
+  PROMO_CODES: {
+    HUNTER10: 10, JESKA10: 10, JOSH10: 10, BRE10: 10, MOOSE20: 20, MOOSE10: 10, BRAND10: 10, RACHEL10: 10,
+    BACK10: { pct: 10, until: "2026-12-15" },   // win-back email, Nov 2026
+    BACK20: { pct: 20, until: "2026-12-15" }    // same, for people who already use MOOSE10 (10 + 10)
+  },
 
   /* 5. Sign-in — products and prices stay hidden until the visitor signs in.
         mode: "otp"  = email + 6-digit code (accounts). Needs ORDER_ENDPOINT to be the Apps Script URL;
