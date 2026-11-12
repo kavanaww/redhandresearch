@@ -4,11 +4,13 @@
  *
  * Handles, all in one web app:
  *   • Sign-in by email code (OTP): sends a 6-digit code, verifies it, issues a 30-day token.
- *   • Accounts: every email that signs in gets a row in the "Accounts" tab of the orders sheet
- *     (first seen, last sign-in, count, Approved). Set APPROVAL_REQUIRED = true to vet people first.
+ *   • Clients: one row per email in the "Clients" tab of the orders sheet (name, phone, address,
+ *     orders, total spent, last sign-in, Approved). Set APPROVAL_REQUIRED = true to vet people first.
  *   • Products: serves the Website tab of the price sheet, only to a valid token.
  *   • Orders: appends to the Orders tab (one row per line), emails you, emails the customer
  *     (Zelle instructions with the exact amount, or a "card link coming" note), signed Moose.
+ *     Product Cost / Shipping Cost / Total Order Cost are left BLANK: those are John's cost columns,
+ *     filled in by hand. What the customer paid goes in "Customer Total".
  *
  * SET UP (one time, about 5 minutes), signed in as team@redhandresearch.com:
  *   1. Go to script.google.com → New project (standalone — NOT Extensions → Apps Script from the
@@ -29,7 +31,7 @@ var FROM_NAME         = 'Red Hand Research';
 var ZELLE_HANDLE      = 'FILL-IN-YOUR-ZELLE-EMAIL-OR-PHONE';
 var ZELLE_NAME        = 'Red Hand Research';
 var SHIP_CUTOFF       = '3:00 PM CT';
-var APPROVAL_REQUIRED = false;   // true = only emails marked Approved = Y in the Accounts tab get a code
+var APPROVAL_REQUIRED = false;   // true = only emails marked Approved = Y in the Clients tab get a code
 var NOTIFY_SIGNUPS    = true;    // email you when a new address signs in for the first time
 var TOKEN_DAYS        = 30;      // how long a sign-in lasts
 var CODE_MINUTES      = 10;      // how long a 6-digit code is valid
@@ -110,23 +112,46 @@ function sha256(s) { return bytesToHex(Utilities.computeDigest(Utilities.DigestA
 function bytesToHex(b) { return b.map(function (x) { x = (x + 256) % 256; return (x < 16 ? '0' : '') + x.toString(16); }).join(''); }
 function cleanEmail(s) { s = String(s || '').trim().toLowerCase(); return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s) ? s : ''; }
 
-/* ------------------------------------------------------------ accounts */
-function accountsSheet() {
-  var ss = ordersBook(), sh = ss.getSheetByName('Accounts');
-  if (!sh) { sh = ss.insertSheet('Accounts'); sh.appendRow(['Email', 'First seen', 'Last sign-in', 'Sign-ins', 'Approved', 'Notes']); sh.setFrozenRows(1); }
+/* ------------------------------------------------------------- clients */
+// Clients tab columns (1-based): 1 Email, 2 Name, 3 Phone, 4 Address, 5 Orders, 6 First order,
+// 7 Last order, 8 Total spent, 9 Last sign-in, 10 Sign-ins, 11 Approved, 12 Notes
+var CLIENT_HEADER = ['Email', 'Name', 'Phone', 'Address', 'Orders', 'First order', 'Last order', 'Total spent', 'Last sign-in', 'Sign-ins', 'Approved', 'Notes'];
+function clientsSheet() {
+  var ss = ordersBook(), sh = ss.getSheetByName('Clients');
+  if (!sh) { sh = ss.insertSheet('Clients'); sh.appendRow(CLIENT_HEADER); sh.setFrozenRows(1); }
   return sh;
 }
-function upsertAccount(email, signedIn) {
-  var sh = accountsSheet(), vals = sh.getDataRange().getValues(), now = new Date();
+// Row number for an email; or, when the email is new, a row with the same name and no email yet (old customers).
+function findClient(sh, email, name) {
+  var vals = sh.getDataRange().getValues(), byName = 0;
   for (var r = 1; r < vals.length; r++) {
-    if (String(vals[r][0]).toLowerCase() === email) {
-      if (signedIn) { sh.getRange(r + 1, 3).setValue(now); sh.getRange(r + 1, 4).setValue(Number(vals[r][3] || 0) + 1); }
-      return { approved: vals[r][4] };
-    }
+    if (String(vals[r][0]).trim().toLowerCase() === email) return r + 1;
+    if (name && !byName && !String(vals[r][0]).trim() && String(vals[r][1]).trim().toLowerCase() === name.toLowerCase()) byName = r + 1;
   }
-  sh.appendRow([email, now, signedIn ? now : '', signedIn ? 1 : 0, APPROVAL_REQUIRED ? 'N' : 'Y', '']);
-  if (NOTIFY_SIGNUPS) GmailApp.sendEmail(NOTIFY, 'New sign-up: ' + email, email + ' just requested a sign-in code.' + (APPROVAL_REQUIRED ? '\n\nThey are waiting for approval: set Approved = Y on their row in the Accounts tab.' : ''), { name: FROM_NAME });
+  return byName;
+}
+function upsertAccount(email, signedIn) {
+  var sh = clientsSheet(), now = new Date(), row = findClient(sh, email, '');
+  if (row) {
+    if (signedIn) { sh.getRange(row, 9).setValue(now); sh.getRange(row, 10).setValue(Number(sh.getRange(row, 10).getValue() || 0) + 1); }
+    return { approved: sh.getRange(row, 11).getValue() };
+  }
+  sh.appendRow([email, '', '', '', 0, '', '', 0, signedIn ? now : '', signedIn ? 1 : 0, APPROVAL_REQUIRED ? 'N' : 'Y', '']);
+  if (NOTIFY_SIGNUPS) GmailApp.sendEmail(NOTIFY, 'New sign-up: ' + email, email + ' just requested a sign-in code.' + (APPROVAL_REQUIRED ? '\n\nThey are waiting for approval: set Approved = Y on their row in the Clients tab.' : ''), { name: FROM_NAME });
   return { approved: APPROVAL_REQUIRED ? 'N' : 'Y' };
+}
+function upsertClient(d, who) {
+  var sh = clientsSheet(), now = new Date();
+  var email = cleanEmail(d.email) || who, name = String(d.name || '').trim();
+  var address = [d.address, d.city, d.state, d.zip].filter(String).join(', ');
+  var total = Number(String(d.total || '').replace(/[^\d.]/g, '')) || 0;
+  var row = findClient(sh, email, name);
+  if (!row) { sh.appendRow([email, name, d.phone || '', address, 0, '', '', 0, '', 0, APPROVAL_REQUIRED ? 'N' : 'Y', '']); row = sh.getLastRow(); }
+  var cur = sh.getRange(row, 1, 1, 12).getValues()[0];
+  sh.getRange(row, 1, 1, 8).setValues([[
+    cur[0] || email, name || cur[1], d.phone || cur[2], address || cur[3],
+    Number(cur[4] || 0) + 1, cur[5] || now, now, Number(cur[7] || 0) + total
+  ]]);
 }
 
 /* ------------------------------------------------------------ products */
@@ -159,11 +184,14 @@ function order(d) {
     var m = line.match(/^(\d+)\s*×\s*(.+?)\s+(\S+)(?:\s+\(([^)]+)\))?\s+—\s+\$([\d,.]+)$/); // "2 × BPC-157 10mg (BP10) — $96.00"
     sh.appendRow([
       d.order_number, d.email, d.name, d.phone, address, d.shipping_method,
-      m ? m[2] : line, m ? m[3] : '', m ? Number(m[1]) : '', m ? Number(m[5].replace(/,/g, '')) : '',
-      i === 0 ? d.shipping : '', '', i === 0 ? d.total : '',
-      d.payment_method, d.promo_code, d.notes, d.submitted_at, i === 0 ? d.ruo_agreement : '', who
+      m ? m[2] : line, m ? m[3] : '', m ? Number(m[1]) : '',
+      '', '', '', '',                       // Product Cost, Shipping Cost, Tracking, Total Order Cost: John fills these in
+      d.payment_method, d.promo_code, d.notes, d.submitted_at, i === 0 ? d.ruo_agreement : '', who,
+      i === 0 ? d.total : ''                // T: Customer Total (what the customer pays, incl. shipping)
     ]);
   });
+
+  upsertClient(d, who);
 
   var totals = orderTotals(d);
   var where = [d.name, address, d.phone].filter(String).join('\n');

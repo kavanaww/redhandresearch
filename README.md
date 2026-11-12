@@ -46,10 +46,10 @@ signed-in visitors; nothing to publish. `SHEET_CSV_URL` is only needed for `code
 Products and prices are hidden until the visitor signs in. `ACCESS.mode` in `assets/config.js`:
 
 - `otp` (default) — the visitor enters an email, gets a 6-digit code by email, and is signed in for
-  30 days. The email is the account; no passwords. Every address lands in an **Accounts** tab of the
-  order sheet (first seen, last sign-in, count, Approved). Set `APPROVAL_REQUIRED = true` in the
-  script to vet people before they get a code. In this mode the product list is served by the script
-  only to a valid sign-in, so prices are genuinely private.
+  30 days. The email is the account; no passwords. Every address lands in the **Clients** tab of the
+  order sheet (name, phone, address, orders, total spent, last sign-in, Approved); each order updates
+  that row. Set `APPROVAL_REQUIRED = true` in the script to vet people before they get a code. In this
+  mode the product list is served by the script only to a valid sign-in, so prices are genuinely private.
 - `code` — one shared access code you hand out (starter: **RESEARCH2026**). Change it with
   `echo -n "NEWCODE" | shasum -a 256` → `codeHash`. Used automatically if the script isn't set up yet.
 - `off` — everyone sees products.
@@ -59,7 +59,9 @@ Products and prices are hidden until the visitor signs in. `ACCESS.mode` in `ass
 ## Checkout
 
 Every order requires the research-use agreement; the acceptance (with timestamp) is sent with the
-order and written to the sheet. Orders POST to `ORDER_ENDPOINT` in `config.js`: the Apps Script web
+order and written to the sheet. In the Orders tab, **Product Cost / Shipping Cost / Tracking / Total
+Order Cost are left blank** on purpose: those are John's cost columns, filled in by hand. What the
+customer paid is in **Customer Total** (column T). Orders POST to `ORDER_ENDPOINT` in `config.js`: the Apps Script web
 app from `tools/apps-script-orders.gs`, deployed Nov 11, 2026. Formspree is gone.
 
 ## Backend (where emails come from)
