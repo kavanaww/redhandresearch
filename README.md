@@ -74,6 +74,13 @@ account. It writes to "Red Hand Research – Orders" by ID (team@ is an editor) 
 "Red Hand site backend" → edit → Deploy → Manage deployments → pencil → New version → Deploy.
 The URL doesn't change.
 
+**Shipped emails are automatic.** When John (or you) types a tracking number into the Orders tab,
+column L, the script emails the customer a branded "It's on the way" message with a tracking link
+(UPS / USPS / FedEx detected from the number) and stamps column U "Shipped email" so it never sends
+twice. For an order that didn't come through the site, fill `MANUAL_SHIPMENT` in the editor copy and
+run `shipManual()`. The hook is an installable trigger: run `installTriggers()` once from the editor
+as team@ to (re)create it.
+
 ## Before every push
 
 ```

@@ -11,6 +11,8 @@
  *     (Zelle instructions with the exact amount, or a "card link coming" note), signed Moose.
  *     Product Cost / Shipping Cost / Total Order Cost are left BLANK: those are John's cost columns,
  *     filled in by hand. What the customer paid goes in "Customer Total".
+ *   • Shipped email: typing a tracking number into Orders column L emails the customer (branded,
+ *     with a tracking link) and stamps column U. Run installTriggers() once to turn this on.
  *
  * SET UP (one time, about 5 minutes), signed in as team@redhandresearch.com:
  *   1. Go to script.google.com → New project (standalone — NOT Extensions → Apps Script from the
@@ -275,6 +277,74 @@ function winbackSend(list) {
     GmailApp.sendEmail(r.email, 'It\'s been a minute, ' + r.first + ' — 20% off at Red Hand', text, { name: FROM_NAME, replyTo: REPLY_TO, htmlBody: html });
     Utilities.sleep(400);
   });
+}
+
+/* ------------------------------------------------------------- shipping */
+// "Your order has shipped" email. Automatic: when a tracking number is typed into the Orders tab
+// (column L), an installable trigger sends it to the customer and stamps column U ("Shipped email")
+// so it never sends twice. Run installTriggers() ONCE from the editor (as team@) to turn that on.
+var ORDERS_COL = { order: 1, email: 2, name: 3, ship: 6, product: 7, variant: 8, qty: 9, tracking: 12, shippedEmail: 21 };
+function installTriggers() {
+  ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'onTrackingEdit') ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger('onTrackingEdit').forSpreadsheet(ORDERS_SHEET_ID).onEdit().create();
+  var sh = ordersBook().getSheetByName(SHEET_NAME);
+  if (sh.getMaxColumns() < ORDERS_COL.shippedEmail) sh.insertColumnsAfter(sh.getMaxColumns(), ORDERS_COL.shippedEmail - sh.getMaxColumns());
+  if (!sh.getRange(1, ORDERS_COL.shippedEmail).getValue()) sh.getRange(1, ORDERS_COL.shippedEmail).setValue('Shipped email').setFontWeight('bold');
+}
+function onTrackingEdit(e) {
+  try {
+    var rng = e.range, sh = rng.getSheet();
+    if (sh.getName() !== SHEET_NAME || rng.getColumn() !== ORDERS_COL.tracking || rng.getNumRows() !== 1) return;
+    var row = rng.getRow(), tracking = String(sh.getRange(row, ORDERS_COL.tracking).getValue() || '').trim();
+    if (row < 2 || !tracking) return;
+    if (sh.getRange(row, ORDERS_COL.shippedEmail).getValue()) return;          // already sent for this order
+    var orderNo = String(sh.getRange(row, ORDERS_COL.order).getValue() || '').trim();
+    var vals = sh.getDataRange().getValues(), rows = [];
+    for (var r = 1; r < vals.length; r++) if (String(vals[r][0]).trim() === orderNo && orderNo) rows.push(r + 1);
+    if (!rows.length) rows = [row];
+    var first = vals[rows[0] - 1];
+    var items = rows.map(function (rr) { var v = vals[rr - 1]; return (v[ORDERS_COL.qty - 1] || 1) + ' × ' + v[ORDERS_COL.product - 1] + (v[ORDERS_COL.variant - 1] ? ' ' + v[ORDERS_COL.variant - 1] : ''); });
+    shippedEmail({ first: String(first[ORDERS_COL.name - 1] || '').split(' ')[0], email: first[ORDERS_COL.email - 1], order_number: orderNo,
+                   items: items, tracking: tracking, ship_method: first[ORDERS_COL.ship - 1] });
+    var stamp = new Date();
+    rows.forEach(function (rr) { sh.getRange(rr, ORDERS_COL.shippedEmail).setValue(stamp); });
+  } catch (err) {
+    GmailApp.sendEmail(NOTIFY, 'Shipped-email failed', String(err) + '\n\nEdit: ' + JSON.stringify(e && e.range && { sheet: e.range.getSheet().getName(), row: e.range.getRow(), col: e.range.getColumn() }), { name: FROM_NAME });
+  }
+}
+function carrierFor(tracking) {
+  var t = String(tracking || '').replace(/\s+/g, '');
+  if (/^1Z/i.test(t)) return { name: 'UPS', url: 'https://www.ups.com/track?loc=en_US&tracknum=' + encodeURIComponent(t) };
+  if (/^(9[2-5]\d{20,24}|\d{20,22})$/.test(t)) return { name: 'USPS', url: 'https://tools.usps.com/go/TrackConfirmAction?tLabels=' + encodeURIComponent(t) };
+  if (/^\d{12}$|^\d{15}$/.test(t)) return { name: 'FedEx', url: 'https://www.fedex.com/fedextrack/?trknbr=' + encodeURIComponent(t) };
+  return { name: 'the carrier', url: '' };
+}
+// Send by hand (e.g. an order that didn't come through the site): fill MANUAL_SHIPMENT in the editor
+// copy and run shipManual(). Keep customer details out of this public repo.
+var MANUAL_SHIPMENT = { first: '', email: '', order_number: '', items: [], tracking: '', ship_method: '' };
+function shipManual() { if (!MANUAL_SHIPMENT.email) throw new Error('Fill in MANUAL_SHIPMENT first.'); shippedEmail(MANUAL_SHIPMENT); }
+function shippedEmail(o) {
+  var c = carrierFor(o.tracking), first = o.first || 'there';
+  var when = Utilities.formatDate(new Date(), 'America/Chicago', 'MMMM d, yyyy');
+  var items = Array.isArray(o.items) ? o.items : String(o.items || '').split('\n').filter(String);
+  var itemRows = items.map(function (it) { return '<tr><td style="padding:8px 0;border-bottom:1px solid ' + LINE + ';' + FONT + 'font-size:15px;color:' + INK + ';">' + esc(it) + '</td></tr>'; }).join('');
+  var html = emailShell(
+    h1('It\'s on the way, ' + esc(first) + '.') +
+    para('Your order left today with ' + esc(c.name) + '. Here\'s your tracking number — it can take a few hours to show its first scan.') +
+    box(kv('Carrier', esc(c.name)) + kv('Tracking', c.url ? '<a href="' + c.url + '" style="color:' + RED + ';font-weight:700;text-decoration:none;">' + esc(o.tracking) + '</a>' : esc(o.tracking), true) +
+        (o.order_number ? kv('Order', esc(o.order_number)) : '') + kv('Shipped', esc(when) + (o.ship_method ? ' · ' + esc(o.ship_method) : ''))) +
+    (c.url ? '<p style="margin:0 0 18px;"><a href="' + c.url + '" style="display:inline-block;background:' + RED + ';color:#ffffff;text-decoration:none;padding:12px 22px;border-radius:6px;font-weight:700;">Track your package</a></p>' : '') +
+    (items.length ? h2('In the box') + '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:4px 0 10px;">' + itemRows + '</table>' : '') +
+    para('Questions about the delivery? Just reply to this email — it comes straight to me.') +
+    para('Thanks again,<br>Moose<br><span style="color:' + MUTED + ';">Red Hand Research</span>') +
+    small('Reminder: everything we sell is for laboratory research use only and not for human consumption.'),
+    c.name + ' ' + o.tracking);
+  var text = ['Hi ' + first + ',', '', 'Your order left today with ' + c.name + '. Here\'s your tracking number — it can take a few hours to show its first scan.', '',
+    '  Carrier:   ' + c.name, '  Tracking:  ' + o.tracking + (c.url ? '  (' + c.url + ')' : ''), o.order_number ? '  Order:     ' + o.order_number : '', '  Shipped:   ' + when + (o.ship_method ? ' · ' + o.ship_method : ''), '']
+    .concat(items.length ? ['In the box:'].concat(items.map(function (it) { return '  ' + it; })).concat(['']) : [])
+    .concat(['Questions about the delivery? Just reply to this email — it comes straight to me.', '', 'Thanks again,', 'Moose', 'Red Hand Research', '',
+             'Reminder: everything we sell is for laboratory research use only and not for human consumption.']).filter(function (l) { return l !== null; }).join('\n');
+  GmailApp.sendEmail(o.email, 'It\'s on the way, ' + first + ' — ' + c.name + ' ' + o.tracking, text, { name: FROM_NAME, replyTo: REPLY_TO, htmlBody: html });
 }
 
 /* ---------------------------------------------------------------- email look */
